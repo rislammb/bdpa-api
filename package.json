@@ -1,0 +1,25 @@
+{
+  "name": "bdpa-app",
+  "version": "1.0.0",
+  "description": "Bangladesh Diploma Pharmacist Association web app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
+  },
+  "keywords": [
+    "nodejs",
+    "expressjs"
+  ],
+  "author": "Rayhanul Islam",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "mongoose": "^6.6.2"
+  }
+}
