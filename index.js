@@ -85,14 +85,10 @@ app.delete('/api/users/:userId', async (_req, res) => {
   });
 });
 
-// connectDB(process.env.NODE_MONGO_URI, {
-connectDB(
-  'mongodb+srv://bdpa_rislam:bdpa_rislam789@cluster0.rmbrs.mongodb.net/bdpa?retryWrites=true&w=majority',
-  {
-    connectTimeoutMS: 1000,
-    useNewUrlParser: true,
-  }
-)
+connectDB(process.env.NODE_MONGO_URI, {
+  connectTimeoutMS: 1000,
+  useNewUrlParser: true,
+})
   .then(() => {
     console.log('database conected');
     const port = process.env.PORT || 5000;
