@@ -86,7 +86,7 @@ app.delete('/api/users/:userId', async (_req, res) => {
 });
 
 connectDB(process.env.NODE_MONGO_URI, {
-  connectTimeoutMS: 1000,
+  connectTimeoutMS: 2000,
   useNewUrlParser: true,
 })
   .then(() => {
