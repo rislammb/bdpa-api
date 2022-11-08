@@ -18,6 +18,7 @@ const app = express();
 app.use(
   cors({
     origin: 'https://bdpa.netlify.app',
+    // origin: 'http://localhost:3000',
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   })
 );

@@ -408,25 +408,25 @@ const validatePutBody = ({
     }
   }
 
-  // const postDivRes = validateDivision(postingDivision, 'Posting');
-  // postDivRes.valid
-  //   ? (newPharmacist.postingDivision = postDivRes.data)
-  //   : (error.postingDivision = postDivRes.data);
+  const postDivRes = validateDivision(postingDivision, 'Posting');
+  postDivRes.valid
+    ? (newPharmacist.postingDivision = postDivRes.data)
+    : (error.postingDivision = postDivRes.data);
 
-  // const postDistRes = validateDistrict(postingDistrict, 'Posting');
-  // postDistRes.valid
-  //   ? (newPharmacist.postingDistrict = postDistRes.data)
-  //   : (error.postingDistrict = postDistRes.data);
+  const postDistRes = validateDistrict(postingDistrict, 'Posting');
+  postDistRes.valid
+    ? (newPharmacist.postingDistrict = postDistRes.data)
+    : (error.postingDistrict = postDistRes.data);
 
-  // const postUpaRes = validateUpazila(postingUpazila, 'Posting');
-  // postUpaRes.valid
-  //   ? (newPharmacist.postingUpazila = postUpaRes.data)
-  //   : (error.postingUpazila = postUpaRes.data);
+  const postUpaRes = validateUpazila(postingUpazila, 'Posting');
+  postUpaRes.valid
+    ? (newPharmacist.postingUpazila = postUpaRes.data)
+    : (error.postingUpazila = postUpaRes.data);
 
-  // const postPlaceRes = validatePlace(postingPlace, 'Posting');
-  // postPlaceRes.valid
-  //   ? (newPharmacist.postingPlace = postPlaceRes.data)
-  //   : (error.postingPlace = postPlaceRes.data);
+  const postPlaceRes = validatePlace(postingPlace, 'Posting');
+  postPlaceRes.valid
+    ? (newPharmacist.postingPlace = postPlaceRes.data)
+    : (error.postingPlace = postPlaceRes.data);
 
   // const voterDivRes = validateDivision(voterDivision, 'Voter');
   // voterDivRes.valid

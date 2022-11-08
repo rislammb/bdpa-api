@@ -28,7 +28,6 @@ const postPharmacist = async (req, res) => {
   if (!regNumRes.valid) {
     return res.status(400).json(regNumRes.data);
   } else {
-    console.log(regNumRes.data);
     const dbPharmacist = await Pharmacist.findOne({
       regNumber: regNumRes.data,
     });
@@ -71,8 +70,7 @@ const putPharmacist = async (req, res) => {
         if (valid) {
           const pharmacist = await Pharmacist.findByIdAndUpdate(
             dbPharmacist._id,
-            data,
-            { new: true }
+            data
           );
           return res.status(201).json({ pharmacist });
         } else {
