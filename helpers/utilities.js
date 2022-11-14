@@ -93,8 +93,8 @@ const validatePlace = (value, areaName) => {
     res = '';
   } else if (typeof value !== 'string') {
     error = `${areaName} place type must be string!`;
-  } else if (value.trim().length < 5) {
-    error = `${areaName} place at least 5 characters long!`;
+  } else if (value.trim().length < 3) {
+    error = `${areaName} place at least 3 characters long!`;
   } else {
     res = value.trim();
   }
@@ -408,25 +408,30 @@ const validatePutBody = ({
     }
   }
 
-  const postDivRes = validateDivision(postingDivision, 'Posting');
-  postDivRes.valid
-    ? (newPharmacist.postingDivision = postDivRes.data)
-    : (error.postingDivision = postDivRes.data);
-
-  const postDistRes = validateDistrict(postingDistrict, 'Posting');
-  postDistRes.valid
-    ? (newPharmacist.postingDistrict = postDistRes.data)
-    : (error.postingDistrict = postDistRes.data);
-
-  const postUpaRes = validateUpazila(postingUpazila, 'Posting');
-  postUpaRes.valid
-    ? (newPharmacist.postingUpazila = postUpaRes.data)
-    : (error.postingUpazila = postUpaRes.data);
-
-  const postPlaceRes = validatePlace(postingPlace, 'Posting');
-  postPlaceRes.valid
-    ? (newPharmacist.postingPlace = postPlaceRes.data)
-    : (error.postingPlace = postPlaceRes.data);
+  if (postingDivision) {
+    const postDivRes = validateDivision(postingDivision, 'Posting');
+    postDivRes.valid
+      ? (newPharmacist.postingDivision = postDivRes.data)
+      : (error.postingDivision = postDivRes.data);
+  }
+  if (postingDistrict) {
+    const postDistRes = validateDistrict(postingDistrict, 'Posting');
+    postDistRes.valid
+      ? (newPharmacist.postingDistrict = postDistRes.data)
+      : (error.postingDistrict = postDistRes.data);
+  }
+  if (postingUpazila) {
+    const postUpaRes = validateUpazila(postingUpazila, 'Posting');
+    postUpaRes.valid
+      ? (newPharmacist.postingUpazila = postUpaRes.data)
+      : (error.postingUpazila = postUpaRes.data);
+  }
+  if (postingPlace) {
+    const postPlaceRes = validatePlace(postingPlace, 'Posting');
+    postPlaceRes.valid
+      ? (newPharmacist.postingPlace = postPlaceRes.data)
+      : (error.postingPlace = postPlaceRes.data);
+  }
 
   // const voterDivRes = validateDivision(voterDivision, 'Voter');
   // voterDivRes.valid
