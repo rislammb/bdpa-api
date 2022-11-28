@@ -432,16 +432,19 @@ const validatePutBody = ({
       ? (newPharmacist.postingPlace = postPlaceRes.data)
       : (error.postingPlace = postPlaceRes.data);
   }
+  if (voterDivision) {
+    const voterDivRes = validateDivision(voterDivision, 'Voter');
+    voterDivRes.valid
+      ? (newPharmacist.voterDivision = voterDivRes.data)
+      : (error.voterDivision = voterDivRes.data);
+  }
 
-  // const voterDivRes = validateDivision(voterDivision, 'Voter');
-  // voterDivRes.valid
-  //   ? (newPharmacist.voterDivision = voterDivRes.data)
-  //   : (error.voterDivision = voterDivRes.data);
-
-  // const voterDistRes = validateDistrict(voterDistrict, 'Voter');
-  // voterDistRes.valid
-  //   ? (newPharmacist.voterDistrict = voterDistRes.data)
-  //   : (error.voterDistrict = voterDistRes.data);
+  if (voterDistrict) {
+    const voterDistRes = validateDistrict(voterDistrict, 'Voter');
+    voterDistRes.valid
+      ? (newPharmacist.voterDistrict = voterDistRes.data)
+      : (error.voterDistrict = voterDistRes.data);
+  }
 
   if (onDeputation !== undefined) {
     if (typeof onDeputation !== 'boolean') {
