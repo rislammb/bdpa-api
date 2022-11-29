@@ -255,15 +255,15 @@ const validatePostBody = ({
     ? (newPharmacist.voterDistrict = voterDistRes.data)
     : (error.voterDistrict = voterDistRes.data);
 
-  if (onDeputation === undefined) {
-    newPharmacist.onDeputation = false;
-  } else if (typeof onDeputation !== 'boolean') {
-    error.onDeputation = 'On deputation type is not boolean!';
+  if (!onDeputation) {
+    newPharmacist.onDeputation = 'No';
+  } else if (typeof onDeputation !== 'string') {
+    error.onDeputation = 'Deputation type must be string!';
   } else {
-    newPharmacist.onDeputation = onDeputation;
+    newPharmacist.onDeputation = onDeputation.trim();
   }
 
-  if (newPharmacist.onDeputation) {
+  if (newPharmacist.onDeputation === 'Yes') {
     const depuDivRes = validateDivision(deputationDivision, 'Deputation');
     depuDivRes.valid
       ? (newPharmacist.deputationDivision = depuDivRes.data)
@@ -446,15 +446,15 @@ const validatePutBody = ({
       : (error.voterDistrict = voterDistRes.data);
   }
 
-  if (onDeputation !== undefined) {
-    if (typeof onDeputation !== 'boolean') {
-      error.onDeputation = 'On deputation type is not boolean!';
+  if (onDeputation) {
+    if (typeof onDeputation !== 'string') {
+      error.onDeputation = 'onDeputation type must be string!';
     } else {
-      newPharmacist.onDeputation = onDeputation;
+      newPharmacist.onDeputation = onDeputation.trim();
     }
   }
 
-  if (newPharmacist.onDeputation) {
+  if (newPharmacist.onDeputation === 'Yes') {
     // const depuDivRes = validateDivision(deputationDivision, 'Deputation');
     // depuDivRes.valid
     //   ? (newPharmacist.deputationDivision = depuDivRes.data)

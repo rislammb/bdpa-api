@@ -40,7 +40,7 @@ const pharmacistSchema = new Schema({
     name: { type: String, default: '' },
     bn_name: { type: String, default: '' },
   },
-  onDeputation: Boolean,
+  onDeputation: { type: String, default: 'No' },
   deputationDivision: {
     id: { type: String, default: '' },
     name: { type: String, default: '' },
