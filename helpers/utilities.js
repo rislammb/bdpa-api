@@ -454,23 +454,32 @@ const validatePutBody = ({
     }
   }
 
-  if (newPharmacist.onDeputation === 'Yes') {
-    // const depuDivRes = validateDivision(deputationDivision, 'Deputation');
-    // depuDivRes.valid
-    //   ? (newPharmacist.deputationDivision = depuDivRes.data)
-    //   : (error.deputationDivision = depuDivRes.data);
-    // const depuDistRes = validateDistrict(deputationDistrict, 'Deputation');
-    // depuDistRes.valid
-    //   ? (newPharmacist.deputationDistrict = depuDistRes.data)
-    //   : (error.deputationDistrict = depuDistRes.data);
-    // const depuUpaRes = validateUpazila(deputationUpazila, 'Deputation');
-    // depuUpaRes.valid
-    //   ? (newPharmacist.deputationUpazila = depuUpaRes.data)
-    //   : (error.deputationUpazila = depuUpaRes.data);
-    // const depuPlaceRes = validatePlace(deputationPlace, 'Deputation');
-    // depuPlaceRes.valid
-    //   ? (newPharmacist.deputationPlace = depuPlaceRes.data)
-    //   : (error.deputationPlace = depuPlaceRes.data);
+  if (deputationDivision) {
+    const depuDivRes = validateDivision(deputationDivision, 'Deputation');
+    depuDivRes.valid
+      ? (newPharmacist.deputationDivision = depuDivRes.data)
+      : (error.deputationDivision = depuDivRes.data);
+  }
+
+  if (deputationDistrict) {
+    const depuDistRes = validateDistrict(deputationDistrict, 'Deputation');
+    depuDistRes.valid
+      ? (newPharmacist.deputationDistrict = depuDistRes.data)
+      : (error.deputationDistrict = depuDistRes.data);
+  }
+
+  if (deputationUpazila) {
+    const depuUpaRes = validateUpazila(deputationUpazila, 'Deputation');
+    depuUpaRes.valid
+      ? (newPharmacist.deputationUpazila = depuUpaRes.data)
+      : (error.deputationUpazila = depuUpaRes.data);
+  }
+
+  if (deputationPlace) {
+    const depuPlaceRes = validatePlace(deputationPlace, 'Deputation');
+    depuPlaceRes.valid
+      ? (newPharmacist.deputationPlace = depuPlaceRes.data)
+      : (error.deputationPlace = depuPlaceRes.data);
   }
 
   return {
