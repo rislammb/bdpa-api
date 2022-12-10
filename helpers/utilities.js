@@ -452,6 +452,27 @@ const validatePutBody = ({
     } else {
       newPharmacist.onDeputation = onDeputation.trim();
     }
+
+    if (onDeputation === 'No') {
+      newPharmacist['deputationDivision'] = {
+        id: '',
+        name: '',
+        bn_name: '',
+      };
+      newPharmacist['deputationDistrict'] = {
+        id: '',
+        division_id: '',
+        name: '',
+        bn_name: '',
+      };
+      newPharmacist['deputationUpazila'] = {
+        id: '',
+        district_id: '',
+        name: '',
+        bn_name: '',
+      };
+      newPharmacist['deputationPlace'] = '';
+    }
   }
 
   if (deputationDivision) {
