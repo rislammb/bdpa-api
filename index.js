@@ -14,6 +14,7 @@ const {
 } = require('./controllers/listController');
 
 const app = express();
+app.use(express.json());
 
 app.use(
   cors({
@@ -22,7 +23,8 @@ app.use(
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   })
 );
-app.use(express.json());
+
+app.use('/api/v1', require('./routes'));
 
 app.get('/api', (_req, res) => {
   res.json({
@@ -84,6 +86,19 @@ app.delete('/api/users/:userId', async (_req, res) => {
   res.json({
     message: 'delete user',
   });
+});
+
+app.use((_req, _res, next) => {
+  const error = new Error('Page not found!');
+  error.status = 400;
+
+  next(error);
+});
+
+app.use((err, _req, res, _next) => {
+  res
+    .status(err.status ?? 500)
+    .json({ message: err.message ?? 'Server error occurred!' });
 });
 
 connectDB(process.env.NODE_MONGO_URI, {
