@@ -44,7 +44,7 @@ const loginService = async ({ email, password }) => {
     adminDetails: user.adminDetails,
   };
 
-  return jwt.sign(payload, 'SECRET_KEY', { expiresIn: '7d' });
+  return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '7d' });
 };
 
 module.exports = { registerService, loginService };

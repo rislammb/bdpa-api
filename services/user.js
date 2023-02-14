@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+const error = require('../utils/error');
+
 const User = require('../models/User');
 
 const findUsers = () => {
@@ -6,7 +9,10 @@ const findUsers = () => {
 
 const findUserByProperty = (key, value) => {
   if (key === '_id') {
-    return User.findById(value);
+    if (mongoose.isValidObjectId(value)) {
+      return User.findById(value);
+    }
+    throw error('User Id is not valid MongoDB Object Id', 400);
   }
 
   return User.findOne({ [key]: value });
@@ -32,4 +38,12 @@ const createNewUser = ({
   return user.save();
 };
 
-module.exports = { findUsers, findUserByProperty, createNewUser };
+const updateUser = (id, data) => {
+  if (!mongoose.isValidObjectId(id)) {
+    throw error('User Id is not valid MongoDB Object Id', 400);
+  }
+
+  return User.findByIdAndUpdate(id, { ...data }, { new: true });
+};
+
+module.exports = { findUsers, findUserByProperty, createNewUser, updateUser };

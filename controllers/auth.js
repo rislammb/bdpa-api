@@ -14,7 +14,7 @@ const registerController = async (req, res, next) => {
     if (!pharmacist) {
       return res
         .status(400)
-        .json({ message: 'This email is not found in database!' });
+        .json({ message: 'This email is not found in pharmacist database!' });
     }
 
     if (typeof password !== 'string' || password.length < 6) {
