@@ -31,7 +31,7 @@ app.get('/api', (_req, res) => {
     message: 'bdpa home page',
   });
 });
-app.get('/api/health', (_req, res) => {
+app.get('/health', (_req, res) => {
   res.json({
     message: 'This server is ok',
   });
