@@ -35,6 +35,6 @@ router.get('/', userController.getUsers);
  * Create new user
  * @method POST
  */
-router.get('/', userController.postUser);
+router.post('/', userController.postUser);
 
 module.exports = router;

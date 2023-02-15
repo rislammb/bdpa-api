@@ -41,7 +41,6 @@ Pharmacist model-
 - email
 - mobile
 - dateOfBirth
-- user
 - gender
 - passingYear
 - regNumber
@@ -64,6 +63,33 @@ User model-
 - email
 - password
 - regNumber
+- pharmacistId
 - accountStatus
 - roles
 - adminDetails
+
+## Endpoints/Routes
+
+Pharmacist routes
+
+- POST /pharmacist [public]
+- GET /pharmacist [public]
+- GET /pharmacist/:regNumber [public]
+- PUT /pharmacist/:regNumber [private]
+- PATCH /pharmacist/:regNumber [private]
+- DELETE /pharmacist/:regNumber [private]
+
+Auth routes
+
+- POST /auth/register [public]
+- POST /auth/login [public]
+- GET /auth/logout [private]
+
+User routes
+
+- POST /user [private]
+- GET /user [private]
+- GET /user/:userId [private]
+- PUT /user/:userId [private]
+- PATCH /user/:userId [private]
+- DELETE /user/:userId [private]

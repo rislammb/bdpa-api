@@ -6,10 +6,6 @@ const pharmacistSchema = new Schema({
   email: { type: String, default: '', trim: true },
   mobile: { type: String, default: '', trim: true },
   dateOfBirth: { type: Date },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-  },
   gender: { type: String, default: '', trim: true },
   passingYear: { type: String, default: '', trim: true },
   regNumber: { type: String, required: true, trim: true },

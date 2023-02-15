@@ -1,6 +1,10 @@
 const error = require('../utils/error');
 const pharmacistService = require('../services/pharmacist');
-const { validateRegNum } = require('../utils/pharmacist');
+const {
+  validateRegNum,
+  validatePostBody,
+  validatePutBody,
+} = require('../utils/pharmacist');
 
 const getPharmacists = async (_req, res, next) => {
   try {
@@ -14,7 +18,6 @@ const getPharmacists = async (_req, res, next) => {
 
 const getPharmacistByRegistration = async (req, res, next) => {
   const { regNumber } = req.params;
-  console.log(regNumber);
 
   try {
     const pharmacist = await pharmacistService.findPharmacistByProperty(
@@ -34,10 +37,59 @@ const getPharmacistByRegistration = async (req, res, next) => {
 
 const postPharmacist = async (req, res, next) => {
   const { regNumber } = req.body;
-  const regNumberRes = validateRegNum(regNumber);
 
+  const regNumberRes = validateRegNum(regNumber);
   if (!regNumberRes.valid) {
     return res.status(400).json(regNumberRes.data);
+  }
+
+  const { valid, data } = validatePostBody(req.body);
+
+  if (!valid) {
+    return res.status(400).json(data);
+  }
+
+  try {
+    const pharmacist = await pharmacistService.createNewPharmacist(data);
+
+    return res.status(201).json(pharmacist);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const putPharmacistByRegistration = async (req, res, next) => {
+  const { regNumber } = req.params;
+
+  const regNumRes = validateRegNum(regNumber);
+  if (!regNumRes.valid) {
+    return res.status(400).json(regNumRes.data);
+  }
+
+  try {
+    const { valid, data } = validatePutBody(req.body);
+
+    if (!valid) {
+      return res.status(400).json(data);
+    }
+
+    const pharmacist = await pharmacistService.updatePharmacist(
+      regNumber,
+      data
+    );
+
+    return res.status(200).json(pharmacist);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const patchPharmacistByRegistration = async (req, res, next) => {
+  const { regNumber } = req.params;
+
+  const regNumRes = validateRegNum(regNumber);
+  if (!regNumRes.valid) {
+    return res.status(400).json(regNumRes.data);
   }
 
   try {
@@ -46,11 +98,71 @@ const postPharmacist = async (req, res, next) => {
       regNumber
     );
 
-    if (pharmacist) {
-      return res.status(400).json({ message: 'Pharmacist already exists!' });
+    if (!pharmacist) {
+      throw error('Pharmacist not found!', 404);
     }
 
-    return res.status(201).send();
+    const { valid, data } = validatePutBody(req.body);
+    if (!valid) {
+      return res.status(400).json(data);
+    }
+
+    pharmacist.name = data.name ?? pharmacist.name;
+    pharmacist.bn_name = data.bn_name ?? pharmacist.bn_name;
+    pharmacist.email = data.email ?? pharmacist.email;
+    pharmacist.mobile = data.mobile ?? pharmacist.mobile;
+    pharmacist.dateOfBirth = data.dateOfBirth ?? pharmacist.dateOfBirth;
+    pharmacist.gender = data.gender ?? pharmacist.gender;
+    pharmacist.passingYear = data.passingYear ?? pharmacist.passingYear;
+    pharmacist.dateOfJoin = data.dateOfJoin ?? pharmacist.dateOfJoin;
+    pharmacist.jobDepertment = data.jobDepertment ?? pharmacist.jobDepertment;
+    pharmacist.postingDivision =
+      data.postingDivision ?? pharmacist.postingDivision;
+    pharmacist.postingDistrict =
+      data.postingDistrict ?? pharmacist.postingDistrict;
+    pharmacist.postingUpazila =
+      data.postingUpazila ?? pharmacist.postingUpazila;
+    pharmacist.postingPlace = data.postingPlace ?? pharmacist.postingPlace;
+    pharmacist.voterDivision = data.voterDivision ?? pharmacist.voterDivision;
+    pharmacist.voterDistrict = data.voterDistrict ?? pharmacist.voterDistrict;
+    pharmacist.onDeputation = data.onDeputation ?? pharmacist.onDeputation;
+    pharmacist.deputationDivision =
+      data.deputationDivision ?? pharmacist.deputationDivision;
+    pharmacist.deputationDistrict =
+      data.deputationDistrict ?? pharmacist.deputationDistrict;
+    pharmacist.deputationUpazila =
+      data.deputationUpazila ?? pharmacist.deputationUpazila;
+    pharmacist.deputationPlace =
+      data.deputationPlace ?? pharmacist.deputationPlace;
+
+    await pharmacist.save();
+
+    return res.status(200).json(pharmacist);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const deletePharmacistByRegistration = async (req, res, next) => {
+  const { regNumber } = req.params;
+
+  const regNumRes = validateRegNum(regNumber);
+  if (!regNumRes.valid) {
+    return res.status(400).json(regNumRes.data);
+  }
+
+  try {
+    const pharmacist = await pharmacistService.findPharmacistByProperty(
+      'regNumber',
+      regNumber
+    );
+
+    if (!pharmacist) {
+      throw error('Pharmacist not found!', 404);
+    }
+
+    await pharmacist.remove();
+    return res.status(204).send();
   } catch (e) {
     next(e);
   }
@@ -60,4 +172,7 @@ module.exports = {
   getPharmacists,
   getPharmacistByRegistration,
   postPharmacist,
+  putPharmacistByRegistration,
+  patchPharmacistByRegistration,
+  deletePharmacistByRegistration,
 };

@@ -33,6 +33,7 @@ const registerController = async (req, res, next) => {
       email,
       password,
       regNumber: pharmacist.regNumber,
+      pharmacistId: pharmacist._id,
     });
 
     res.status(201).json({ message: 'User created successfully', user });
