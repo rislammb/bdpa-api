@@ -24,14 +24,9 @@ app.use(
 
 app.use('/api/v1', require('../routes'));
 
-app.get('/api', (_req, res) => {
+app.get('/api/v1/health', (_req, res) => {
   res.json({
-    message: 'bdpa home page',
-  });
-});
-app.get('/health', (_req, res) => {
-  res.json({
-    message: 'This server is ok',
+    message: 'This server is ok.',
   });
 });
 
