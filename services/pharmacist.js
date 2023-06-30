@@ -2,7 +2,12 @@ const Pharmacist = require('../models/Pharmacist');
 const error = require('../utils/error');
 
 const findPharmacists = () => {
-  return Pharmacist.find().sort({ dateOfJoin: 1, dateOfBirth: 1, name: 1 });
+  return Pharmacist.find().sort({
+    dateOfBirth: 1,
+    passingYear: 1,
+    dateOfJoin: 1,
+    name: 1,
+  });
 };
 
 const findPharmacistByProperty = (key, value) => {
