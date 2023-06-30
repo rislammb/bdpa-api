@@ -108,9 +108,11 @@ const validatePostBody = ({
   bn_name,
   email,
   mobile,
+  nationalId,
   dateOfBirth,
   gender,
   passingYear,
+  memberId,
   dateOfJoin,
   jobDepertment,
   postingDivision,
@@ -163,7 +165,6 @@ const validatePostBody = ({
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       )
   ) {
-    // TODO: validate email
     error.email = 'Email is not valid!';
   } else {
     newPharmacist.email = email.trim();
@@ -197,6 +198,14 @@ const validatePostBody = ({
     newPharmacist.gender = gender.trim();
   }
 
+  if (!nationalId) {
+    newPharmacist.nationalId = '';
+  } else if (typeof nationalId !== 'string') {
+    error.nationalId = 'National ID number type must be string!';
+  } else {
+    newPharmacist.nationalId = nationalId.trim();
+  }
+
   if (!passingYear) {
     newPharmacist.passingYear = '';
   } else if (typeof passingYear !== 'string') {
@@ -207,6 +216,14 @@ const validatePostBody = ({
     error.passingYear = 'Diploma passing year must be 4 characters long!';
   } else {
     newPharmacist.passingYear = passingYear.trim();
+  }
+
+  if (!memberId) {
+    newPharmacist.memberId = '';
+  } else if (typeof memberId !== 'string') {
+    error.memberId = 'Member ID type must be string!';
+  } else {
+    newPharmacist.memberId = memberId.trim();
   }
 
   if (!dateOfJoin) {
@@ -298,7 +315,9 @@ const validatePutBody = ({
   mobile,
   dateOfBirth,
   gender,
+  nationalId,
   passingYear,
+  memberId,
   dateOfJoin,
   jobDepertment,
   postingDivision,
@@ -380,6 +399,14 @@ const validatePutBody = ({
     }
   }
 
+  if (nationalId) {
+    if (typeof nationalId !== 'string') {
+      error.nationalId = 'National ID number type must be string!';
+    } else {
+      newPharmacist.nationalId = nationalId.trim();
+    }
+  }
+
   if (passingYear) {
     if (typeof passingYear !== 'string') {
       error.passingYear = 'Diploma passing year type must be string!';
@@ -389,6 +416,14 @@ const validatePutBody = ({
       error.passingYear = 'Diploma passing year must be 4 characters long!';
     } else {
       newPharmacist.passingYear = passingYear.trim();
+    }
+  }
+
+  if (memberId) {
+    if (typeof memberId !== 'string') {
+      error.memberId = 'Member ID type must be string!';
+    } else {
+      newPharmacist.memberId = memberId.trim();
     }
   }
 

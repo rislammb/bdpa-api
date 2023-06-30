@@ -7,8 +7,10 @@ const pharmacistSchema = new Schema({
   mobile: { type: String, default: '', trim: true },
   dateOfBirth: { type: Date },
   gender: { type: String, default: '', trim: true },
+  nationalId: { type: String, trim: true, default: '' },
   passingYear: { type: String, default: '', trim: true },
   regNumber: { type: String, required: true, trim: true },
+  memberId: { type: String, trim: true, default: '' },
   dateOfJoin: { type: Date },
   jobDepertment: { type: String, default: '', trim: true },
   postingDivision: {

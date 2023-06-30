@@ -6,7 +6,12 @@ const {
 const Pharmacist = require('../models/Pharmacist');
 
 const getAllPharmacists = async (_req, res) => {
-  const prarmacists = await Pharmacist.find().sort({ dateOfJoin: 1, dateOfBirth: 1, name: 1 });
+  const prarmacists = await Pharmacist.find().sort({
+    dateOfJoin: 1,
+    dateOfBirth: 1,
+    passingYear: 1,
+    name: 1,
+  });
   res.json(prarmacists);
 };
 
