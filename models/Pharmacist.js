@@ -3,6 +3,8 @@ const { model, Schema } = require('mongoose');
 const pharmacistSchema = new Schema({
   name: { type: String, required: true, trim: true },
   bn_name: { type: String, default: '', trim: true },
+  fathersName: { type: String, default: '', trim: true },
+  mothersName: { type: String, default: '', trim: true },
   email: { type: String, default: '', trim: true },
   mobile: { type: String, default: '', trim: true },
   dateOfBirth: { type: Date },
@@ -31,6 +33,24 @@ const pharmacistSchema = new Schema({
     bn_name: { type: String, default: '' },
   },
   postingPlace: { type: String, default: '', trim: true },
+  permanentDivision: {
+    id: { type: String, default: '' },
+    name: { type: String, default: '' },
+    bn_name: { type: String, default: '' },
+  },
+  permanentDistrict: {
+    id: { type: String, default: '' },
+    division_id: { type: String, default: '' },
+    name: { type: String, default: '' },
+    bn_name: { type: String, default: '' },
+  },
+  permanentUpazila: {
+    id: { type: String, default: '' },
+    district_id: { type: String, default: '' },
+    name: { type: String, default: '' },
+    bn_name: { type: String, default: '' },
+  },
+  permanentPlace: { type: String, default: '', trim: true },
   voterDivision: {
     id: { type: String, default: '' },
     name: { type: String, default: '' },

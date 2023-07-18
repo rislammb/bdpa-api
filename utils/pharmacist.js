@@ -106,17 +106,25 @@ const validatePostBody = ({
   regNumber,
   name,
   bn_name,
+  fathersName,
+  mothersName,
   email,
   mobile,
   dateOfBirth,
   gender,
+  nationalId,
   passingYear,
+  memberId,
   dateOfJoin,
   jobDepertment,
   postingDivision,
   postingDistrict,
   postingUpazila,
   postingPlace,
+  permanentDivision,
+  permanentDistrict,
+  permanentUpazila,
+  permanentPlace,
   voterDivision,
   voterDistrict,
   onDeputation,
@@ -152,6 +160,26 @@ const validatePostBody = ({
     newPharmacist.bn_name = bn_name.trim();
   }
 
+  if (!fathersName) {
+    newPharmacist.fathersName = '';
+  } else if (typeof fathersName !== 'string') {
+    error.fathersName = "Father's Name type must be string!";
+  } else if (fathersName.trim().length < 2) {
+    error.fathersName = "Father's Name must at least 2 characters long!";
+  } else {
+    newPharmacist.fathersName = fathersName.trim();
+  }
+
+  if (!mothersName) {
+    newPharmacist.mothersName = '';
+  } else if (typeof mothersName !== 'string') {
+    error.mothersName = "Mother's Name type must be string!";
+  } else if (mothersName.trim().length < 2) {
+    error.mothersName = "Mother's Name must at least 2 characters long!";
+  } else {
+    newPharmacist.mothersName = mothersName.trim();
+  }
+
   if (!email) {
     newPharmacist.email = '';
   } else if (typeof email !== 'string') {
@@ -163,7 +191,6 @@ const validatePostBody = ({
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       )
   ) {
-    // TODO: validate email
     error.email = 'Email is not valid!';
   } else {
     newPharmacist.email = email.trim();
@@ -197,6 +224,14 @@ const validatePostBody = ({
     newPharmacist.gender = gender.trim();
   }
 
+  if (!nationalId) {
+    newPharmacist.nationalId = '';
+  } else if (/^[0-9]/.test(nationalId.trim()) === false) {
+    error.nationalId = 'National ID number characters must be digit!';
+  } else {
+    newPharmacist.nationalId = nationalId.trim();
+  }
+
   if (!passingYear) {
     newPharmacist.passingYear = '';
   } else if (typeof passingYear !== 'string') {
@@ -207,6 +242,14 @@ const validatePostBody = ({
     error.passingYear = 'Diploma passing year must be 4 characters long!';
   } else {
     newPharmacist.passingYear = passingYear.trim();
+  }
+
+  if (!memberId) {
+    newPharmacist.memberId = '';
+  } else if (typeof memberId !== 'string') {
+    error.memberId = 'Member ID type must be string!';
+  } else {
+    newPharmacist.memberId = memberId;
   }
 
   if (!dateOfJoin) {
@@ -225,25 +268,45 @@ const validatePostBody = ({
     newPharmacist.jobDepertment = jobDepertment;
   }
 
-  const postDivRes = validateDivision(postingDivision, 'Posting');
-  postDivRes.valid
-    ? (newPharmacist.postingDivision = postDivRes.data)
-    : (error.postingDivision = postDivRes.data);
+  const postingDivRes = validateDivision(postingDivision, 'Posting');
+  postingDivRes.valid
+    ? (newPharmacist.postingDivision = postingDivRes.data)
+    : (error.postingDivision = postingDivRes.data);
 
-  const postDistRes = validateDistrict(postingDistrict, 'Posting');
-  postDistRes.valid
-    ? (newPharmacist.postingDistrict = postDistRes.data)
-    : (error.postingDistrict = postDistRes.data);
+  const postingDistRes = validateDistrict(postingDistrict, 'Posting');
+  postingDistRes.valid
+    ? (newPharmacist.postingDistrict = postingDistRes.data)
+    : (error.postingDistrict = postingDistRes.data);
 
-  const postUpaRes = validateUpazila(postingUpazila, 'Posting');
-  postUpaRes.valid
-    ? (newPharmacist.postingUpazila = postUpaRes.data)
-    : (error.postingUpazila = postUpaRes.data);
+  const postingUpaRes = validateUpazila(postingUpazila, 'Posting');
+  postingUpaRes.valid
+    ? (newPharmacist.postingUpazila = postingUpaRes.data)
+    : (error.postingUpazila = postingUpaRes.data);
 
-  const postPlaceRes = validatePlace(postingPlace, 'Posting');
-  postPlaceRes.valid
-    ? (newPharmacist.postingPlace = postPlaceRes.data)
-    : (error.postingPlace = postPlaceRes.data);
+  const postingPlaceRes = validatePlace(postingPlace, 'Posting');
+  postingPlaceRes.valid
+    ? (newPharmacist.postingPlace = postingPlaceRes.data)
+    : (error.postingPlace = postingPlaceRes.data);
+
+  const permanentDivRes = validateDivision(permanentDivision, 'Permanent');
+  permanentDivRes.valid
+    ? (newPharmacist.permanentDivision = permanentDivRes.data)
+    : (error.permanentDivision = permanentDivRes.data);
+
+  const permanentDistRes = validateDistrict(permanentDistrict, 'Permanent');
+  permanentDistRes.valid
+    ? (newPharmacist.permanentDistrict = permanentDistRes.data)
+    : (error.permanentDistrict = permanentDistRes.data);
+
+  const permanentUpaRes = validateUpazila(permanentUpazila, 'Permanent');
+  permanentUpaRes.valid
+    ? (newPharmacist.permanentUpazila = permanentUpaRes.data)
+    : (error.permanentUpazila = permanentUpaRes.data);
+
+  const permanentPlaceRes = validatePlace(permanentPlace, 'Permanent');
+  permanentPlaceRes.valid
+    ? (newPharmacist.permanentPlace = permanentPlaceRes.data)
+    : (error.permanentPlace = permanentPlaceRes.data);
 
   const voterDivRes = validateDivision(voterDivision, 'Voter');
   voterDivRes.valid
@@ -264,25 +327,28 @@ const validatePostBody = ({
   }
 
   if (newPharmacist.onDeputation === 'Yes') {
-    const depuDivRes = validateDivision(deputationDivision, 'Deputation');
-    depuDivRes.valid
-      ? (newPharmacist.deputationDivision = depuDivRes.data)
-      : (error.deputationDivision = depuDivRes.data);
+    const deputationDivRes = validateDivision(deputationDivision, 'Deputation');
+    deputationDivRes.valid
+      ? (newPharmacist.deputationDivision = deputationDivRes.data)
+      : (error.deputationDivision = deputationDivRes.data);
 
-    const depuDistRes = validateDistrict(deputationDistrict, 'Deputation');
-    depuDistRes.valid
-      ? (newPharmacist.deputationDistrict = depuDistRes.data)
-      : (error.deputationDistrict = depuDistRes.data);
+    const deputationDistRes = validateDistrict(
+      deputationDistrict,
+      'Deputation'
+    );
+    deputationDistRes.valid
+      ? (newPharmacist.deputationDistrict = deputationDistRes.data)
+      : (error.deputationDistrict = deputationDistRes.data);
 
-    const depuUpaRes = validateUpazila(deputationUpazila, 'Deputation');
-    depuUpaRes.valid
-      ? (newPharmacist.deputationUpazila = depuUpaRes.data)
-      : (error.deputationUpazila = depuUpaRes.data);
+    const deputationUpaRes = validateUpazila(deputationUpazila, 'Deputation');
+    deputationUpaRes.valid
+      ? (newPharmacist.deputationUpazila = deputationUpaRes.data)
+      : (error.deputationUpazila = deputationUpaRes.data);
 
-    const depuPlaceRes = validatePlace(deputationPlace, 'Deputation');
-    depuPlaceRes.valid
-      ? (newPharmacist.deputationPlace = depuPlaceRes.data)
-      : (error.deputationPlace = depuPlaceRes.data);
+    const deputationPlaceRes = validatePlace(deputationPlace, 'Deputation');
+    deputationPlaceRes.valid
+      ? (newPharmacist.deputationPlace = deputationPlaceRes.data)
+      : (error.deputationPlace = deputationPlaceRes.data);
   }
 
   return {
@@ -294,17 +360,25 @@ const validatePostBody = ({
 const validatePutBody = ({
   name,
   bn_name,
+  fathersName,
+  mothersName,
   email,
   mobile,
   dateOfBirth,
   gender,
+  nationalId,
   passingYear,
+  memberId,
   dateOfJoin,
   jobDepertment,
   postingDivision,
   postingDistrict,
   postingUpazila,
   postingPlace,
+  permanentDivision,
+  permanentDistrict,
+  permanentUpazila,
+  permanentPlace,
   voterDivision,
   voterDistrict,
   onDeputation,
@@ -333,6 +407,26 @@ const validatePutBody = ({
       error.bn_name = 'Name (Bengali) must at least 2 characters long!';
     } else {
       newPharmacist.bn_name = bn_name.trim();
+    }
+  }
+
+  if (fathersName) {
+    if (typeof fathersName !== 'string') {
+      error.fathersName = "Father's Name type must be string!";
+    } else if (fathersName.trim().length < 2) {
+      error.fathersName = "Father's Name must at least 2 characters long!";
+    } else {
+      newPharmacist.fathersName = fathersName.trim();
+    }
+  }
+
+  if (mothersName) {
+    if (typeof mothersName !== 'string') {
+      error.mothersName = "Mother's Name type must be string!";
+    } else if (mothersName.trim().length < 2) {
+      error.mothersName = "Mother's Name must at least 2 characters long!";
+    } else {
+      newPharmacist.mothersName = mothersName.trim();
     }
   }
 
@@ -380,6 +474,14 @@ const validatePutBody = ({
     }
   }
 
+  if (nationalId) {
+    if (/^[0-9]/.test(nationalId.trim()) === false) {
+      error.nationalId = 'National ID number characters must be digit!';
+    } else {
+      newPharmacist.nationalId = nationalId.trim();
+    }
+  }
+
   if (passingYear) {
     if (typeof passingYear !== 'string') {
       error.passingYear = 'Diploma passing year type must be string!';
@@ -389,6 +491,14 @@ const validatePutBody = ({
       error.passingYear = 'Diploma passing year must be 4 characters long!';
     } else {
       newPharmacist.passingYear = passingYear.trim();
+    }
+  }
+
+  if (memberId) {
+    if (typeof memberId !== 'string') {
+      error.memberId = 'Member ID type must be string!';
+    } else {
+      newPharmacist.memberId = memberId;
     }
   }
 
@@ -409,36 +519,61 @@ const validatePutBody = ({
   }
 
   if (postingDivision) {
-    const postDivRes = validateDivision(postingDivision, 'Posting');
-    postDivRes.valid
-      ? (newPharmacist.postingDivision = postDivRes.data)
-      : (error.postingDivision = postDivRes.data);
+    const postingDivRes = validateDivision(postingDivision, 'Posting');
+    postingDivRes.valid
+      ? (newPharmacist.postingDivision = postingDivRes.data)
+      : (error.postingDivision = postingDivRes.data);
   }
   if (postingDistrict) {
-    const postDistRes = validateDistrict(postingDistrict, 'Posting');
-    postDistRes.valid
-      ? (newPharmacist.postingDistrict = postDistRes.data)
-      : (error.postingDistrict = postDistRes.data);
+    const postingDistRes = validateDistrict(postingDistrict, 'Posting');
+    postingDistRes.valid
+      ? (newPharmacist.postingDistrict = postingDistRes.data)
+      : (error.postingDistrict = postingDistRes.data);
   }
   if (postingUpazila) {
-    const postUpaRes = validateUpazila(postingUpazila, 'Posting');
-    postUpaRes.valid
-      ? (newPharmacist.postingUpazila = postUpaRes.data)
-      : (error.postingUpazila = postUpaRes.data);
+    const postingUpaRes = validateUpazila(postingUpazila, 'Posting');
+    postingUpaRes.valid
+      ? (newPharmacist.postingUpazila = postingUpaRes.data)
+      : (error.postingUpazila = postingUpaRes.data);
   }
   if (postingPlace) {
-    const postPlaceRes = validatePlace(postingPlace, 'Posting');
-    postPlaceRes.valid
-      ? (newPharmacist.postingPlace = postPlaceRes.data)
-      : (error.postingPlace = postPlaceRes.data);
+    const postingPlaceRes = validatePlace(postingPlace, 'Posting');
+    postingPlaceRes.valid
+      ? (newPharmacist.postingPlace = postingPlaceRes.data)
+      : (error.postingPlace = postingPlaceRes.data);
   }
+
+  if (permanentDivision) {
+    const permanentDivRes = validateDivision(permanentDivision, 'Permanent');
+    permanentDivRes.valid
+      ? (newPharmacist.permanentDivision = permanentDivRes.data)
+      : (error.permanentDivision = permanentDivRes.data);
+  }
+  if (permanentDistrict) {
+    const permanentDistRes = validateDistrict(permanentDistrict, 'Permanent');
+    permanentDistRes.valid
+      ? (newPharmacist.permanentDistrict = permanentDistRes.data)
+      : (error.permanentDistrict = permanentDistRes.data);
+  }
+  if (permanentUpazila) {
+    const permanentUpaRes = validateUpazila(permanentUpazila, 'Permanent');
+    permanentUpaRes.valid
+      ? (newPharmacist.permanentUpazila = permanentUpaRes.data)
+      : (error.permanentUpazila = permanentUpaRes.data);
+  }
+  if (permanentPlace) {
+    const permanentPlaceRes = validatePlace(permanentPlace, 'Permanent');
+    permanentPlaceRes.valid
+      ? (newPharmacist.permanentPlace = permanentPlaceRes.data)
+      : (error.permanentPlace = permanentPlaceRes.data);
+  }
+
   if (voterDivision) {
     const voterDivRes = validateDivision(voterDivision, 'Voter');
     voterDivRes.valid
       ? (newPharmacist.voterDivision = voterDivRes.data)
       : (error.voterDivision = voterDivRes.data);
   }
-
   if (voterDistrict) {
     const voterDistRes = validateDistrict(voterDistrict, 'Voter');
     voterDistRes.valid
@@ -476,31 +611,34 @@ const validatePutBody = ({
   }
 
   if (deputationDivision) {
-    const depuDivRes = validateDivision(deputationDivision, 'Deputation');
-    depuDivRes.valid
-      ? (newPharmacist.deputationDivision = depuDivRes.data)
-      : (error.deputationDivision = depuDivRes.data);
+    const deputationDivRes = validateDivision(deputationDivision, 'Deputation');
+    deputationDivRes.valid
+      ? (newPharmacist.deputationDivision = deputationDivRes.data)
+      : (error.deputationDivision = deputationDivRes.data);
   }
 
   if (deputationDistrict) {
-    const depuDistRes = validateDistrict(deputationDistrict, 'Deputation');
-    depuDistRes.valid
-      ? (newPharmacist.deputationDistrict = depuDistRes.data)
-      : (error.deputationDistrict = depuDistRes.data);
+    const deputationDistRes = validateDistrict(
+      deputationDistrict,
+      'Deputation'
+    );
+    deputationDistRes.valid
+      ? (newPharmacist.deputationDistrict = deputationDistRes.data)
+      : (error.deputationDistrict = deputationDistRes.data);
   }
 
   if (deputationUpazila) {
-    const depuUpaRes = validateUpazila(deputationUpazila, 'Deputation');
-    depuUpaRes.valid
-      ? (newPharmacist.deputationUpazila = depuUpaRes.data)
-      : (error.deputationUpazila = depuUpaRes.data);
+    const deputationUpaRes = validateUpazila(deputationUpazila, 'Deputation');
+    deputationUpaRes.valid
+      ? (newPharmacist.deputationUpazila = deputationUpaRes.data)
+      : (error.deputationUpazila = deputationUpaRes.data);
   }
 
   if (deputationPlace) {
-    const depuPlaceRes = validatePlace(deputationPlace, 'Deputation');
-    depuPlaceRes.valid
-      ? (newPharmacist.deputationPlace = depuPlaceRes.data)
-      : (error.deputationPlace = depuPlaceRes.data);
+    const deputationPlaceRes = validatePlace(deputationPlace, 'Deputation');
+    deputationPlaceRes.valid
+      ? (newPharmacist.deputationPlace = deputationPlaceRes.data)
+      : (error.deputationPlace = deputationPlaceRes.data);
   }
 
   return {
