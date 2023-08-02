@@ -1,10 +1,10 @@
 const { model, Schema } = require('mongoose');
 
 const pharmacistSchema = new Schema({
-  name: { type: String, required: true, trim: true },
+  name: { type: String, required: true, trim: true, uppercase: true },
   bn_name: { type: String, default: '', trim: true },
-  fathersName: { type: String, default: '', trim: true },
-  mothersName: { type: String, default: '', trim: true },
+  fathersName: { type: String, default: '', trim: true, uppercase: true },
+  mothersName: { type: String, default: '', trim: true, uppercase: true },
   email: { type: String, default: '', trim: true },
   mobile: { type: String, default: '', trim: true },
   dateOfBirth: { type: Date },

@@ -35,6 +35,25 @@ const getPharmacistByRegistration = async (req, res, next) => {
   }
 };
 
+const getPharmacistById = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const pharmacist = await pharmacistService.findPharmacistByProperty(
+      '_id',
+      id
+    );
+
+    if (!pharmacist) {
+      throw error('Pharmacist not found!', 404);
+    }
+
+    return res.status(200).json(pharmacist);
+  } catch (e) {
+    next(e);
+  }
+};
+
 const postPharmacist = async (req, res, next) => {
   const { regNumber } = req.body;
 
@@ -168,11 +187,33 @@ const deletePharmacistByRegistration = async (req, res, next) => {
   }
 };
 
+const deletePharmacistById = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const pharmacist = await pharmacistService.findPharmacistByProperty(
+      '_id',
+      id
+    );
+
+    if (!pharmacist) {
+      throw error('Pharmacist not found!', 404);
+    }
+
+    await pharmacist.remove();
+    return res.status(204).send();
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPharmacists,
   getPharmacistByRegistration,
+  getPharmacistById,
   postPharmacist,
   putPharmacistByRegistration,
   patchPharmacistByRegistration,
   deletePharmacistByRegistration,
+  deletePharmacistById,
 };

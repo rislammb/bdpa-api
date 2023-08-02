@@ -3,6 +3,7 @@ const authenticate = require('../middleware/authenticate');
 const pharmacistController = require('../controllers/pharmacist');
 
 router.get('/:regNumber', pharmacistController.getPharmacistByRegistration);
+router.get('/id/:id', pharmacistController.getPharmacistById);
 router.put(
   '/:regNumber',
   authenticate,
@@ -17,6 +18,11 @@ router.delete(
   '/:regNumber',
   authenticate,
   pharmacistController.deletePharmacistByRegistration
+);
+router.delete(
+  '/id/:id',
+  authenticate,
+  pharmacistController.deletePharmacistById
 );
 
 router.get('/', pharmacistController.getPharmacists);
