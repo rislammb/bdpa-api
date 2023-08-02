@@ -128,11 +128,15 @@ const patchPharmacistByRegistration = async (req, res, next) => {
 
     pharmacist.name = data.name ?? pharmacist.name;
     pharmacist.bn_name = data.bn_name ?? pharmacist.bn_name;
+    pharmacist.fathersName = data.fathersName ?? pharmacist.fathersName;
+    pharmacist.mothersName = data.mothersName ?? pharmacist.mothersName;
     pharmacist.email = data.email ?? pharmacist.email;
     pharmacist.mobile = data.mobile ?? pharmacist.mobile;
     pharmacist.dateOfBirth = data.dateOfBirth ?? pharmacist.dateOfBirth;
     pharmacist.gender = data.gender ?? pharmacist.gender;
+    pharmacist.nationalId = data.nationalId ?? pharmacist.nationalId;
     pharmacist.passingYear = data.passingYear ?? pharmacist.passingYear;
+    pharmacist.memberId = data.memberId ?? pharmacist.memberId;
     pharmacist.dateOfJoin = data.dateOfJoin ?? pharmacist.dateOfJoin;
     pharmacist.jobDepertment = data.jobDepertment ?? pharmacist.jobDepertment;
     pharmacist.postingDivision =
@@ -142,6 +146,14 @@ const patchPharmacistByRegistration = async (req, res, next) => {
     pharmacist.postingUpazila =
       data.postingUpazila ?? pharmacist.postingUpazila;
     pharmacist.postingPlace = data.postingPlace ?? pharmacist.postingPlace;
+    pharmacist.permanentDivision =
+      data.permanentDivision ?? pharmacist.permanentDivision;
+    pharmacist.permanentDistrict =
+      data.permanentDistrict ?? pharmacist.permanentDistrict;
+    pharmacist.permanentUpazila =
+      data.permanentUpazila ?? pharmacist.permanentUpazila;
+    pharmacist.permanentPlace =
+      data.permanentPlace ?? pharmacist.permanentPlace;
     pharmacist.voterDivision = data.voterDivision ?? pharmacist.voterDivision;
     pharmacist.voterDistrict = data.voterDistrict ?? pharmacist.voterDistrict;
     pharmacist.onDeputation = data.onDeputation ?? pharmacist.onDeputation;
