@@ -126,45 +126,11 @@ const patchPharmacistByRegistration = async (req, res, next) => {
       return res.status(400).json(data);
     }
 
-    pharmacist.name = data.name ?? pharmacist.name;
-    pharmacist.bn_name = data.bn_name ?? pharmacist.bn_name;
-    pharmacist.fathersName = data.fathersName ?? pharmacist.fathersName;
-    pharmacist.mothersName = data.mothersName ?? pharmacist.mothersName;
-    pharmacist.email = data.email ?? pharmacist.email;
-    pharmacist.mobile = data.mobile ?? pharmacist.mobile;
-    pharmacist.dateOfBirth = data.dateOfBirth ?? pharmacist.dateOfBirth;
-    pharmacist.gender = data.gender ?? pharmacist.gender;
-    pharmacist.nationalId = data.nationalId ?? pharmacist.nationalId;
-    pharmacist.passingYear = data.passingYear ?? pharmacist.passingYear;
-    pharmacist.memberId = data.memberId ?? pharmacist.memberId;
-    pharmacist.dateOfJoin = data.dateOfJoin ?? pharmacist.dateOfJoin;
-    pharmacist.jobDepertment = data.jobDepertment ?? pharmacist.jobDepertment;
-    pharmacist.postingDivision =
-      data.postingDivision ?? pharmacist.postingDivision;
-    pharmacist.postingDistrict =
-      data.postingDistrict ?? pharmacist.postingDistrict;
-    pharmacist.postingUpazila =
-      data.postingUpazila ?? pharmacist.postingUpazila;
-    pharmacist.postingPlace = data.postingPlace ?? pharmacist.postingPlace;
-    pharmacist.permanentDivision =
-      data.permanentDivision ?? pharmacist.permanentDivision;
-    pharmacist.permanentDistrict =
-      data.permanentDistrict ?? pharmacist.permanentDistrict;
-    pharmacist.permanentUpazila =
-      data.permanentUpazila ?? pharmacist.permanentUpazila;
-    pharmacist.permanentPlace =
-      data.permanentPlace ?? pharmacist.permanentPlace;
-    pharmacist.voterDivision = data.voterDivision ?? pharmacist.voterDivision;
-    pharmacist.voterDistrict = data.voterDistrict ?? pharmacist.voterDistrict;
-    pharmacist.onDeputation = data.onDeputation ?? pharmacist.onDeputation;
-    pharmacist.deputationDivision =
-      data.deputationDivision ?? pharmacist.deputationDivision;
-    pharmacist.deputationDistrict =
-      data.deputationDistrict ?? pharmacist.deputationDistrict;
-    pharmacist.deputationUpazila =
-      data.deputationUpazila ?? pharmacist.deputationUpazila;
-    pharmacist.deputationPlace =
-      data.deputationPlace ?? pharmacist.deputationPlace;
+    if (Object.keys(data).length > 0) {
+      Object.keys(data).forEach((key) => {
+        pharmacist[key] = data[key];
+      });
+    }
 
     await pharmacist.save();
 
