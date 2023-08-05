@@ -27,6 +27,6 @@ router.delete(
 
 router.get('/', pharmacistController.getPharmacists);
 
-router.post('/', pharmacistController.postPharmacist);
+router.post('/', authenticate, pharmacistController.postPharmacist);
 
 module.exports = router;
