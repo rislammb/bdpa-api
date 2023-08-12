@@ -110,6 +110,7 @@ const validatePostBody = ({
   mothersName,
   email,
   mobile,
+  imageUrl,
   dateOfBirth,
   gender,
   nationalId,
@@ -206,6 +207,14 @@ const validatePostBody = ({
     error.mobile = 'Mobile number must be 11 characters long!';
   } else {
     newPharmacist.mobile = mobile.trim();
+  }
+
+  if (!imageUrl) {
+    newPharmacist.imageUrl = '';
+  } else if (typeof imageUrl !== 'string') {
+    error.imageUrl = 'Image URL type must be string!';
+  } else {
+    newPharmacist.imageUrl = imageUrl.trim();
   }
 
   if (!dateOfBirth) {
@@ -364,6 +373,7 @@ const validatePutBody = ({
   mothersName,
   email,
   mobile,
+  imageUrl,
   dateOfBirth,
   gender,
   nationalId,
@@ -455,6 +465,14 @@ const validatePutBody = ({
       error.mobile = 'Mobile number must be 11 characters long!';
     } else {
       newPharmacist.mobile = mobile.trim();
+    }
+  }
+
+  if (imageUrl) {
+    if (typeof imageUrl !== 'string') {
+      error.imageUrl = 'Image URL type must be string!';
+    } else {
+      newPharmacist.imageUrl = imageUrl.trim();
     }
   }
 

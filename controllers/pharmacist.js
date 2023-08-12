@@ -86,16 +86,21 @@ const putPharmacistByRegistration = async (req, res, next) => {
   }
 
   try {
+    let pharmacist = await pharmacistService.findPharmacistByProperty(
+      'regNumber',
+      regNumber
+    );
+    if (!pharmacist) {
+      throw error('Pharmacist not found!', 404);
+    }
+
     const { valid, data } = validatePutBody(req.body);
 
     if (!valid) {
       return res.status(400).json(data);
     }
 
-    const pharmacist = await pharmacistService.updatePharmacist(
-      regNumber,
-      data
-    );
+    pharmacist = await pharmacistService.updatePharmacist(regNumber, data);
 
     return res.status(200).json(pharmacist);
   } catch (e) {

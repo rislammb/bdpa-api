@@ -7,6 +7,7 @@ const pharmacistSchema = new Schema({
   mothersName: { type: String, default: '', trim: true, uppercase: true },
   email: { type: String, default: '', trim: true },
   mobile: { type: String, default: '', trim: true },
+  imageUrl: { type: String, default: '', trim: true },
   dateOfBirth: { type: Date },
   gender: { type: String, default: '', trim: true },
   nationalId: { type: String, trim: true, default: '' },
