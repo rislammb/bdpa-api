@@ -13,7 +13,7 @@ const registerService = async ({
   adminDetails,
 }) => {
   const user = await findUserByProperty('email', email);
-  if (user) throw error('User already exist!', 400);
+  if (user) throw error('User already exists!', 400);
 
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);

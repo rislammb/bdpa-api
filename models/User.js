@@ -16,7 +16,11 @@ const userSchema = new Schema(
     },
     password: { type: String, required: true },
     regNumber: { type: String, required: true, unique: true },
-    pharmacistId: { type: Schema.Types.ObjectId, required: true },
+    pharmacistId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Pharmacist',
+      required: true,
+    },
     accountStatus: {
       type: String,
       enum: ['PENDING', 'ACTIVE', 'SUSPEND', 'REJECTED'],

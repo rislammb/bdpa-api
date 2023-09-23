@@ -22,7 +22,7 @@ const createNewPharmacist = async (data) => {
   let pharmacist = await findPharmacistByProperty('regNumber', data.regNumber);
 
   if (pharmacist) {
-    throw error('Pharmacist already exist!', 400);
+    throw error('Pharmacist already exists!', 400);
   }
 
   pharmacist = new Pharmacist({ ...data });
