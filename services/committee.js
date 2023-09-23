@@ -1,17 +1,16 @@
 const { getAreaInfo } = require('../helpers/utilities');
 const Committee = require('../models/Committee');
-const Member = require('../models/Member');
 const error = require('../utils/error');
-const { findMembersByCommittee, createNewMember } = require('./member');
+const memberService = require('./member');
 
 const findCommittees = () => {
   return Committee.find().sort({ indexNumber: 1, committeeTitle: 1 });
 };
 
-const findCommitteeByPath = async (committeePath) => {
+const findCommitteeByPath = (committeePath) => {
   return Committee.findOne({ committeePath }).then(async (data) => {
     if (data) {
-      const members = await findMembersByCommittee(data.id);
+      const members = await memberService.findMembersByCommittee(data.id);
 
       const resMembers = [];
       if (members.length > 0) {
@@ -44,7 +43,7 @@ const createNewCommittee = async (data) => {
   committee = new Committee({ ...data });
 
   data.members?.forEach(async (member) => {
-    await createNewMember({
+    await memberService.createNewMember({
       committeeId: committee._id,
       ...member,
     });
@@ -53,4 +52,15 @@ const createNewCommittee = async (data) => {
   return committee.save();
 };
 
-module.exports = { findCommittees, findCommitteeByPath, createNewCommittee };
+const deleteCommitteeById = async (id) => {
+  await memberService.deleteMembersByCommitteeId(id);
+
+  return Committee.findByIdAndDelete(id);
+};
+
+module.exports = {
+  findCommittees,
+  findCommitteeByPath,
+  createNewCommittee,
+  deleteCommitteeById,
+};

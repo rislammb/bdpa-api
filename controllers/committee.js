@@ -56,16 +56,16 @@ const putCommitteeByPath = async (req, res) => {
 };
 
 const deleteCommitteeByPath = async (req, res, next) => {
+  const path = req.params.committeePath;
+
   try {
-    const committee = await committeeServices.findCommitteeByPath(
-      req.params.committeePath
-    );
+    const committee = await committeeServices.findCommitteeByPath(path);
 
     if (!committee) {
       throw error('Committee not found!', 404);
     }
 
-    await committee.remove();
+    await committeeServices.deleteCommitteeById(committee._id);
     return res.status(204).send();
   } catch (e) {
     next(e);

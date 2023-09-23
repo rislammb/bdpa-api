@@ -1,5 +1,9 @@
 const Member = require('../models/Member');
 
+const findAllMembers = () => {
+  return Member.find();
+};
+
 const findMembersByCommittee = (committeeId) => {
   return Member.find({ committeeId })
     .sort({ serialNumber: 1 })
@@ -12,4 +16,13 @@ const createNewMember = async (data) => {
   return member.save();
 };
 
-module.exports = { findMembersByCommittee, createNewMember };
+const deleteMembersByCommitteeId = (id) => {
+  return Member.deleteMany({ committeeId: id });
+};
+
+module.exports = {
+  findAllMembers,
+  findMembersByCommittee,
+  createNewMember,
+  deleteMembersByCommitteeId,
+};
