@@ -1,4 +1,6 @@
-const validatePostBody = ({
+const { validatePostMembers } = require('./member');
+
+const validatePostCommittee = ({
   committeeTitle,
   indexNumber,
   workHasStarted,
@@ -16,7 +18,7 @@ const validatePostBody = ({
     error.committeeTitle =
       'Committee Title must be at least 5 characters long!';
   } else {
-    newCommittee.committeeTitle = committeeTitle;
+    newCommittee.committeeTitle = committeeTitle.trim();
     newCommittee.committeePath = committeeTitle
       .trim()
       .toLowerCase()
@@ -25,61 +27,38 @@ const validatePostBody = ({
 
   if (!indexNumber) {
     newCommittee.indexNumber = '';
+  } else if (typeof indexNumber !== 'string') {
+    error.indexNumber = 'Committee Index Number type must be string!';
+  } else if (/^\d+$/.test(indexNumber.trim()) === false) {
+    error.indexNumber = 'Committee Index Number characters must be digit!';
   } else {
-    newCommittee.indexNumber = indexNumber;
+    newCommittee.indexNumber = indexNumber.trim();
   }
-  // if (!indexNumber) {
-  //   newCommittee.indexNumber = '';
-  // } else if (
-  //   typeof indexNumber != 'string' ||
-  //   typeof indexNumber != 'number'
-  // ) {
-  //   error.indexNumber = 'Committee index number type must be string or number!';
-  // } else {
-  //   newCommittee.indexNumber = indexNumber;
-  // }
 
   if (!workHasStarted) {
-    newCommittee.workHasStarted = new Date().toISOString();
+    error.workHasStarted = 'Committee work has start must not be empty!';
   } else if (
     typeof workHasStarted !== 'string' ||
     workHasStarted.length !== 24
   ) {
-    error.workHasStarted = 'Work has started is not valid date!';
+    error.workHasStarted = 'Committee work has started is not valid date!';
   } else {
     newCommittee.workHasStarted = workHasStarted;
   }
 
   if (!willExpire) {
-    newCommittee.willExpire = new Date().toISOString();
+    error.willExpire = 'Committee will expire must not be empty!';
   } else if (typeof willExpire !== 'string' || willExpire.length !== 24) {
-    error.willExpire = 'Will expire is not valid date!';
+    error.willExpire = 'Committee will expire is not valid date!';
   } else {
     newCommittee.willExpire = willExpire;
   }
 
-  if (!members) {
-    error.members = 'Committee members list must not be empty!';
-  } else if (!Array.isArray(members)) {
-    error.members = 'Committee member list must be an array!';
-  } else if (members.length < 1) {
-    error.members = 'Committee member list must not be empty!';
+  const memberRes = validatePostMembers(members);
+  if (!memberRes.valid) {
+    error.members = memberRes.data;
   } else {
-    error.members = {};
-    newCommittee.members = [];
-    members.forEach((member) => {
-      if (typeof member !== 'object') {
-        error.members.list = 'Committee member must be an object!';
-      }
-      if (!member.pharmacistId) {
-        error.members.pharmacistId = 'Pharmacist ID must not be empty!';
-      }
-      if (!member.postName) {
-        error.members.postName = 'Committee post name must not be empty!';
-      }
-      delete error.members;
-      newCommittee.members.push(member);
-    });
+    newCommittee.members = memberRes.data;
   }
 
   return {
@@ -88,4 +67,60 @@ const validatePostBody = ({
   };
 };
 
-module.exports = { validatePostBody };
+const validatePatchCommittee = ({
+  committeeTitle,
+  indexNumber,
+  workHasStarted,
+  willExpire,
+}) => {
+  const error = {};
+  const newCommittee = {};
+
+  if (committeeTitle) {
+    if (typeof committeeTitle !== 'string') {
+      error.committeeTitle = 'Committee Title type must be string!';
+    } else if (committeeTitle.trim().length < 5) {
+      error.committeeTitle =
+        'Committee Title must be at least 5 characters long!';
+    } else {
+      newCommittee.committeeTitle = committeeTitle.trim();
+      newCommittee.committeePath = committeeTitle
+        .trim()
+        .toLowerCase()
+        .replace(/ /g, '-');
+    }
+  }
+
+  if (indexNumber) {
+    if (typeof indexNumber !== 'string') {
+      error.indexNumber = 'Committee Index Number type must be string!';
+    } else if (/^\d+$/.test(indexNumber.trim()) === false) {
+      error.indexNumber = 'Committee Index Number characters must be digit!';
+    } else {
+      newCommittee.indexNumber = indexNumber.trim();
+    }
+  }
+
+  if (workHasStarted) {
+    if (typeof workHasStarted !== 'string' || workHasStarted.length !== 24) {
+      error.workHasStarted = 'Committee work has started is not valid date!';
+    } else {
+      newCommittee.workHasStarted = workHasStarted;
+    }
+  }
+
+  if (willExpire) {
+    if (typeof willExpire !== 'string' || willExpire.length !== 24) {
+      error.willExpire = 'Committee will expire is not valid date!';
+    } else {
+      newCommittee.willExpire = willExpire;
+    }
+  }
+
+  return {
+    valid: Object.keys(error).length < 1,
+    data: Object.keys(error).length > 0 ? error : newCommittee,
+  };
+};
+
+module.exports = { validatePostCommittee, validatePatchCommittee };

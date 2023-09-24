@@ -1,11 +1,24 @@
 const router = require('express').Router();
 const committeeControllers = require('../controllers/committee');
+const authenticate = require('../middleware/authenticate');
 
 router.get('/:committeePath', committeeControllers.getCommitteeByPath);
-router.patch('/:committeePath', committeeControllers.patchCommitteeByPath);
-router.put('/:committeePath', committeeControllers.putCommitteeByPath);
-router.delete('/:committeePath', committeeControllers.deleteCommitteeByPath);
+router.patch(
+  '/:committeePath',
+  authenticate,
+  committeeControllers.patchCommitteeByPath
+);
+router.put(
+  '/:committeePath',
+  authenticate,
+  committeeControllers.putCommitteeByPath
+);
+router.delete(
+  '/:committeePath',
+  authenticate,
+  committeeControllers.deleteCommitteeByPath
+);
 router.get('/', committeeControllers.getCommittees);
-router.post('/', committeeControllers.postCommittee);
+router.post('/', authenticate, committeeControllers.postCommittee);
 
 module.exports = router;

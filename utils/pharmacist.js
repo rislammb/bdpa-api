@@ -235,7 +235,9 @@ const validatePostBody = ({
 
   if (!nationalId) {
     newPharmacist.nationalId = '';
-  } else if (/^[0-9]/.test(nationalId.trim()) === false) {
+  } else if (typeof nationalId !== 'string') {
+    error.nationalId = 'National ID number type must be string!';
+  } else if (/^\d+$/.test(nationalId.trim()) === false) {
     error.nationalId = 'National ID number characters must be digit!';
   } else {
     newPharmacist.nationalId = nationalId.trim();
@@ -493,7 +495,7 @@ const validatePutBody = ({
   }
 
   if (nationalId) {
-    if (/^[0-9]/.test(nationalId.trim()) === false) {
+    if (/^\d+$/.test(nationalId.trim()) === false) {
       error.nationalId = 'National ID number characters must be digit!';
     } else {
       newPharmacist.nationalId = nationalId.trim();

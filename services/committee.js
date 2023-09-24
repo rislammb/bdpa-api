@@ -15,16 +15,20 @@ const findCommitteeByPath = (committeePath) => {
       const resMembers = [];
       if (members.length > 0) {
         members.forEach((member) => {
-          resMembers.push({
-            id: member.id,
-            committeeId: member.committeeId,
-            serialNumber: member.serialNumber,
-            postName: member.postName,
+          const pharmacistInfo = member.pharmacistId && {
             name: member.pharmacistId.name,
             bn_name: member.pharmacistId.bn_name,
             mobile: member.pharmacistId.mobile,
             regNumber: member.pharmacistId.regNumber,
             posting: getAreaInfo(member.pharmacistId, 'posting'),
+          };
+
+          resMembers.push({
+            _id: member.id,
+            committeeId: member.committeeId,
+            serialNumber: member.serialNumber,
+            postName: member.postName,
+            ...pharmacistInfo,
           });
         });
       }
@@ -32,6 +36,10 @@ const findCommitteeByPath = (committeePath) => {
       return { ...data._doc, members: resMembers };
     } else return null;
   });
+};
+
+const findCommitteeOnlyByPath = (committeePath) => {
+  return Committee.findOne({ committeePath });
 };
 
 const createNewCommittee = async (data) => {
@@ -61,6 +69,7 @@ const deleteCommitteeById = async (id) => {
 module.exports = {
   findCommittees,
   findCommitteeByPath,
+  findCommitteeOnlyByPath,
   createNewCommittee,
   deleteCommitteeById,
 };

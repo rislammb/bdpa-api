@@ -1,6 +1,9 @@
 const committeeServices = require('../services/committee');
 const error = require('../utils/error');
-const { validatePostBody } = require('../utils/committee');
+const {
+  validatePostCommittee,
+  validatePatchCommittee,
+} = require('../utils/committee');
 
 const getCommittees = async (_req, res, next) => {
   try {
@@ -29,7 +32,7 @@ const getCommitteeByPath = async (req, res, next) => {
 };
 
 const postCommittee = async (req, res, next) => {
-  const { valid, data } = validatePostBody(req.body);
+  const { valid, data } = validatePostCommittee(req.body);
 
   if (!valid) {
     return res.status(400).json(data);
@@ -44,11 +47,35 @@ const postCommittee = async (req, res, next) => {
   }
 };
 
-const patchCommitteeByPath = async (req, res) => {
-  res.json({
-    path: req.params.committeePath,
-  });
+const patchCommitteeByPath = async (req, res, next) => {
+  const path = req.params.committeePath;
+
+  try {
+    const committee = await committeeServices.findCommitteeOnlyByPath(path);
+
+    if (!committee) {
+      throw error('Committee not found!', 404);
+    }
+
+    const { valid, data } = validatePatchCommittee(req.body);
+
+    if (!valid) {
+      res.status(400).json(data);
+    }
+
+    if (Object.keys(data).length > 0) {
+      Object.keys(data).forEach((key) => {
+        committee[key] = data[key];
+      });
+    }
+
+    await committee.save();
+    res.status(200).json(committee);
+  } catch (e) {
+    next(e);
+  }
 };
+
 const putCommitteeByPath = async (req, res) => {
   res.json({
     path: req.params.committeePath,

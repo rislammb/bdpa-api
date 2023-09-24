@@ -1,6 +1,6 @@
 const Member = require('../models/Member');
 
-const findAllMembers = () => {
+const findMembers = () => {
   return Member.find();
 };
 
@@ -21,7 +21,7 @@ const deleteMembersByCommitteeId = (id) => {
 };
 
 module.exports = {
-  findAllMembers,
+  findMembers,
   findMembersByCommittee,
   createNewMember,
   deleteMembersByCommitteeId,
