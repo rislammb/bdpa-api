@@ -31,6 +31,22 @@ const getCommitteeByPath = async (req, res, next) => {
   }
 };
 
+const getCommitteeById = async (req, res, next) => {
+  const { committeeId } = req.params;
+
+  try {
+    const committee = await committeeServices.findCommitteeById(committeeId);
+
+    if (!committee) {
+      throw error('Committee not found!', 404);
+    }
+
+    return res.status(200).json(committee);
+  } catch (e) {
+    next(e);
+  }
+};
+
 const postCommittee = async (req, res, next) => {
   const { valid, data } = validatePostCommittee(req.body);
 
@@ -102,6 +118,7 @@ const deleteCommitteeByPath = async (req, res, next) => {
 module.exports = {
   getCommittees,
   getCommitteeByPath,
+  getCommitteeById,
   postCommittee,
   patchCommitteeByPath,
   putCommitteeByPath,

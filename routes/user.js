@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const userController = require('../controllers/user');
-
 /**
  * Get user by id
  * @method GET

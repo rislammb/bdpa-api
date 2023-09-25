@@ -132,9 +132,7 @@ const patchPharmacistByRegistration = async (req, res, next) => {
     }
 
     if (Object.keys(data).length > 0) {
-      Object.keys(data).forEach((key) => {
-        pharmacist[key] = data[key];
-      });
+      Object.keys(data).forEach((key) => (pharmacist[key] = data[key]));
     }
 
     await pharmacist.save();

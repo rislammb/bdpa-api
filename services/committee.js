@@ -1,4 +1,4 @@
-const { getAreaInfo } = require('../helpers/utilities');
+const { getPopulatedMembers } = require('../utils/member');
 const Committee = require('../models/Committee');
 const error = require('../utils/error');
 const memberService = require('./member');
@@ -12,28 +12,17 @@ const findCommitteeByPath = (committeePath) => {
     if (data) {
       const members = await memberService.findMembersByCommittee(data.id);
 
-      const resMembers = [];
-      if (members.length > 0) {
-        members.forEach((member) => {
-          const pharmacistInfo = member.pharmacistId && {
-            name: member.pharmacistId.name,
-            bn_name: member.pharmacistId.bn_name,
-            mobile: member.pharmacistId.mobile,
-            regNumber: member.pharmacistId.regNumber,
-            posting: getAreaInfo(member.pharmacistId, 'posting'),
-          };
+      return { ...data._doc, members: getPopulatedMembers(members) };
+    } else return null;
+  });
+};
 
-          resMembers.push({
-            _id: member.id,
-            committeeId: member.committeeId,
-            serialNumber: member.serialNumber,
-            postName: member.postName,
-            ...pharmacistInfo,
-          });
-        });
-      }
+const findCommitteeById = (committeeId) => {
+  return Committee.findById(committeeId).then(async (data) => {
+    if (data) {
+      const members = await memberService.findMembersByCommittee(data.id);
 
-      return { ...data._doc, members: resMembers };
+      return { ...data._doc, members: getPopulatedMembers(members) };
     } else return null;
   });
 };
@@ -69,6 +58,7 @@ const deleteCommitteeById = async (id) => {
 module.exports = {
   findCommittees,
   findCommitteeByPath,
+  findCommitteeById,
   findCommitteeOnlyByPath,
   createNewCommittee,
   deleteCommitteeById,

@@ -1,11 +1,42 @@
 const memberService = require('../services/member');
-const { validatePostMember } = require('../utils/member');
+const committeeService = require('../services/committee');
+const error = require('../utils/error');
+const {
+  validatePostMember,
+  getPopulatedMembers,
+  getPopulatedMember,
+  validatePatchMember,
+} = require('../utils/member');
 
 const getMembers = async (_req, res, next) => {
   try {
     const members = await memberService.findMembers();
 
     res.status(200).json(members);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getMembersByCommitteeId = async (req, res, next) => {
+  const { committeeId } = req.params;
+
+  try {
+    const members = await memberService.findMembersByCommittee(committeeId);
+
+    res.status(200).json(getPopulatedMembers(members));
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getMemberById = async (req, res, next) => {
+  const { memberId } = req.params;
+
+  try {
+    const member = await memberService.findMemberById(memberId);
+
+    res.status(200).json(getPopulatedMember(member));
   } catch (e) {
     next(e);
   }
@@ -19,6 +50,14 @@ const postMember = async (req, res, next) => {
   }
 
   try {
+    const committee = await committeeService.findCommitteeById(
+      data.committeeId
+    );
+
+    if (!committee) {
+      throw error('Committee not found!', 404);
+    }
+
     const member = await memberService.createNewMember(data);
 
     res.status(201).json(member);
@@ -27,4 +66,56 @@ const postMember = async (req, res, next) => {
   }
 };
 
-module.exports = { getMembers, postMember };
+const patchMemberById = async (req, res, next) => {
+  const { memberId } = req.params;
+
+  try {
+    const member = await memberService.findMemberById(memberId);
+
+    if (!member) {
+      throw error('Member not found!', 404);
+    }
+
+    const { valid, data } = validatePatchMember(req.body);
+
+    if (!valid) {
+      return res.status(400).json(data);
+    }
+
+    if (Object.keys(data).length > 0) {
+      Object.keys(data).forEach((key) => (member[key] = data[key]));
+    }
+    await member.save();
+
+    res.status(200).json(member);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const deleteMemberById = async (req, res, next) => {
+  const { memberId } = req.params;
+
+  try {
+    const member = await memberService.findMemberById(memberId);
+
+    if (!member) {
+      throw error('Member not found!', 404);
+    }
+
+    await member.remove();
+
+    res.status(204).send();
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getMembers,
+  postMember,
+  getMembersByCommitteeId,
+  getMemberById,
+  patchMemberById,
+  deleteMemberById,
+};
