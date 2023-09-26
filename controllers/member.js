@@ -93,6 +93,18 @@ const patchMemberById = async (req, res, next) => {
   }
 };
 
+const deleteMembersByCommitteeId = async (req, res, next) => {
+  const { committeeId } = req.params;
+
+  try {
+    await memberService.deleteMembersByCommitteeId(committeeId);
+
+    res.status(204).send();
+  } catch (e) {
+    next(e);
+  }
+};
+
 const deleteMemberById = async (req, res, next) => {
   const { memberId } = req.params;
 
@@ -117,5 +129,6 @@ module.exports = {
   getMembersByCommitteeId,
   getMemberById,
   patchMemberById,
+  deleteMembersByCommitteeId,
   deleteMemberById,
 };

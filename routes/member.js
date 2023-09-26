@@ -21,6 +21,16 @@ router.get('/m/:memberId', memberController.getMemberById);
 router.patch('/m/:memberId', authenticate, memberController.patchMemberById);
 
 /**
+ * Delete member by committee id
+ * @method DELETE
+ */
+router.delete(
+  '/c/:committeeId',
+  authenticate,
+  memberController.deleteMembersByCommitteeId
+);
+
+/**
  * Delete member by member id
  * @method DELETE
  */

@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, default: mongoose } = require('mongoose');
 
 const committeeSchema = new Schema({
   committeeTitle: {
@@ -24,13 +24,7 @@ const committeeSchema = new Schema({
     type: Date,
     default: null,
   },
-  members: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Member',
-      required: [true, 'Member ID is required!'],
-    },
-  ],
+  members: [mongoose.Types.ObjectId],
 });
 
 const Committee = model('Committee', committeeSchema);

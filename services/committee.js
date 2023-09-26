@@ -32,19 +32,40 @@ const findCommitteeOnlyByPath = (committeePath) => {
 };
 
 const createNewCommittee = async (data) => {
-  let committee = await findCommitteeByPath(data.committeePath);
+  const {
+    committeeTitle,
+    committeePath,
+    indexNumber,
+    workHasStarted,
+    willExpire,
+    members,
+  } = data;
+
+  let committee = await findCommitteeByPath(committeePath);
   if (committee) {
     throw error('Committee already exists!', 400);
   }
 
-  committee = new Committee({ ...data });
-
-  data.members?.forEach(async (member) => {
-    await memberService.createNewMember({
-      committeeId: committee._id,
-      ...member,
-    });
+  committee = new Committee({
+    committeeTitle,
+    committeePath,
+    indexNumber,
+    workHasStarted,
+    willExpire,
   });
+
+  for (const member of members) {
+    try {
+      const resMember = await memberService.createNewMember({
+        committeeId: committee._id,
+        ...member,
+      });
+
+      committee.members.push(resMember.id);
+    } catch (e) {
+      throw error('Sometnings went wrong!');
+    }
+  }
 
   return committee.save();
 };
