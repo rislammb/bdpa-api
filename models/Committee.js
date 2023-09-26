@@ -24,6 +24,13 @@ const committeeSchema = new Schema({
     type: Date,
     default: null,
   },
+  members: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Member',
+      required: [true, 'Member ID is required!'],
+    },
+  ],
 });
 
 const Committee = model('Committee', committeeSchema);
