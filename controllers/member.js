@@ -50,7 +50,7 @@ const postMember = async (req, res, next) => {
   }
 
   try {
-    const committee = await committeeService.findCommitteeById(
+    const committee = await committeeService.findCommitteeOnlyById(
       data.committeeId
     );
 
@@ -59,6 +59,9 @@ const postMember = async (req, res, next) => {
     }
 
     const member = await memberService.createNewMember(data);
+    committee.members.push(member.id);
+
+    await committee.save();
 
     res.status(201).json(member);
   } catch (e) {
