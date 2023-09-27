@@ -667,16 +667,16 @@ const validatePutBody = ({
   };
 };
 
-const getAreaInfo = (pharmacist, areaName) => {
+const getBnAreaInfo = (pharmacist, areaName) => {
   return `${
     pharmacist[areaName + 'Place'] ? `${pharmacist[areaName + 'Place']}, ` : ''
   }${
-    pharmacist[areaName + 'Upazila']?.name
-      ? `${pharmacist[areaName + 'Upazila']?.name}, `
+    pharmacist[areaName + 'Upazila']?.bn_name
+      ? `${pharmacist[areaName + 'Upazila']?.bn_name}, `
       : ''
   }${
-    pharmacist[areaName + 'District']?.name
-      ? pharmacist[areaName + 'District']?.name
+    pharmacist[areaName + 'District']?.bn_name
+      ? pharmacist[areaName + 'District']?.bn_name
       : ''
   }`;
 };
@@ -685,5 +685,5 @@ module.exports = {
   validateRegNum,
   validatePostBody,
   validatePutBody,
-  getAreaInfo,
+  getBnAreaInfo,
 };

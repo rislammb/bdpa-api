@@ -84,8 +84,8 @@ const patchMemberById = async (req, res, next) => {
 
     if (Object.keys(data).length > 0) {
       Object.keys(data).forEach((key) => (member[key] = data[key]));
+      await member.save();
     }
-    await member.save();
 
     res.status(200).json(member);
   } catch (e) {
@@ -114,6 +114,16 @@ const deleteMemberById = async (req, res, next) => {
     if (!member) {
       throw error('Member not found!', 404);
     }
+
+    const committee = await committeeService.findCommitteeOnlyById(
+      member.committeeId
+    );
+
+    committee.members = committee.members.filter(
+      (m) => m.toString() !== member.id
+    );
+
+    await committee.save();
 
     await member.remove();
 

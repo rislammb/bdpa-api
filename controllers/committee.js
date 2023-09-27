@@ -83,9 +83,9 @@ const patchCommitteeByPath = async (req, res, next) => {
       Object.keys(data).forEach((key) => {
         committee[key] = data[key];
       });
+      await committee.save();
     }
 
-    await committee.save();
     res.status(200).json(committee);
   } catch (e) {
     next(e);

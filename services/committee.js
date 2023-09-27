@@ -8,27 +8,41 @@ const findCommittees = () => {
 };
 
 const findCommitteeByPath = (committeePath) => {
-  return Committee.findOne({ committeePath }).then(async (data) => {
-    if (data) {
-      const members = await memberService.findMembersByCommittee(data.id);
+  return Committee.findOne({ committeePath })
+    .populate('members')
+    .then(async (data) => {
+      if (data) {
+        const members = [];
+        for (const member of data.members) {
+          members.push(await memberService.findMemberById(member.id));
+        }
 
-      return { ...data._doc, members: getPopulatedMembers(members) };
-    } else return null;
-  });
+        return { ...data._doc, members: getPopulatedMembers(members) };
+      } else return null;
+    });
 };
 
 const findCommitteeById = (committeeId) => {
-  return Committee.findById(committeeId).then(async (data) => {
-    if (data) {
-      const members = await memberService.findMembersByCommittee(data.id);
+  return Committee.findById(committeeId)
+    .populate('members')
+    .then(async (data) => {
+      if (data) {
+        const members = [];
+        for (const member of data.members) {
+          members.push(await memberService.findMemberById(member.id));
+        }
 
-      return { ...data._doc, members: getPopulatedMembers(members) };
-    } else return null;
-  });
+        return { ...data._doc, members: getPopulatedMembers(members) };
+      } else return null;
+    });
 };
 
 const findCommitteeOnlyByPath = (committeePath) => {
   return Committee.findOne({ committeePath });
+};
+
+const findCommitteeOnlyById = (id) => {
+  return Committee.findById(id);
 };
 
 const createNewCommittee = async (data) => {
@@ -81,6 +95,7 @@ module.exports = {
   findCommitteeByPath,
   findCommitteeById,
   findCommitteeOnlyByPath,
+  findCommitteeOnlyById,
   createNewCommittee,
   deleteCommitteeById,
 };

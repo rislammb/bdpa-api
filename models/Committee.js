@@ -24,7 +24,13 @@ const committeeSchema = new Schema({
     type: Date,
     default: null,
   },
-  members: [mongoose.Types.ObjectId],
+  members: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Member',
+      required: [true, 'Member ID is required!'],
+    },
+  ],
 });
 
 const Committee = model('Committee', committeeSchema);
