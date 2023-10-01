@@ -2,12 +2,16 @@ const Pharmacist = require('../models/Pharmacist');
 const error = require('../utils/error');
 
 const findPharmacists = () => {
-  return Pharmacist.find().sort({
-    dateOfBirth: 1,
-    passingYear: 1,
-    dateOfJoin: 1,
-    name: 1,
-  });
+  return Pharmacist.find()
+    .sort({
+      dateOfBirth: 1,
+      passingYear: 1,
+      dateOfJoin: 1,
+      name: 1,
+    })
+    .select(
+      '-email -mobile -fathersName -mothersName -gender -imageUrl -dateOfBirth -nationalId -passingYear -dateOfJoin -jobDepertment -permanentPlace -onDeputation -deputationPlace'
+    );
 };
 
 const findPharmacistByProperty = (key, value) => {
