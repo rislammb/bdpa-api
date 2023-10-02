@@ -4,6 +4,12 @@ const findMembers = () => {
   return Member.find().sort({ committeeId: 1 });
 };
 
+const findMembersByCommitteePath = (const findMembersByCommittee = (committeePath) => {
+  return Member.find({ committeePath })
+    .sort({ serialNumber: 1 })
+    .populate('pharmacistId');
+};
+
 const findMembersByCommittee = (committeeId) => {
   return Member.find({ committeeId })
     .sort({ serialNumber: 1 })
@@ -26,6 +32,7 @@ const deleteMembersByCommitteeId = (id) => {
 
 module.exports = {
   findMembers,
+  findMembersByCommitteePath,
   findMembersByCommittee,
   findMemberById,
   createNewMember,
