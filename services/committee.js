@@ -11,7 +11,7 @@ const findCommitteeByPath = (committeePath) => {
   return Committee.findOne({ committeePath })
     .then(async (data) => {
       if (data) {
-        const members = await memberService.findMembersByCommitteePath(committeePath));
+        const members = await memberService.findMembersByCommitteePath(committeePath);
 
         return { ...data._doc, members: getPopulatedMembers(members) };
       } else return null;
