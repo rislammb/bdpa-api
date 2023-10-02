@@ -24,13 +24,9 @@ const findCommitteeByPath = (committeePath) => {
 
 const findCommitteeById = (committeeId) => {
   return Committee.findById(committeeId)
-    .populate('members')
     .then(async (data) => {
       if (data) {
-        const members = [];
-        for (const member of data.members) {
-          members.push(await memberService.findMemberById(member.id));
-        }
+        const members = await memberService.findMembersByCommittee(committeeId);
 
         return { ...data._doc, members: getPopulatedMembers(members) };
       } else return null;
