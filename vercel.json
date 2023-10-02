@@ -13,7 +13,7 @@
     }
   ],
   "functions": {
-    "*.js": {
+    "./*.js": {
       "maxDuration": 30
     }
   }
