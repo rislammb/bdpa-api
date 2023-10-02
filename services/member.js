@@ -4,7 +4,7 @@ const findMembers = () => {
   return Member.find().sort({ committeeId: 1 });
 };
 
-const findMembersByCommitteePath = (const findMembersByCommittee = (committeePath) => {
+const findMembersByCommitteePath = (committeePath) => {
   return Member.find({ committeePath })
     .sort({ serialNumber: 1 })
     .populate('pharmacistId');
