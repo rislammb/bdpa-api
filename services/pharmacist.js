@@ -10,7 +10,7 @@ const findPharmacists = () => {
       name: 1,
     })
     .select(
-      '-email -mobile -fathersName -mothersName -gender -imageUrl -dateOfBirth -nationalId -passingYear -dateOfJoin -jobDepertment -permanentPlace -onDeputation -deputationPlace'
+      '-email -mobile -fathersName -mothersName -gender -imageUrl -nationalId -passingYear -dateOfJoin -permanentPlace -onDeputation -deputationPlace'
     );
 };
 
