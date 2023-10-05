@@ -6,12 +6,17 @@ const validateRegNum = (regNumber) => {
     err.regNumber = 'Registration number must not be empty!';
   } else if (typeof regNumber !== 'string') {
     err.regNumber = 'Registration number type must be string';
-  } else if (/^[B-]{2}/.test(regNumber.trim()) === false) {
-    err.regNumber = `Registration number must start with 'B-'!`;
-  } else if (regNumber.trim().length < 6) {
-    err.regNumber = 'Registration number must at least 6 characters long!';
   } else {
-    reg = regNumber.trim();
+    const trimedNumber = regNumber.trim().replace(/ /g, '');
+
+    if (/^[B-]{2}/.test(trimedNumber) === false) {
+      err.regNumber = `Registration number must start with 'B-'!`;
+    } else if (trimedNumber.length < 6) {
+      err.regNumber =
+        'Registration number must at least 6 characters long without space!';
+    } else {
+      reg = trimedNumber;
+    }
   }
 
   return {

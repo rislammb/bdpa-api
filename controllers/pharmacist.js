@@ -8,7 +8,9 @@ const {
 
 const getPharmacists = async (_req, res, next) => {
   try {
-    const pharmacists = await pharmacistService.findPharmacists();
+    const pharmacists = await pharmacistService.findPharmacists(
+      '-email -mobile -fathersName -mothersName -gender -imageUrl -nationalId -passingYear -dateOfJoin -permanentPlace -onDeputation -deputationPlace'
+    );
 
     res.status(200).json(pharmacists);
   } catch (e) {
@@ -69,7 +71,10 @@ const postPharmacist = async (req, res, next) => {
   }
 
   try {
-    const pharmacist = await pharmacistService.createNewPharmacist(data);
+    const pharmacist = await pharmacistService.createNewPharmacist({
+      ...data,
+      regNumber: regNumberRes.data,
+    });
 
     return res.status(201).json(pharmacist);
   } catch (e) {

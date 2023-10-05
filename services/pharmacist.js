@@ -1,7 +1,7 @@
 const Pharmacist = require('../models/Pharmacist');
 const error = require('../utils/error');
 
-const findPharmacists = () => {
+const findPharmacists = (select) => {
   return Pharmacist.find()
     .sort({
       dateOfBirth: 1,
@@ -9,9 +9,7 @@ const findPharmacists = () => {
       dateOfJoin: 1,
       name: 1,
     })
-    .select(
-      '-email -mobile -fathersName -mothersName -gender -imageUrl -nationalId -passingYear -dateOfJoin -permanentPlace -onDeputation -deputationPlace'
-    );
+    .select(select);
 };
 
 const findPharmacistByProperty = (key, value) => {
