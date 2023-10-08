@@ -11,12 +11,15 @@ const validatePostCommittee = ({
   const newCommittee = {};
 
   if (!committeeTitle) {
-    error.committeeTitle = 'Committee Title must not be empty!';
+    // error.committeeTitle = 'Committee Title must not be empty!';
+    error.committeeTitle = 'কমিটির শিরোনাম থাকতে হবে!';
   } else if (typeof committeeTitle !== 'string') {
-    error.committeeTitle = 'Committee Title type must be string!';
+    // error.committeeTitle = 'Committee Title type must be string!';
+    error.committeeTitle = 'কমিটির শিরোনামের ধরন স্ট্রিং হতে হবে!';
   } else if (committeeTitle.trim().length < 5) {
-    error.committeeTitle =
-      'Committee Title must be at least 5 characters long!';
+    // error.committeeTitle =
+    //   'Committee Title must be at least 5 characters long!';
+    error.committeeTitle = 'কমিটির শিরোনাম কমপক্ষে ৫ অক্ষর দীর্ঘ হতে হবে!';
   } else {
     newCommittee.committeeTitle = committeeTitle.trim();
     newCommittee.committeePath = committeeTitle
@@ -26,30 +29,36 @@ const validatePostCommittee = ({
   }
 
   if (!indexNumber) {
-    newCommittee.indexNumber = '';
+    newCommittee.indexNumber = '99';
   } else if (typeof indexNumber !== 'string') {
-    error.indexNumber = 'Committee Index Number type must be string!';
+    // error.indexNumber = 'Committee Index Number type must be string!';
+    error.indexNumber = 'কমিটির ইনডেক্স সংখার ধরন স্ট্রিং হতে হবে!';
   } else if (/^\d+$/.test(indexNumber.trim()) === false) {
-    error.indexNumber = 'Committee Index Number characters must be digit!';
+    // error.indexNumber = 'Committee Index Number characters must be digit!';
+    error.indexNumber = 'কমিটির ইনডেক্স সংখ্যা অংকের সংখ্যা হতে হবে!';
   } else {
     newCommittee.indexNumber = indexNumber.trim();
   }
 
   if (!workHasStarted) {
-    error.workHasStarted = 'Committee work has start must not be empty!';
+    // error.workHasStarted = 'Committee work has start must not be empty!';
+    error.workHasStarted = 'কমিটির কার্যক্রম শুরুর তারিখ থাকতে হবে!';
   } else if (
     typeof workHasStarted !== 'string' ||
     workHasStarted.length !== 24
   ) {
-    error.workHasStarted = 'Committee work has started is not valid date!';
+    // error.workHasStarted = 'Committee work has started is not valid date!';
+    error.workHasStarted = 'কমিটির কার্যক্রম শুরুর তারিখের ধরন সঠিক নয়!';
   } else {
     newCommittee.workHasStarted = workHasStarted;
   }
 
   if (!willExpire) {
-    error.willExpire = 'Committee will expire must not be empty!';
+    // error.willExpire = 'Committee will expire must not be empty!';
+    error.willExpire = 'কমিটির মেয়াদ শেষের তারিখ থাকতে হবে!';
   } else if (typeof willExpire !== 'string' || willExpire.length !== 24) {
-    error.willExpire = 'Committee will expire is not valid date!';
+    // error.willExpire = 'Committee will expire is not valid date!';
+    error.willExpire = 'কমিটির মেয়াদ শেষের তারিখের ধরন সঠিক নয়!';
   } else {
     newCommittee.willExpire = willExpire;
   }
