@@ -54,4 +54,9 @@ const loginController = async (req, res, next) => {
   }
 };
 
-module.exports = { registerController, loginController };
+const verfiyToken = (req, res, next) => {
+  if (req.user) return res.status(200).json(req.user);
+  else res.status(404).json({ message: 'User not found!' });
+};
+
+module.exports = { registerController, loginController, verfiyToken };
