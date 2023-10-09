@@ -17,8 +17,14 @@ const authenticate = async (req, res, next) => {
       return res.status(401).json({ message: 'Unauthorized!' });
     }
 
-    delete user._doc.password;
-    req.user = user;
+    req.user = {
+      adminDetails: user.adminDetails,
+      _id: user._id,
+      email: user.email,
+      regNumber: user.regNumber,
+      accountStatus: user.accountStatus,
+      roles: user.roles,
+    };
 
     next();
   } catch (e) {
