@@ -674,7 +674,7 @@ const validatePutBody = ({
 
 const getBnAreaInfo = (pharmacist, areaName) => {
   return `${
-    pharmacist[areaName + 'Place'] ? `${pharmacist[areaName + 'Place']}, ` : ''
+    pharmacist[areaName + 'Place']?.bn_name ? `${pharmacist[areaName + 'Place'].bn_name}, ` : ''
   }${
     pharmacist[areaName + 'Upazila']?.bn_name
       ? `${pharmacist[areaName + 'Upazila']?.bn_name}, `
