@@ -6,7 +6,7 @@ const pharmacistController = require('../controllers/pharmacist');
  * Get pharmacist by registration number
  * @method GET
  */
-router.get('/:regNumber', pharmacistController.getPharmacistByRegistration);
+router.get('/reg/:regNumber', pharmacistController.getPharmacistByRegistration);
 
 /**
  * Get pharmacist by id
@@ -19,7 +19,7 @@ router.get('/id/:id', pharmacistController.getPharmacistById);
  * @method PUT
  */
 router.put(
-  '/:regNumber',
+  '/reg/:regNumber',
   authenticate,
   pharmacistController.putPharmacistByRegistration
 );
@@ -29,7 +29,7 @@ router.put(
  * @method PATCH
  */
 router.patch(
-  '/:regNumber',
+  '/reg/:regNumber',
   authenticate,
   pharmacistController.patchPharmacistByRegistration
 );
@@ -39,7 +39,7 @@ router.patch(
  * @method DELETE
  */
 router.delete(
-  '/:regNumber',
+  '/reg/:regNumber',
   authenticate,
   pharmacistController.deletePharmacistByRegistration
 );
@@ -53,6 +53,12 @@ router.delete(
   authenticate,
   pharmacistController.deletePharmacistById
 );
+
+/**
+ * Get all pharmacists with details data
+ * @method GET
+ */
+router.get('/details', authenticate, pharmacistController.getDetailsPharmacists);
 
 /**
  * Get all pharmacists
