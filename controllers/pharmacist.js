@@ -18,6 +18,24 @@ const getPharmacists = async (_req, res, next) => {
   }
 };
 
+const getDetailsPharmacists = async (req, res, next) => {
+  if (
+    req.user &&
+    (req.user.roles?.includes('SUPER_ADMIN') ||
+      req.user.roles?.includes('ADMIN'))
+  ) {
+    try {
+      const pharmacists = await pharmacistService.findPharmacists();
+
+      res.status(200).json(pharmacists);
+    } catch (e) {
+      next(e);
+    }
+  } else {
+    return res.status(401).json({ message: 'Unauthorized!' });
+  }
+};
+
 const getPharmacistByRegistration = async (req, res, next) => {
   const { regNumber } = req.params;
 
@@ -194,6 +212,7 @@ const deletePharmacistById = async (req, res, next) => {
 
 module.exports = {
   getPharmacists,
+  getDetailsPharmacists,
   getPharmacistByRegistration,
   getPharmacistById,
   postPharmacist,

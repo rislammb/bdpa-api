@@ -3,19 +3,42 @@ const { model, Schema } = require('mongoose');
 const pharmacistSchema = new Schema({
   name: { type: String, required: true, trim: true, uppercase: true },
   bn_name: { type: String, default: '', trim: true },
-  fathersName: { type: String, default: '', trim: true, uppercase: true },
-  mothersName: { type: String, default: '', trim: true, uppercase: true },
+  fathersName: {
+    name: { type: String, default: '', trim: true, uppercase: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
+  mothersName: {
+    name: { type: String, default: '', trim: true, uppercase: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
   email: { type: String, default: '', trim: true },
-  mobile: { type: String, default: '', trim: true },
+  mobile: {
+    name: { type: String, default: '', trim: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
   imageUrl: { type: String, default: '', trim: true },
   dateOfBirth: { type: Date },
-  gender: { type: String, default: '', trim: true },
-  nationalId: { type: String, trim: true, default: '' },
-  passingYear: { type: String, default: '', trim: true },
+  gender: {
+    id: { type: String, default: '' },
+    name: { type: String, default: '', trim: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
+  nationalId: {
+    name: { type: String, trim: true, default: '' },
+    bn_name: { type: String, trim: true, default: '' },
+  },
+  passingYear: {
+    name: { type: String, default: '', trim: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
   regNumber: { type: String, required: true, trim: true },
   memberId: { type: String, trim: true, default: '' },
   dateOfJoin: { type: Date },
-  jobDepertment: { type: String, default: '', trim: true },
+  jobDepertment: {
+    id: { type: String, default: '' },
+    name: { type: String, default: '', trim: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
   postingDivision: {
     id: { type: String, default: '' },
     name: { type: String, default: '' },
@@ -33,7 +56,10 @@ const pharmacistSchema = new Schema({
     name: { type: String, default: '' },
     bn_name: { type: String, default: '' },
   },
-  postingPlace: { type: String, default: '', trim: true },
+  postingPlace: {
+    name: { type: String, default: '', trim: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
   permanentDivision: {
     id: { type: String, default: '' },
     name: { type: String, default: '' },
@@ -51,7 +77,10 @@ const pharmacistSchema = new Schema({
     name: { type: String, default: '' },
     bn_name: { type: String, default: '' },
   },
-  permanentPlace: { type: String, default: '', trim: true },
+  permanentPlace: {
+    name: { type: String, default: '', trim: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
   voterDivision: {
     id: { type: String, default: '' },
     name: { type: String, default: '' },
@@ -63,7 +92,11 @@ const pharmacistSchema = new Schema({
     name: { type: String, default: '' },
     bn_name: { type: String, default: '' },
   },
-  onDeputation: { type: String, default: 'No' },
+  onDeputation: {
+    id: { type: String, default: '' },
+    name: { type: String, default: 'No' },
+    bn_name: { type: String, default: 'না' },
+  },
   deputationDivision: {
     id: { type: String, default: '' },
     name: { type: String, default: '' },
@@ -81,7 +114,10 @@ const pharmacistSchema = new Schema({
     name: { type: String, default: '' },
     bn_name: { type: String, default: '' },
   },
-  deputationPlace: { type: String, default: '', trim: true },
+  deputationPlace: {
+    name: { type: String, default: '', trim: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
 });
 
 const Pharmacist = model('Pharmacist', pharmacistSchema);
