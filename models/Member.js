@@ -11,11 +11,21 @@ const memberSchema = new Schema({
     ref: 'Pharmacist',
     required: [true, 'Pharmacist ID is required!'],
   },
-  serialNumber: { type: String, default: '' },
+  serialNumber: {
+    name: { type: String, default: '' },
+    bn_name: { type: String, default: '' },
+  },
   postName: {
-    type: String,
-    required: [true, 'Committee post name is required!'],
-    trim: true,
+    name: {
+      type: String,
+      required: [true, 'Committee post name is required!'],
+      trim: true,
+    },
+    bn_name: {
+      type: String,
+      required: [true, 'Committee post name is required!'],
+      trim: true,
+    },
   },
 });
 

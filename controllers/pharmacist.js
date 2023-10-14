@@ -75,13 +75,6 @@ const getPharmacistById = async (req, res, next) => {
 };
 
 const postPharmacist = async (req, res, next) => {
-  const { regNumber } = req.body;
-
-  const regNumberRes = validateRegNum(regNumber);
-  if (!regNumberRes.valid) {
-    return res.status(400).json(regNumberRes.data);
-  }
-
   const { valid, data } = validatePostBody(req.body);
 
   if (!valid) {
@@ -89,12 +82,9 @@ const postPharmacist = async (req, res, next) => {
   }
 
   try {
-    const pharmacist = await pharmacistService.createNewPharmacist({
-      ...data,
-      regNumber: regNumberRes.data,
-    });
+    // const pharmacist = await pharmacistService.createNewPharmacist(data);
 
-    return res.status(201).json(pharmacist);
+    return res.status(201).json(data);
   } catch (e) {
     next(e);
   }

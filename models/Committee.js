@@ -2,9 +2,8 @@ const { Schema, model, default: mongoose } = require('mongoose');
 
 const committeeSchema = new Schema({
   committeeTitle: {
-    type: String,
-    required: true,
-    trim: true,
+    name: { type: String, required: true, trim: true },
+    bn_name: { type: String, required: true, trim: true },
   },
   committeePath: {
     type: String,
