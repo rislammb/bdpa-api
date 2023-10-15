@@ -82,9 +82,9 @@ const postPharmacist = async (req, res, next) => {
   }
 
   try {
-    // const pharmacist = await pharmacistService.createNewPharmacist(data);
+    const pharmacist = await pharmacistService.createNewPharmacist(data);
 
-    return res.status(201).json(data);
+    return res.status(201).json(pharmacist);
   } catch (e) {
     next(e);
   }

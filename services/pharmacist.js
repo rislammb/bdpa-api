@@ -6,8 +6,8 @@ const findPharmacists = (select) => {
     .sort({
       dateOfBirth: 1,
       passingYear: 1,
-      dateOfJoin: 1,
       name: 1,
+      dateOfJoin: 1,
     })
     .select(select);
 };
@@ -24,10 +24,21 @@ const createNewPharmacist = async (data) => {
   let pharmacist = await findPharmacistByProperty('regNumber', data.regNumber);
 
   if (pharmacist) {
-    throw error('Pharmacist already exists!', 400);
+    throw error(
+      JSON.stringify({ regNumber: 'Pharmacist already exists!' }),
+      400
+    );
   }
 
-  pharmacist = new Pharmacist({ ...data });
+  pharmacist = await findPharmacistByProperty('memberId', data.memberId);
+  if (pharmacist) {
+    throw error(
+      JSON.stringify({ memberId: 'Pharmacist already exists!' }),
+      400
+    );
+  }
+
+  pharmacist = new Pharmacist(data);
   return pharmacist.save();
 };
 

@@ -53,9 +53,22 @@ app.use((_req, _res, next) => {
 });
 
 app.use((err, _req, res, _next) => {
-  res
-    .status(err.status ?? 500)
-    .json({ message: err.message ?? 'Server error occurred!' });
+  if (err.errors && Object.keys(err.errors).length > 0) {
+    const dbError = Object.keys(err.errors).reduce((acc, cur) => {
+      acc[cur] = err.errors[cur]?.message;
+      return acc;
+    }, {});
+
+    res.status(err.status ?? 500).json(dbError);
+  } else if (typeof err.message === 'string' && err.status === 400) {
+    res
+      .status(err.status)
+      .json(JSON.parse(err.message) ?? 'Something went wrong!');
+  } else {
+    res
+      .status(err.status ?? 500)
+      .json({ message: err.message ?? 'Server error occurred!' });
+  }
 });
 
 module.exports = app;

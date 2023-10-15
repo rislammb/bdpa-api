@@ -31,8 +31,8 @@ const pharmacistSchema = new Schema({
     name: { type: String, default: '', trim: true },
     bn_name: { type: String, default: '', trim: true },
   },
-  regNumber: { type: String, required: true, trim: true },
-  memberId: { type: String, trim: true, default: '' },
+  regNumber: { type: String, required: true, trim: true, unique: true },
+  memberId: { type: String, trim: true, default: '', unique: true },
   dateOfJoin: { type: Date },
   jobDepertment: {
     id: { type: String, default: '' },
