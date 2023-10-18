@@ -27,6 +27,10 @@ const pharmacistSchema = new Schema({
     name: { type: String, trim: true, default: '' },
     bn_name: { type: String, trim: true, default: '' },
   },
+  institute: {
+    name: { type: String, default: '', trim: true },
+    bn_name: { type: String, default: '', trim: true },
+  },
   passingYear: {
     name: { type: String, default: '', trim: true },
     bn_name: { type: String, default: '', trim: true },

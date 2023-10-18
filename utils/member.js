@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { getAreaInfo, getBnAreaInfo } = require('./area');
 
 const validatePostMembers = (members) => {
   const error = {};
@@ -182,9 +183,8 @@ const getPopulatedMember = (member) => {
     bn_name: member.pharmacistId.bn_name,
     mobile: member.pharmacistId.mobile,
     regNumber: member.pharmacistId.regNumber,
-    postingDistrict: member.pharmacistId.postingDistrict,
-    postingUpazila: member.pharmacistId.postingUpazila,
-    postingPlace: member.pharmacistId.postingPlace,
+    posting: getAreaInfo(member.pharmacistId, 'posting'),
+    bn_posting: getBnAreaInfo(member.pharmacistId, 'posting'),
   };
 
   return {

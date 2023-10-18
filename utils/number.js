@@ -24,13 +24,18 @@ const enToBn = {
   9: '৯',
 };
 
-const convertEnToBn = (number) => {
-  if (typeof number === 'string') {
-    return number
+const enToBnNumber = (number) => {
+  const strEnToBn = (str) =>
+    str
       .split('')
       .map((n) => enToBn[n])
       .join('');
+
+  if (typeof number === 'string') {
+    return strEnToBn(number);
+  } else if (typeof number === 'number') {
+    return strEnToBn(number.toString());
   } else return number;
 };
 
-module.exports = { convertEnToBn };
+module.exports = { enToBnNumber };

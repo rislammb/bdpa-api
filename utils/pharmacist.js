@@ -1,4 +1,9 @@
-const { convertEnToBn } = require('./number');
+const fathersNameProperty = require('../constant/fathersNameProperty');
+const genderProperty = require('../constant/genderProperty');
+const instituteProperty = require('../constant/instituteProperty');
+const mothersNameProperty = require('../constant/mothersNameProperty');
+const jobDepertmentProperty = require('../constant/jobDepertmentProperty');
+const { enToBnNumber } = require('./number');
 
 const validateRegNum = (regNumber) => {
   let res = '';
@@ -31,132 +36,107 @@ const validateRegNum = (regNumber) => {
   };
 };
 
-const validateName = (name) => {
+const validateString = (str, text, bn_text, minLength) => {
   let err = null;
-  if (typeof name !== 'string') {
+
+  if (typeof str !== 'string') {
     err = {
-      text: 'Name (English) type must be string!',
-      bn_text: 'নাম (ইংরেজি) এর ধরন স্ট্রিং হবে!',
+      text: `${text} type must be string!`,
+      bn_text: `${bn_text} এর ধরন স্ট্রিং হবে!`,
     };
-  } else if (name.trim().length < 3) {
+  } else if (minLength && str.trim().length < minLength) {
     err = {
-      text: 'Name (English) must at least 3 characters long!',
-      bn_text: 'নাম (ইংরেজি) কমপক্ষে ৩ অক্ষর লম্বা হবে!',
+      text: `${text} must at least ${minLength} characters long!`,
+      bn_text: `${bn_text} কমপক্ষে ${enToBnNumber(minLength)} অক্ষর লম্বা হবে!`,
     };
   }
 
-  return { valid: !err, data: err ?? name.trim() };
+  return { valid: !err, data: err ?? str.trim() };
 };
 
-const validateBnName = (bn_name) => {
-  let err = null;
-  if (typeof bn_name !== 'string') {
-    err = {
-      text: 'Name (Bengali) type must be string!',
-      bn_text: 'নাম (বাংলা) এর ধরন স্ট্রিং হবে!',
-    };
-  } else if (bn_name.trim().length < 3) {
-    err = {
-      text: 'Name (Bengali) must at least 3 characters long!',
-      bn_text: 'নাম (বাংলা) কমপক্ষে ৩ অক্ষর লম্বা হবে!',
-    };
-  }
-
-  return { valid: !err, data: err ?? bn_name.trim() };
-};
-
-const validateFathersName = (fathersName) => {
+const validateStringObject = (object, text = '', bn_text = '') => {
   let err = {};
   let names = {};
-  if (typeof fathersName !== 'object') {
+
+  if (typeof object !== 'object') {
     err = {
-      text: "Father's Name type must be an object!",
-      bn_text: 'পিতার নামের ধরন অবজেক্ট হবে!',
+      text: `${text} type must be an object!`,
+      bn_text: `${bn_text} এর ধরন অবজেক্ট হবে!`,
     };
   } else {
-    if (!fathersName.name) {
-      names.name = '';
-    } else if (typeof fathersName.name !== 'string') {
-      err.name = {
-        text: "Father's Name (English) type must be string!",
-        bn_text: 'পিতার নাম (ইংরেজি) এর ধরন স্ট্রিং হবে!',
-      };
-    } else if (fathersName.name.trim().length < 3) {
-      err.name = {
-        text: "Father's Name (English) at least 3 characterrs long!",
-        bn_text: 'পিতার নাম (ইংরেজি) কমপক্ষে ৩ অক্ষর লম্বা হবে!',
-      };
-    } else {
-      delete err.name;
-      names.name = fathersName.name.trim();
-    }
+    const mapProperty = (array) =>
+      array.map((item) => {
+        if (!object[item.name]) {
+          names[item.name] = '';
+        } else if (typeof object[item.name] !== 'string') {
+          err[item.name] = {
+            text: `${item.msg} type must be string!`,
+            bn_text: `${item.bn_msg} এর ধরন স্ট্রিং হবে!`,
+          };
+        } else if (
+          item.minLength &&
+          object[item.name].trim().length < item.minLength
+        ) {
+          err[item.name] = {
+            text: `${item.msg} at least ${item.minLength} characterrs long!`,
+            bn_text: `${item.bn_msg} কমপক্ষে ${enToBnNumber(
+              item.minLength
+            )} অক্ষর লম্বা হবে!`,
+          };
+        } else {
+          delete err[item.name];
+          names[item.name] = object[item.name].trim();
+        }
+      });
 
-    if (!fathersName.bn_name) {
-      names.bn_name = '';
-    } else if (typeof fathersName.bn_name !== 'string') {
-      err.bn_name = {
-        text: "Father's Name (Bengali) type must be string!",
-        bn_text: 'পিতার নাম (বাংলা) এর ধরন স্ট্রিং হবে!',
-      };
-    } else if (fathersName.bn_name.trim().length < 3) {
-      err.bn_name = {
-        text: "Father's Name (Bengali) at least 3 characterrs long!",
-        bn_text: 'পিতার নাম (বাংলা) কমপক্ষে ৩ অক্ষর লম্বা হবে!',
-      };
-    } else {
-      delete err.bn_name;
-      names.bn_name = fathersName.bn_name.trim();
+    if (text === "Father's name") {
+      if (Object.keys(object).length !== fathersNameProperty.length) {
+        err = {
+          text: `${text} type object must be ${fathersNameProperty.length} property!`,
+          bn_text: `${bn_text} অবজেক্টে ${enToBnNumber(
+            fathersNameProperty.length
+          )} টি প্রপার্টি থাকতে হবে!`,
+        };
+      } else mapProperty(fathersNameProperty);
+    } else if (text === "Mothers's name") {
+      if (Object.keys(object).length !== mothersNameProperty.length) {
+        err = {
+          text: `${text} type object must be ${mothersNameProperty.length} property!`,
+          bn_text: `${bn_text} অবজেক্টে ${enToBnNumber(
+            mothersNameProperty.length
+          )} টি প্রপার্টি থাকতে হবে!`,
+        };
+      } else mapProperty(mothersNameProperty);
+    } else if (text === 'Institute name') {
+      if (Object.keys(object).length !== instituteProperty.length) {
+        err = {
+          text: `${text} type object must be ${instituteProperty.length} property!`,
+          bn_text: `${bn_text} অবজেক্টে ${enToBnNumber(
+            instituteProperty.length
+          )} টি প্রপার্টি থাকতে হবে!`,
+        };
+      } else mapProperty(instituteProperty);
+    } else if (text === 'Gender') {
+      if (Object.keys(object).length !== genderProperty.length) {
+        err = {
+          text: `${text} type object must be ${genderProperty.length} property!`,
+          bn_text: `${bn_text} অবজেক্টে ${enToBnNumber(
+            genderProperty.length
+          )} টি প্রপার্টি থাকতে হবে!`,
+        };
+      } else mapProperty(genderProperty);
+    } else if (text === 'Job depertment') {
+      if (Object.keys(object).length !== jobDepertmentProperty.length) {
+        err = {
+          text: `${text} type object must be ${jobDepertmentProperty.length} property!`,
+          bn_text: `${bn_text} অবজেক্টে ${enToBnNumber(
+            jobDepertmentProperty.length
+          )} টি প্রপার্টি থাকতে হবে!`,
+        };
+      } else mapProperty(jobDepertmentProperty);
     }
   }
-  return {
-    valid: Object.keys(err).length < 1,
-    data: Object.keys(err).length < 1 ? names : err,
-  };
-};
 
-const validateMothersName = (mothers) => {
-  let err = {};
-  let names = {};
-  if (typeof mothers !== 'object') {
-    err = {
-      text: "Mother's Name type must be an object!",
-      bn_text: 'মায়ের নামের ধরন অবজেক্ট হবে!',
-    };
-  } else {
-    if (!mothers.name) {
-      names.name = '';
-    } else if (typeof mothers.name !== 'string') {
-      err.name = {
-        text: "Mother's Name (English) type must be string!",
-        bn_text: 'মায়ের নাম (ইংরেজি) এর ধরন স্ট্রিং হবে!',
-      };
-    } else if (mothers.name.trim().length < 3) {
-      err.name = {
-        text: "Mother's Name (English) at least 3 characterrs long!",
-        bn_text: 'মায়ের নাম (ইংরেজি) কমপক্ষে ৩ অক্ষর লম্বা হবে!',
-      };
-    } else {
-      delete err.name;
-      names.name = mothers.name.trim();
-    }
-
-    if (!mothers.bn_name) {
-      names.bn_name = '';
-    } else if (typeof mothers.bn_name !== 'string') {
-      err.bn_name = {
-        text: "Mother's Name (Bengali) type must be string!",
-        bn_text: 'মায়ের নাম (বাংলা) এর ধরন স্ট্রিং হবে!',
-      };
-    } else if (mothers.bn_name.trim().length < 3) {
-      err.bn_name = {
-        text: "Mother's Name (Bengali) at least 3 characterrs long!",
-        bn_text: 'মায়ের নাম (বাংলা) কমপক্ষে ৩ অক্ষর লম্বা হবে!',
-      };
-    } else {
-      delete err.bn_name;
-      names.bn_name = mothers.bn_name.trim();
-    }
-  }
   return {
     valid: Object.keys(err).length < 1,
     data: Object.keys(err).length < 1 ? names : err,
@@ -186,27 +166,50 @@ const validateEmail = (email) => {
   return { valid: !err, data: err ?? email.trim().toLowerCase() };
 };
 
-const validateMobile = (mobile) => {
+const validateStringNumber = (str, text, bn_text, length) => {
   let err = null;
-  if (typeof mobile !== 'string') {
+  const regex = length
+    ? new RegExp('^[0-9]{' + length + '}$')
+    : new RegExp('^[0-9]+$');
+
+  if (typeof str !== 'string') {
     err = {
-      text: 'Mobile number type must be string!',
-      bn_text: 'মোবাইল সংখ্যা এর ধরন স্ট্রিং হবে!',
+      text: `${text} type must be string!`,
+      bn_text: `${bn_text} এর ধরন স্ট্রিং হবে!`,
     };
-  } else if (/^[0-9]{11}$/.test(mobile.trim()) === false) {
+  } else if (length && regex.test(str.trim()) === false) {
     err = {
-      text: 'Mobile number must be 11 characters of english digit!',
-      bn_text: 'মোবাইল সংখ্যা ১১ অক্ষরের ইংরেজি ডিজিট হবে!',
+      text: `${text} must be ${length} characters of english digit!`,
+      bn_text: `${bn_text} ${enToBnNumber(length)} অক্ষরের ইংরেজি ডিজিট হবে!`,
+    };
+  } else if (regex.test(str.trim()) === false) {
+    console.log('regex => ', regex, str.trim());
+    err = {
+      text: `${text} must be english digit!`,
+      bn_text: `${bn_text} ইংরেজি ডিজিট হবে!`,
     };
   }
 
   return {
     valid: !err,
     data: err ?? {
-      name: mobile.trim(),
-      bn_name: convertEnToBn(mobile.trim()),
+      name: str.trim(),
+      bn_name: enToBnNumber(str.trim()),
     },
   };
+};
+
+const validateDate = (data, text, bn_text) => {
+  let err = null;
+
+  if (typeof data !== 'string' || data.length !== 24) {
+    err = {
+      text: `${text} is not valid date!`,
+      bn_text: `${bn_text} এর ধরন সঠিক নয়!`,
+    };
+  }
+
+  return { valid: !err, data: err ?? data };
 };
 
 const enAreaToBnArea = {
@@ -330,6 +333,7 @@ const validatePostBody = ({
   dateOfBirth,
   gender,
   nationalId,
+  institute,
   passingYear,
   memberId,
   dateOfJoin,
@@ -352,6 +356,7 @@ const validatePostBody = ({
 }) => {
   const error = {};
   const newPharmacist = {};
+
   const regNumRes = validateRegNum(regNumber);
   regNumRes.valid
     ? (newPharmacist.regNumber = regNumRes.data)
@@ -363,49 +368,57 @@ const validatePostBody = ({
       bn_text: 'নাম (ইংরেজি) থাকতেই হবে!',
     };
   } else {
-    const nameRes = validateName(name);
-    nameRes.valid
-      ? (newPharmacist.name = nameRes.data)
-      : (error.name = nameRes.data);
+    const { valid, data } = validateString(
+      name,
+      'Name (English)',
+      'নাম (ইংরেজি)',
+      3
+    );
+    valid ? (newPharmacist.name = data) : (error.name = data);
   }
 
   if (!bn_name) {
-    error.name = {
+    error.bn_name = {
       text: 'Name (Bengali) must not be empty!',
       bn_text: 'নাম (বাংলা) থাকতেই হবে!',
     };
   } else {
-    const bnNameRes = validateBnName(bn_name);
-    bnNameRes.valid
-      ? (newPharmacist.bn_name = bnNameRes.data)
-      : (error.bn_name = bnNameRes.data);
+    const { valid, data } = validateString(
+      bn_name,
+      'Name (Bengali)',
+      'নাম (বাংলা)',
+      3
+    );
+    valid ? (newPharmacist.bn_name = data) : (error.bn_name = data);
   }
 
   if (!fathersName) {
     newPharmacist.fathersName = { name: '', bn_name: '' };
   } else {
-    const fathersNameRes = validateFathersName(fathersName);
-    fathersNameRes.valid
-      ? (newPharmacist.fathersName = fathersNameRes.data)
-      : (error.fathersName = fathersNameRes.data);
+    const { valid, data } = validateStringObject(
+      fathersName,
+      "Father's name",
+      'পিতার নাম'
+    );
+    valid ? (newPharmacist.fathersName = data) : (error.fathersName = data);
   }
 
   if (!mothersName) {
     newPharmacist.mothersName = { name: '', bn_name: '' };
   } else {
-    const mothersNameRes = validateMothersName(mothersName);
-    mothersNameRes.valid
-      ? (newPharmacist.mothersName = mothersNameRes.data)
-      : (error.mothersName = mothersNameRes.data);
+    const { valid, data } = validateStringObject(
+      mothersName,
+      "Mothers's name",
+      'মায়ের নাম'
+    );
+    valid ? (newPharmacist.mothersName = data) : (error.mothersName = data);
   }
 
   if (!email) {
     newPharmacist.email = '';
   } else {
-    const emailRes = validateEmail(email);
-    emailRes.valid
-      ? (newPharmacist.email = emailRes.data)
-      : (error.email = emailRes.data);
+    const { valid, data } = validateEmail(email);
+    valid ? (newPharmacist.email = data) : (error.email = data);
   }
 
   if (!mobile) {
@@ -414,32 +427,35 @@ const validatePostBody = ({
       bn_name: '',
     };
   } else {
-    const mobileRes = validateMobile(mobile);
-    mobileRes.valid
-      ? (newPharmacist.mobile = mobileRes.data)
-      : (error.mobile = mobileRes.data);
+    const { valid, data } = validateStringNumber(
+      mobile,
+      'Mobile number',
+      'মোবাইল নাম্বার',
+      11
+    );
+    valid ? (newPharmacist.mobile = data) : (error.mobile = data);
   }
 
   if (!imageUrl) {
     newPharmacist.imageUrl = '';
-  } else if (typeof imageUrl !== 'string') {
-    error.imageUrl = {
-      text: 'Image URL type must be string!',
-      bn_text: 'ইমেজ ইউআরএল এর ধরন স্ট্রিং হবে!',
-    };
   } else {
-    newPharmacist.imageUrl = imageUrl.trim();
+    const { valid, data } = validateString(
+      imageUrl,
+      'Image URL',
+      'ইমেজ ইউআরএল'
+    );
+    valid ? (newPharmacist.imageUrl = data) : (error.imageUrl = data);
   }
 
   if (!dateOfBirth) {
     newPharmacist.dateOfBirth = new Date().toISOString();
-  } else if (typeof dateOfBirth !== 'string' || dateOfBirth.length !== 24) {
-    error.dateOfBirth = {
-      text: 'Date of birth is not valid date!',
-      bn_text: 'জন্ম তারিখ এর ধরন সঠিক নয়!',
-    };
   } else {
-    newPharmacist.dateOfBirth = dateOfBirth;
+    const { valid, data } = validateDate(
+      dateOfBirth,
+      'Date of birth',
+      'জন্ম তারিখ'
+    );
+    valid ? (newPharmacist.dateOfBirth = data) : (error.dateOfBirth = data);
   }
 
   if (!gender) {
@@ -448,18 +464,9 @@ const validatePostBody = ({
       name: '',
       bn_name: '',
     };
-  } else if (typeof gender !== 'object') {
-    error.gender = {
-      text: 'Gender type must be an object!',
-      bn_text: 'লিঙ্গের ধরন অবজেক্ট হবে!',
-    };
-  } else if (Object.keys(gender).length !== 3) {
-    error.gender = {
-      text: 'Gender is not valid object',
-      bn_text: 'লিঙ্গ সঠিক অবজেক্ট নয়',
-    };
   } else {
-    newPharmacist.gender = gender;
+    const { valid, data } = validateStringObject(gender, 'Gender', 'লিঙ্গ');
+    valid ? (newPharmacist.gender = data) : (error.gender = data);
   }
 
   if (!nationalId) {
@@ -468,22 +475,23 @@ const validatePostBody = ({
       bn_name: '',
     };
   } else {
-    if (typeof nationalId !== 'string') {
-      error.nationalId = {
-        text: 'National ID number type must be string!',
-        bn_text: 'জাতীয় পরিচয়পত্র সংখ্যা এর ধরন স্ট্রিং হবে!',
-      };
-    } else if (/^\d+$/.test(nationalId.trim()) === false) {
-      error.nationalId = {
-        text: 'National ID number characters must be digit',
-        bn_text: 'জাতীয় পরিচয়পত্র সংখ্যা ইংরেজি ডিজিট হবে!',
-      };
-    } else {
-      newPharmacist.nationalId = {
-        name: nationalId.trim(),
-        bn_name: convertEnToBn(nationalId.trim()),
-      };
-    }
+    const { valid, data } = validateStringNumber(
+      nationalId,
+      'National ID number',
+      'জাতীয় পরিচয়পত্র সংখ্যা'
+    );
+    valid ? (newPharmacist.nationalId = data) : (error.nationalId = data);
+  }
+
+  if (!institute) {
+    newPharmacist.institute = { name: '', bn_name: '' };
+  } else {
+    const { valid, data } = validateStringObject(
+      institute,
+      'Institute name',
+      'ইন্সটিটিউটের নাম'
+    );
+    valid ? (newPharmacist.institute = data) : (error.institute = data);
   }
 
   if (!passingYear) {
@@ -492,44 +500,35 @@ const validatePostBody = ({
       bn_name: '',
     };
   } else {
-    if (typeof passingYear !== 'string') {
-      error.passingYear = {
-        text: 'Passing year number type must be string!',
-        bn_text: 'পাশের বছর এর ধরন স্ট্রিং হবে!',
-      };
-    } else if (/^[0-9]{4}$/.test(passingYear.trim()) === false) {
-      error.passingYear = {
-        text: 'Passing year number must be 11 characters of english digit!',
-        bn_text: 'পাশের বছর ৪ অক্ষরের ইংরেজি ডিজিট হবে!',
-      };
-    } else {
-      newPharmacist.passingYear = {
-        name: passingYear.trim(),
-        bn_name: convertEnToBn(passingYear.trim()),
-      };
-    }
+    const { valid, data } = validateStringNumber(
+      passingYear,
+      'Passing year',
+      'পাশের বছর',
+      4
+    );
+    valid ? (newPharmacist.passingYear = data) : (error.passingYear = data);
   }
 
   if (!memberId) {
     newPharmacist.memberId = '';
-  } else if (typeof memberId !== 'string') {
-    error.memberId = {
-      text: 'Member ID number type must be string!',
-      bn_text: 'সদস্য পরিচয়পত্র সংখ্যা এর ধরন স্ট্রিং হবে!',
-    };
   } else {
-    newPharmacist.memberId = memberId;
+    const { valid, data } = validateString(
+      memberId,
+      'Member ID number',
+      'সদস্য পরিচয়পত্র সংখ্যা'
+    );
+    valid ? (newPharmacist.memberId = data) : (error.memberId = data);
   }
 
   if (!dateOfJoin) {
     newPharmacist.dateOfJoin = null;
-  } else if (typeof dateOfJoin !== 'string' || dateOfJoin.length !== 24) {
-    error.dateOfJoin = {
-      text: 'Date of join is not valid date!',
-      bn_text: 'যোগদানের তারিখ এর ধরন সঠিক নয়!',
-    };
   } else {
-    newPharmacist.dateOfJoin = dateOfJoin;
+    const { valid, data } = validateDate(
+      dateOfJoin,
+      'Date of join',
+      'যোগদানের তারিখ'
+    );
+    valid ? (newPharmacist.dateOfJoin = data) : (error.dateOfJoin = data);
   }
 
   if (!jobDepertment) {
@@ -538,18 +537,13 @@ const validatePostBody = ({
       name: '',
       bn_name: '',
     };
-  } else if (typeof jobDepertment !== 'object') {
-    error.jobDepertment = {
-      text: 'Job depertment type must be an object!',
-      bn_text: 'চাকুরির বিভাগের ধরন অবজেক্ট হবে!',
-    };
-  } else if (Object.keys(jobDepertment).length !== 3) {
-    error.jobDepertment = {
-      text: 'Job depertment is not valid object',
-      bn_text: 'চাকুরির বিভাগ সঠিক অবজেক্ট নয়',
-    };
   } else {
-    newPharmacist.jobDepertment = jobDepertment;
+    const { valid, data } = validateStringObject(
+      jobDepertment,
+      'Job depertment',
+      'চাকুরির বিভাগ'
+    );
+    valid ? (newPharmacist.jobDepertment = data) : (error.jobDepertment = data);
   }
 
   const postingDivRes = validateDivision(postingDivision, 'Posting');
@@ -664,6 +658,7 @@ const validatePutBody = ({
   dateOfBirth,
   gender,
   nationalId,
+  institute,
   passingYear,
   memberId,
   dateOfJoin,
@@ -688,113 +683,134 @@ const validatePutBody = ({
   const newPharmacist = {};
 
   if (name) {
-    const nameRes = validateName(name);
-    nameRes.valid
-      ? (newPharmacist.name = nameRes.data)
-      : (error.name = nameRes.data);
+    const { valid, data } = validateString(
+      name,
+      'Name (English)',
+      'নাম (ইংরেজি)',
+      3
+    );
+    valid ? (newPharmacist.name = data) : (error.name = data);
   }
 
   if (bn_name) {
-    const bnNameRes = validateName(bn_name);
-    bnNameRes.valid
-      ? (newPharmacist.bn_name = bnNameRes.data)
-      : (error.bn_name = bnNameRes.data);
+    const { valid, data } = validateString(
+      bn_name,
+      'Name (Bengali)',
+      'নাম (বাংলা)',
+      3
+    );
+    valid ? (newPharmacist.bn_name = data) : (error.bn_name = data);
   }
 
   if (fathersName) {
-    const fathersNameRes = validateFathersName(fathersName);
-    fathersNameRes.valid
-      ? (newPharmacist.fathersName = fathersNameRes.data)
-      : (error.fathersName = fathersNameRes.data);
+    const { valid, data } = validateStringObject(
+      fathersName,
+      "Father's name",
+      'পিতার নাম'
+    );
+    valid ? (newPharmacist.fathersName = data) : (error.fathersName = data);
   }
 
   if (mothersName) {
-    const mothersNameRes = validateMothersName(mothersName);
-    mothersNameRes.valid
-      ? (newPharmacist.mothersName = mothersNameRes.data)
-      : (error.mothersName = mothersNameRes.data);
+    const { valid, data } = validateStringObject(
+      mothersName,
+      "Mothers's name",
+      'মায়ের নাম'
+    );
+    valid ? (newPharmacist.mothersName = data) : (error.mothersName = data);
   }
 
   if (email) {
-    const emailRes = validateEmail(email);
-    emailRes.valid
-      ? (newPharmacist.email = emailRes.data)
-      : (error.email = emailRes.data);
+    const { valid, data } = validateEmail(email);
+    valid ? (newPharmacist.email = data) : (error.email = data);
   }
 
   if (mobile) {
-    const mobileRes = validateMobile(mobile);
-    mobileRes.valid
-      ? (newPharmacist.mobile = mobileRes.data)
-      : (error.mobile = mobileRes.data);
+    const { valid, data } = validateStringNumber(
+      mobile,
+      'Mobile number',
+      'মোবাইল নাম্বার',
+      11
+    );
+    valid ? (newPharmacist.mobile = data) : (error.mobile = data);
   }
 
   if (imageUrl) {
-    if (typeof imageUrl !== 'string') {
-      error.imageUrl = 'Image URL type must be string!';
-    } else {
-      newPharmacist.imageUrl = imageUrl.trim();
-    }
+    const { valid, data } = validateString(
+      imageUrl,
+      'Image URL',
+      'ইমেজ ইউআরএল'
+    );
+    valid ? (newPharmacist.imageUrl = data) : (error.imageUrl = data);
   }
 
   if (dateOfBirth) {
-    if (typeof dateOfBirth !== 'string' || dateOfBirth.length !== 24) {
-      error.dateOfBirth = 'Date of birth is not valid date!';
-    } else {
-      newPharmacist.dateOfBirth = dateOfBirth;
-    }
+    const { valid, data } = validateDate(
+      dateOfBirth,
+      'Date of birth',
+      'জন্ম তারিখ'
+    );
+    valid ? (newPharmacist.dateOfBirth = data) : (error.dateOfBirth = data);
   }
 
   if (gender) {
-    if (typeof gender !== 'string') {
-      error.gender = 'Gender type must be string!';
-    } else {
-      newPharmacist.gender = gender.trim();
-    }
+    const { valid, data } = validateStringObject(gender, 'Gender', 'লিঙ্গ');
+    valid ? (newPharmacist.gender = data) : (error.gender = data);
   }
 
   if (nationalId) {
-    if (/^\d+$/.test(nationalId.trim()) === false) {
-      error.nationalId = 'National ID number characters must be digit!';
-    } else {
-      newPharmacist.nationalId = nationalId.trim();
-    }
+    const { valid, data } = validateStringNumber(
+      nationalId,
+      'National ID number',
+      'জাতীয় পরিচয়পত্র সংখ্যা'
+    );
+    valid ? (newPharmacist.nationalId = data) : (error.nationalId = data);
+  }
+
+  if (institute) {
+    const { valid, data } = validateStringObject(
+      institute,
+      'Institute name',
+      'ইন্সটিটিউটের নাম'
+    );
+    valid ? (newPharmacist.institute = data) : (error.institute = data);
   }
 
   if (passingYear) {
-    if (typeof passingYear !== 'string') {
-      error.passingYear = 'Diploma passing year type must be string!';
-    } else if (/^[0-9]{4}/.test(passingYear.trim()) === false) {
-      error.passingYear = 'Diploma passing year must be 4 characters of digit!';
-    } else if (passingYear.trim().length > 4) {
-      error.passingYear = 'Diploma passing year must be 4 characters long!';
-    } else {
-      newPharmacist.passingYear = passingYear.trim();
-    }
+    const { valid, data } = validateStringNumber(
+      passingYear,
+      'Passing year',
+      'পাশের বছর',
+      4
+    );
+    valid ? (newPharmacist.passingYear = data) : (error.passingYear = data);
   }
 
   if (memberId) {
-    if (typeof memberId !== 'string') {
-      error.memberId = 'Member ID type must be string!';
-    } else {
-      newPharmacist.memberId = memberId;
-    }
+    const { valid, data } = validateString(
+      memberId,
+      'Member ID number',
+      'সদস্য পরিচয়পত্র সংখ্যা'
+    );
+    valid ? (newPharmacist.memberId = data) : (error.memberId = data);
   }
 
   if (dateOfJoin) {
-    if (typeof dateOfJoin !== 'string' || dateOfJoin.length !== 24) {
-      error.dateOfJoin = 'Date of join is not valid date!';
-    } else {
-      newPharmacist.dateOfJoin = dateOfJoin;
-    }
+    const { valid, data } = validateDate(
+      dateOfJoin,
+      'Date of join',
+      'যোগদানের তারিখ'
+    );
+    valid ? (newPharmacist.dateOfJoin = data) : (error.dateOfJoin = data);
   }
 
   if (jobDepertment) {
-    if (typeof jobDepertment !== 'string') {
-      error.jobDepertment = 'Job depertment type must be string!';
-    } else {
-      newPharmacist.jobDepertment = jobDepertment;
-    }
+    const { valid, data } = validateStringObject(
+      jobDepertment,
+      'Job depertment',
+      'চাকুরির বিভাগ'
+    );
+    valid ? (newPharmacist.jobDepertment = data) : (error.jobDepertment = data);
   }
 
   if (postingDivision) {
