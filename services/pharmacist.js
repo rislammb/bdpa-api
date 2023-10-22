@@ -21,19 +21,29 @@ const findPharmacistByProperty = (key, value) => {
 };
 
 const createNewPharmacist = async (data) => {
-  let pharmacist = await findPharmacistByProperty('regNumber', data.regNumber);
+  let pharmacist = data.regNumber && await findPharmacistByProperty('regNumber', data.regNumber);
 
   if (pharmacist) {
     throw error(
-      JSON.stringify({ regNumber: 'Pharmacist already exists!' }),
+      JSON.stringify({
+        regNumber: {
+          text: 'Pharmacist already exists!',
+          bn_text: 'এই ফার্মাসিস্ট আছে!',
+        },
+      }),
       400
     );
   }
 
-  pharmacist = await findPharmacistByProperty('memberId', data.memberId);
+  pharmacist = data.memberId && await findPharmacistByProperty('memberId', data.memberId);
   if (pharmacist) {
     throw error(
-      JSON.stringify({ memberId: 'Pharmacist already exists!' }),
+      JSON.stringify({
+        memberId: {
+          text: 'Pharmacist already exists!',
+          bn_text: 'এই ফার্মাসিস্ট আছে!',
+        },
+      }),
       400
     );
   }

@@ -616,7 +616,7 @@ const validatePostBody = ({
     newPharmacist.onDeputation = onDeputation;
   }
 
-  if (newPharmacist.onDeputation.id === '2') {
+  if (newPharmacist.onDeputation?.name === 'Yes') {
     const deputationDivRes = validateDivision(deputationDivision, 'Deputation');
     deputationDivRes.valid
       ? (newPharmacist.deputationDivision = deputationDivRes.data)
