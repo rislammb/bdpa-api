@@ -21,7 +21,7 @@ const findPharmacistByProperty = (key, value) => {
 };
 
 const createNewPharmacist = async (data) => {
-  let pharmacist = data.regNumber && await findPharmacistByProperty('regNumber', data.regNumber);
+  let pharmacist = await findPharmacistByProperty('regNumber', data.regNumber);
 
   if (pharmacist) {
     throw error(
