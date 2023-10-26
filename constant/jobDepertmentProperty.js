@@ -7,11 +7,11 @@ const jobDepertmentProperty = [
   {
     name: 'name',
     msg: 'Job depertment (English)',
-    bn_msg: 'চাকুরির বিভাগ (ইংরেজি)',
+    bn_msg: 'চাকুরির বিভাগ (English)',
   },
   {
     name: 'bn_name',
-    msg: 'Job depertment (Bengali)',
+    msg: 'Job depertment (বাংলা)',
     bn_msg: 'চাকুরির বিভাগ (বাংলা)',
   },
 ];

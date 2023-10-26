@@ -7,11 +7,11 @@ const genderProperty = [
   {
     name: 'name',
     msg: 'Gender (English)',
-    bn_msg: 'লিঙ্গ (ইংরেজি)',
+    bn_msg: 'লিঙ্গ (English)',
   },
   {
     name: 'bn_name',
-    msg: 'Gender (Bengali)',
+    msg: 'Gender (বাংলা)',
     bn_msg: 'লিঙ্গ (বাংলা)',
   },
 ];
