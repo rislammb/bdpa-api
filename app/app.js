@@ -2,16 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const {
-  getAllPharmacists,
-  getSinglePharmacist,
-  postPharmacist,
-  putPharmacist,
-  deletePharmacist,
-  getDivisionPharmacist,
-  getDistrictPharmacist,
-} = require('../controllers/listController');
-
 const app = express();
 app.use(express.json());
 
@@ -27,21 +17,6 @@ app.use('/api/v1', require('../routes'));
 app.get('/api/v1/health', (_req, res) => {
   res.json({
     message: 'This server is ok.',
-  });
-});
-
-app.get('/api/list', getAllPharmacists);
-app.get('/api/list/:regNumber', getSinglePharmacist);
-app.post('/api/list', postPharmacist);
-app.put('/api/list/:regNumber', putPharmacist);
-app.delete('/api/list/:regNumber', deletePharmacist);
-
-app.get('/api/list/div/:divisionId', getDivisionPharmacist);
-app.get('/api/list/dist/:distName', getDistrictPharmacist);
-app.get('/api/list/dist/:distName/:upazilaName', async (req, res) => {
-  res.json({
-    district: req.params.distName,
-    upazila: req.params.upazilaName,
   });
 });
 
