@@ -2,14 +2,14 @@ const error = require('../utils/error');
 const pharmacistService = require('../services/pharmacist');
 const {
   validateRegNum,
-  validatePostBody,
-  validatePutBody,
+  validatePostPharmacist,
+  validateUpdatePharmacist,
 } = require('../utils/pharmacist');
 
 const getPharmacists = async (_req, res, next) => {
   try {
     const pharmacists = await pharmacistService.findPharmacists(
-      '-email -mobile -fathersName -mothersName -gender -imageUrl -nationalId -passingYear -dateOfJoin -permanentPlace -onDeputation -deputationPlace'
+      'regNumber name bn_name dateOfBirth memberId jobDepertment postingDivision postingDistrict postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila voterDivision voterDistrict deputationDivision deputationDistrict deputationUpazila'
     );
 
     res.status(200).json(pharmacists);
@@ -75,7 +75,7 @@ const getPharmacistById = async (req, res, next) => {
 };
 
 const postPharmacist = async (req, res, next) => {
-  const { valid, data } = validatePostBody(req.body);
+  const { valid, data } = validatePostPharmacist(req.body);
 
   if (!valid) {
     return res.status(400).json(data);
@@ -107,7 +107,7 @@ const putPharmacistByRegistration = async (req, res, next) => {
       throw error('Pharmacist not found!', 404);
     }
 
-    const { valid, data } = validatePutBody(req.body);
+    const { valid, data } = validateUpdatePharmacist(req.body);
 
     if (!valid) {
       return res.status(400).json(data);
@@ -139,7 +139,7 @@ const patchPharmacistByRegistration = async (req, res, next) => {
       throw error('Pharmacist not found!', 404);
     }
 
-    const { valid, data } = validatePutBody(req.body);
+    const { valid, data } = validateUpdatePharmacist(req.body);
     if (!valid) {
       return res.status(400).json(data);
     }
