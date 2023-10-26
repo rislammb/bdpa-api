@@ -12,9 +12,8 @@ const memberSchema = new Schema({
     required: [true, 'Pharmacist ID is required!'],
   },
   serialNumber: {
-    name: { type: String, default: '' },
-    bn_name: { type: String, default: '' },
-    maxlength: 15,
+    name: { type: String, default: '', maxlength: 15 },
+    bn_name: { type: String, default: '', maxlength: 15 },
   },
   postName: {
     name: {
