@@ -3,6 +3,7 @@ const genderProperty = require('../constant/genderProperty');
 const instituteProperty = require('../constant/instituteProperty');
 const mothersNameProperty = require('../constant/mothersNameProperty');
 const jobDepertmentProperty = require('../constant/jobDepertmentProperty');
+const onDeputationProperty = require('../constant/onDeputationProperty');
 const { enToBnNumber } = require('./number');
 
 const validateRegNum = (regNumber) => {
@@ -134,6 +135,15 @@ const validateStringObject = (object, text = '', bn_text = '') => {
           )} টি প্রপার্টি থাকতে হবে!`,
         };
       } else mapProperty(jobDepertmentProperty);
+    } else if (text === 'On deputation/attachment') {
+      if (Object.keys(object).length !== onDeputationProperty.length) {
+        err = {
+          text: `${text} type object must be ${onDeputationProperty.length} property!`,
+          bn_text: `${bn_text} অবজেক্টে ${enToBnNumber(
+            onDeputationProperty.length
+          )} টি প্রপার্টি থাকতে হবে!`,
+        };
+      } else mapProperty(onDeputationProperty);
     }
   }
 
@@ -321,7 +331,7 @@ const validatePlace = (value, areaName) => {
   };
 };
 
-const validatePostBody = ({
+const validatePostPharmacist = ({
   regNumber,
   name,
   bn_name,
@@ -602,18 +612,13 @@ const validatePostBody = ({
       name: '',
       bn_name: '',
     };
-  } else if (typeof onDeputation !== 'object') {
-    error.onDeputation = {
-      text: 'On Deputation type must be an object!',
-      bn_text: 'প্রেষন/সংযুক্ত কিনা এর ধরন অবজেক্ট হবে!',
-    };
-  } else if (Object.keys(onDeputation).length !== 3) {
-    error.onDeputation = {
-      text: 'On Deputation is not valid object',
-      bn_text: 'প্রেষন/সংযুক্ত কিনা সঠিক অবজেক্ট নয়',
-    };
   } else {
-    newPharmacist.onDeputation = onDeputation;
+    const { valid, data } = validateStringObject(
+      onDeputation,
+      'On deputation/attachment',
+      'প্রেষন/সংযুক্ত'
+    );
+    valid ? (newPharmacist.onDeputation = data) : (error.onDeputation = data);
   }
 
   if (newPharmacist.onDeputation?.name === 'Yes') {
@@ -647,7 +652,7 @@ const validatePostBody = ({
   };
 };
 
-const validatePutBody = ({
+const validateUpdatePharmacist = ({
   name,
   bn_name,
   fathersName,
@@ -877,13 +882,15 @@ const validatePutBody = ({
   }
 
   if (onDeputation) {
-    if (typeof onDeputation !== 'string') {
-      error.onDeputation = 'onDeputation type must be string!';
-    } else {
-      newPharmacist.onDeputation = onDeputation.trim();
-    }
+    const { valid, data } = validateStringObject(
+      onDeputation,
+      'On deputation/attachment',
+      'প্রেষন/সংযুক্ত'
+    );
 
-    if (onDeputation.id === '1') {
+    valid ? (newPharmacist.onDeputation = data) : (error.onDeputation = data);
+
+    if (onDeputation.name === 'No') {
       newPharmacist['deputationDivision'] = {
         id: '',
         name: '',
@@ -901,7 +908,7 @@ const validatePutBody = ({
         name: '',
         bn_name: '',
       };
-      newPharmacist['deputationPlace'] = '';
+      newPharmacist['deputationPlace'] = { name: '', bn_name: '' };
     }
   }
 
@@ -944,6 +951,6 @@ const validatePutBody = ({
 
 module.exports = {
   validateRegNum,
-  validatePostBody,
-  validatePutBody,
+  validatePostPharmacist,
+  validateUpdatePharmacist,
 };
