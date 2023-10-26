@@ -2,18 +2,20 @@ const { Schema, model, default: mongoose } = require('mongoose');
 
 const committeeSchema = new Schema({
   committeeTitle: {
-    name: { type: String, required: true, trim: true },
-    bn_name: { type: String, required: true, trim: true },
+    name: { type: String, required: true, trim: true, maxlength: 90 },
+    bn_name: { type: String, required: true, trim: true, maxlength: 90 },
   },
   committeePath: {
     type: String,
     required: true,
     trim: true,
     lowercase: true,
+    maxlength: 90,
   },
   indexNumber: {
     type: String,
     default: '',
+    maxlength: 15,
   },
   workHasStarted: {
     type: Date,

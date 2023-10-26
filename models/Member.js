@@ -14,17 +14,20 @@ const memberSchema = new Schema({
   serialNumber: {
     name: { type: String, default: '' },
     bn_name: { type: String, default: '' },
+    maxlength: 15,
   },
   postName: {
     name: {
       type: String,
-      required: [true, 'Committee post name is required!'],
+      required: [true, 'Committee post name (English) is required!'],
       trim: true,
+      maxlength: 45,
     },
     bn_name: {
       type: String,
-      required: [true, 'Committee post name is required!'],
+      required: [true, 'Committee post name (Bengali) is required!'],
       trim: true,
+      maxlength: 45,
     },
   },
 });
