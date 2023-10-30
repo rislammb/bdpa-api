@@ -12,21 +12,19 @@ const memberSchema = new Schema({
     required: [true, 'Pharmacist ID is required!'],
   },
   serialNumber: {
-    name: { type: String, default: '', maxlength: 15 },
-    bn_name: { type: String, default: '', maxlength: 15 },
+    name: { type: String, default: '', maxLength: 15 },
+    bn_name: { type: String, default: '', maxLength: 15 },
   },
   postName: {
     name: {
       type: String,
-      required: [true, 'Committee post name (English) is required!'],
       trim: true,
-      maxlength: 45,
+      maxLength: 45,
     },
     bn_name: {
       type: String,
-      required: [true, 'Committee post name (Bengali) is required!'],
       trim: true,
-      maxlength: 45,
+      maxLength: 45,
     },
   },
 });

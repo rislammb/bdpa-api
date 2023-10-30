@@ -1,6 +1,6 @@
 const { getPopulatedMembers } = require('../utils/member');
 const Committee = require('../models/Committee');
-const error = require('../utils/error');
+const { jsonError } = require('../utils/error');
 const memberService = require('./member');
 
 const findCommittees = () => {
@@ -8,25 +8,23 @@ const findCommittees = () => {
 };
 
 const findCommitteeByPath = (committeePath) => {
-  return Committee.findOne({ committeePath })
-    .then(async (data) => {
-      if (data) {
-        const members = await memberService.findMembersByCommittee(data._id);
+  return Committee.findOne({ committeePath }).then(async (data) => {
+    if (data) {
+      const members = await memberService.findMembersByCommittee(data._id);
 
-        return { ...data._doc, members: getPopulatedMembers(members) };
-      } else return null;
-    });
+      return { ...data._doc, members: getPopulatedMembers(members) };
+    } else return null;
+  });
 };
 
 const findCommitteeById = (committeeId) => {
-  return Committee.findById(committeeId)
-    .then(async (data) => {
-      if (data) {
-        const members = await memberService.findMembersByCommittee(committeeId);
+  return Committee.findById(committeeId).then(async (data) => {
+    if (data) {
+      const members = await memberService.findMembersByCommittee(committeeId);
 
-        return { ...data._doc, members: getPopulatedMembers(members) };
-      } else return null;
-    });
+      return { ...data._doc, members: getPopulatedMembers(members) };
+    } else return null;
+  });
 };
 
 const findCommitteeOnlyByPath = (committeePath) => {
@@ -40,6 +38,7 @@ const findCommitteeOnlyById = (id) => {
 const createNewCommittee = async (data) => {
   const {
     committeeTitle,
+    bn_committeeTitle,
     committeePath,
     indexNumber,
     workHasStarted,
@@ -49,12 +48,19 @@ const createNewCommittee = async (data) => {
 
   let committee = await findCommitteeByPath(committeePath);
   if (committee) {
-    throw error('Committee already exists!', 400);
+    throw jsonError(
+      {
+        text: 'Committee already exists!',
+        bn_text: 'এই কমিটি আছে!',
+      },
+      400
+    );
   }
 
   committee = new Committee({
     committeeTitle,
     committeePath,
+    bn_committeeTitle,
     indexNumber,
     workHasStarted,
     willExpire,
@@ -69,7 +75,13 @@ const createNewCommittee = async (data) => {
 
       committee.members.push(resMember.id);
     } catch (e) {
-      throw error('Sometnings went wrong!');
+      throw jsonError(
+        {
+          text: 'Sometnings went wrong!',
+          bn_text: 'কিছু একটা সমস্যা হয়েছে!',
+        },
+        500
+      );
     }
   }
 

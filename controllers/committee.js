@@ -1,5 +1,4 @@
 const committeeServices = require('../services/committee');
-const error = require('../utils/error');
 const {
   validatePostCommittee,
   validatePatchCommittee,
@@ -22,7 +21,10 @@ const getCommitteeByPath = async (req, res, next) => {
     const committee = await committeeServices.findCommitteeByPath(path);
 
     if (!committee) {
-      throw error('Committee not found!', 404);
+      res.status(404).json({
+        text: 'Committee not found!',
+        bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     return res.status(200).json(committee);
@@ -38,7 +40,10 @@ const getCommitteeById = async (req, res, next) => {
     const committee = await committeeServices.findCommitteeById(committeeId);
 
     if (!committee) {
-      throw error('Committee not found!', 404);
+      res.status(404).json({
+        text: 'Committee not found!',
+        bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     return res.status(200).json(committee);
@@ -70,7 +75,10 @@ const patchCommitteeByPath = async (req, res, next) => {
     const committee = await committeeServices.findCommitteeOnlyByPath(path);
 
     if (!committee) {
-      throw error('Committee not found!', 404);
+      res.status(404).json({
+        text: 'Committee not found!',
+        bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     const { valid, data } = validatePatchCommittee(req.body);
@@ -105,12 +113,15 @@ const deleteCommitteeByPath = async (req, res, next) => {
   try {
     const committee = await committeeServices.findCommitteeByPath(path);
 
-    if (!committee) {
-      throw error('Committee not found!', 404);
+    if (committee) {
+      await committeeServices.deleteCommitteeById(committee._id);
+      return res.status(204).send();
+    } else {
+      res.status(404).json({
+        text: 'Committee not found!',
+        bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
+      });
     }
-
-    await committeeServices.deleteCommitteeById(committee._id);
-    return res.status(204).send();
   } catch (e) {
     next(e);
   }

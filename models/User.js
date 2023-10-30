@@ -15,7 +15,7 @@ const userSchema = new Schema(
       },
     },
     password: { type: String, required: true },
-    regNumber: { type: String, required: true, unique: true, maxlength: 25 },
+    regNumber: { type: String, required: true, unique: true, maxLength: 25 },
     pharmacistId: {
       type: Schema.Types.ObjectId,
       ref: 'Pharmacist',

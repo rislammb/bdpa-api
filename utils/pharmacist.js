@@ -5,6 +5,11 @@ const mothersNameProperty = require('../constant/mothersNameProperty');
 const jobDepertmentProperty = require('../constant/jobDepertmentProperty');
 const onDeputationProperty = require('../constant/onDeputationProperty');
 const { enToBnNumber } = require('./number');
+const {
+  validateString,
+  validateStringNumber,
+  validateDate,
+} = require('./validation');
 
 const validateRegNum = (regNumber) => {
   let res = '';
@@ -35,24 +40,6 @@ const validateRegNum = (regNumber) => {
     valid: Object.keys(err).length < 1,
     data: Object.keys(err).length > 0 ? err : res,
   };
-};
-
-const validateString = (str, text, bn_text, minLength) => {
-  let err = null;
-
-  if (typeof str !== 'string') {
-    err = {
-      text: `${text} type must be string!`,
-      bn_text: `${bn_text} এর ধরন স্ট্রিং হবে!`,
-    };
-  } else if (minLength && str.trim().length < minLength) {
-    err = {
-      text: `${text} must at least ${minLength} characters long!`,
-      bn_text: `${bn_text} কমপক্ষে ${enToBnNumber(minLength)} অক্ষর লম্বা হবে!`,
-    };
-  }
-
-  return { valid: !err, data: err ?? str.trim() };
 };
 
 const validateStringObject = (object, text = '', bn_text = '') => {
@@ -174,52 +161,6 @@ const validateEmail = (email) => {
   }
 
   return { valid: !err, data: err ?? email.trim().toLowerCase() };
-};
-
-const validateStringNumber = (str, text, bn_text, length) => {
-  let err = null;
-  const regex = length
-    ? new RegExp('^[0-9]{' + length + '}$')
-    : new RegExp('^[0-9]+$');
-
-  if (typeof str !== 'string') {
-    err = {
-      text: `${text} type must be string!`,
-      bn_text: `${bn_text} এর ধরন স্ট্রিং হবে!`,
-    };
-  } else if (length && regex.test(str.trim()) === false) {
-    err = {
-      text: `${text} must be ${length} characters of english digit!`,
-      bn_text: `${bn_text} ${enToBnNumber(length)} অক্ষরের ইংরেজি ডিজিট হবে!`,
-    };
-  } else if (regex.test(str.trim()) === false) {
-    console.log('regex => ', regex, str.trim());
-    err = {
-      text: `${text} must be english digit!`,
-      bn_text: `${bn_text} ইংরেজি ডিজিট হবে!`,
-    };
-  }
-
-  return {
-    valid: !err,
-    data: err ?? {
-      name: str.trim(),
-      bn_name: enToBnNumber(str.trim()),
-    },
-  };
-};
-
-const validateDate = (data, text, bn_text) => {
-  let err = null;
-
-  if (typeof data !== 'string' || data.length !== 24) {
-    err = {
-      text: `${text} is not valid date!`,
-      bn_text: `${bn_text} এর ধরন সঠিক নয়!`,
-    };
-  }
-
-  return { valid: !err, data: err ?? data };
 };
 
 const enAreaToBnArea = {
@@ -687,7 +628,7 @@ const validateUpdatePharmacist = ({
   const error = {};
   const newPharmacist = {};
 
-  if (name) {
+  if (name !== undefined) {
     const { valid, data } = validateString(
       name,
       'Name (English)',
@@ -697,7 +638,7 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.name = data) : (error.name = data);
   }
 
-  if (bn_name) {
+  if (bn_name !== undefined) {
     const { valid, data } = validateString(
       bn_name,
       'Name (Bengali)',
@@ -707,7 +648,7 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.bn_name = data) : (error.bn_name = data);
   }
 
-  if (fathersName) {
+  if (fathersName !== undefined) {
     const { valid, data } = validateStringObject(
       fathersName,
       "Father's name",
@@ -716,7 +657,7 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.fathersName = data) : (error.fathersName = data);
   }
 
-  if (mothersName) {
+  if (mothersName !== undefined) {
     const { valid, data } = validateStringObject(
       mothersName,
       "Mothers's name",
@@ -725,31 +666,44 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.mothersName = data) : (error.mothersName = data);
   }
 
-  if (email) {
-    const { valid, data } = validateEmail(email);
-    valid ? (newPharmacist.email = data) : (error.email = data);
+  if (email !== undefined) {
+    if (email === '') {
+      newPharmacist.email = '';
+    } else {
+      const { valid, data } = validateEmail(email);
+      valid ? (newPharmacist.email = data) : (error.email = data);
+    }
   }
 
-  if (mobile) {
-    const { valid, data } = validateStringNumber(
-      mobile,
-      'Mobile number',
-      'মোবাইল নাম্বার',
-      11
-    );
-    valid ? (newPharmacist.mobile = data) : (error.mobile = data);
+  if (mobile !== undefined) {
+    if (mobile === '') {
+      newPharmacist.mobile = { name: '', bn_name: '' };
+    } else {
+      const { valid, data } = validateStringNumber(
+        mobile,
+        'Mobile number',
+        'মোবাইল নাম্বার',
+        11
+      );
+      valid ? (newPharmacist.mobile = data) : (error.mobile = data);
+    }
   }
 
-  if (imageUrl) {
-    const { valid, data } = validateString(
-      imageUrl,
-      'Image URL',
-      'ইমেজ ইউআরএল'
-    );
-    valid ? (newPharmacist.imageUrl = data) : (error.imageUrl = data);
+  if (imageUrl !== undefined) {
+    if (imageUrl === '') {
+      newPharmacist.imageUrl = '';
+    } else {
+      const { valid, data } = validateString(
+        imageUrl,
+        'Image URL',
+        'ইমেজ ইউআরএল',
+        11
+      );
+      valid ? (newPharmacist.imageUrl = data) : (error.imageUrl = data);
+    }
   }
 
-  if (dateOfBirth) {
+  if (dateOfBirth !== undefined) {
     const { valid, data } = validateDate(
       dateOfBirth,
       'Date of birth',
@@ -758,21 +712,25 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.dateOfBirth = data) : (error.dateOfBirth = data);
   }
 
-  if (gender) {
+  if (gender !== undefined) {
     const { valid, data } = validateStringObject(gender, 'Gender', 'লিঙ্গ');
     valid ? (newPharmacist.gender = data) : (error.gender = data);
   }
 
-  if (nationalId) {
-    const { valid, data } = validateStringNumber(
-      nationalId,
-      'National ID number',
-      'জাতীয় পরিচয়পত্র সংখ্যা'
-    );
-    valid ? (newPharmacist.nationalId = data) : (error.nationalId = data);
+  if (nationalId !== undefined) {
+    if (nationalId === '') {
+      newPharmacist.nationalId = { name: '', bn_name: '' };
+    } else {
+      const { valid, data } = validateStringNumber(
+        nationalId,
+        'National ID number',
+        'জাতীয় পরিচয়পত্র সংখ্যা'
+      );
+      valid ? (newPharmacist.nationalId = data) : (error.nationalId = data);
+    }
   }
 
-  if (institute) {
+  if (institute !== undefined) {
     const { valid, data } = validateStringObject(
       institute,
       'Institute name',
@@ -781,17 +739,21 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.institute = data) : (error.institute = data);
   }
 
-  if (passingYear) {
-    const { valid, data } = validateStringNumber(
-      passingYear,
-      'Passing year',
-      'পাশের বছর',
-      4
-    );
-    valid ? (newPharmacist.passingYear = data) : (error.passingYear = data);
+  if (passingYear !== undefined) {
+    if (passingYear === '') {
+      newPharmacist.passingYear = { name: '', bn_name: '' };
+    } else {
+      const { valid, data } = validateStringNumber(
+        passingYear,
+        'Passing year',
+        'পাশের বছর',
+        4
+      );
+      valid ? (newPharmacist.passingYear = data) : (error.passingYear = data);
+    }
   }
 
-  if (memberId) {
+  if (memberId !== undefined) {
     const { valid, data } = validateString(
       memberId,
       'Member ID number',
@@ -800,7 +762,7 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.memberId = data) : (error.memberId = data);
   }
 
-  if (dateOfJoin) {
+  if (dateOfJoin !== undefined) {
     const { valid, data } = validateDate(
       dateOfJoin,
       'Date of join',
@@ -809,7 +771,7 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.dateOfJoin = data) : (error.dateOfJoin = data);
   }
 
-  if (jobDepertment) {
+  if (jobDepertment !== undefined) {
     const { valid, data } = validateStringObject(
       jobDepertment,
       'Job depertment',
@@ -818,70 +780,70 @@ const validateUpdatePharmacist = ({
     valid ? (newPharmacist.jobDepertment = data) : (error.jobDepertment = data);
   }
 
-  if (postingDivision) {
+  if (postingDivision !== undefined) {
     const postingDivRes = validateDivision(postingDivision, 'Posting');
     postingDivRes.valid
       ? (newPharmacist.postingDivision = postingDivRes.data)
       : (error.postingDivision = postingDivRes.data);
   }
-  if (postingDistrict) {
+  if (postingDistrict !== undefined) {
     const postingDistRes = validateDistrict(postingDistrict, 'Posting');
     postingDistRes.valid
       ? (newPharmacist.postingDistrict = postingDistRes.data)
       : (error.postingDistrict = postingDistRes.data);
   }
-  if (postingUpazila) {
+  if (postingUpazila !== undefined) {
     const postingUpaRes = validateUpazila(postingUpazila, 'Posting');
     postingUpaRes.valid
       ? (newPharmacist.postingUpazila = postingUpaRes.data)
       : (error.postingUpazila = postingUpaRes.data);
   }
-  if (postingPlace) {
+  if (postingPlace !== undefined) {
     const postingPlaceRes = validatePlace(postingPlace, 'Posting');
     postingPlaceRes.valid
       ? (newPharmacist.postingPlace = postingPlaceRes.data)
       : (error.postingPlace = postingPlaceRes.data);
   }
 
-  if (permanentDivision) {
+  if (permanentDivision !== undefined) {
     const permanentDivRes = validateDivision(permanentDivision, 'Permanent');
     permanentDivRes.valid
       ? (newPharmacist.permanentDivision = permanentDivRes.data)
       : (error.permanentDivision = permanentDivRes.data);
   }
-  if (permanentDistrict) {
+  if (permanentDistrict !== undefined) {
     const permanentDistRes = validateDistrict(permanentDistrict, 'Permanent');
     permanentDistRes.valid
       ? (newPharmacist.permanentDistrict = permanentDistRes.data)
       : (error.permanentDistrict = permanentDistRes.data);
   }
-  if (permanentUpazila) {
+  if (permanentUpazila !== undefined) {
     const permanentUpaRes = validateUpazila(permanentUpazila, 'Permanent');
     permanentUpaRes.valid
       ? (newPharmacist.permanentUpazila = permanentUpaRes.data)
       : (error.permanentUpazila = permanentUpaRes.data);
   }
-  if (permanentPlace) {
+  if (permanentPlace !== undefined) {
     const permanentPlaceRes = validatePlace(permanentPlace, 'Permanent');
     permanentPlaceRes.valid
       ? (newPharmacist.permanentPlace = permanentPlaceRes.data)
       : (error.permanentPlace = permanentPlaceRes.data);
   }
 
-  if (voterDivision) {
+  if (voterDivision !== undefined) {
     const voterDivRes = validateDivision(voterDivision, 'Voter');
     voterDivRes.valid
       ? (newPharmacist.voterDivision = voterDivRes.data)
       : (error.voterDivision = voterDivRes.data);
   }
-  if (voterDistrict) {
+  if (voterDistrict !== undefined) {
     const voterDistRes = validateDistrict(voterDistrict, 'Voter');
     voterDistRes.valid
       ? (newPharmacist.voterDistrict = voterDistRes.data)
       : (error.voterDistrict = voterDistRes.data);
   }
 
-  if (onDeputation) {
+  if (onDeputation !== undefined) {
     const { valid, data } = validateStringObject(
       onDeputation,
       'On deputation/attachment',
@@ -912,14 +874,14 @@ const validateUpdatePharmacist = ({
     }
   }
 
-  if (deputationDivision) {
+  if (deputationDivision !== undefined) {
     const deputationDivRes = validateDivision(deputationDivision, 'Deputation');
     deputationDivRes.valid
       ? (newPharmacist.deputationDivision = deputationDivRes.data)
       : (error.deputationDivision = deputationDivRes.data);
   }
 
-  if (deputationDistrict) {
+  if (deputationDistrict !== undefined) {
     const deputationDistRes = validateDistrict(
       deputationDistrict,
       'Deputation'
@@ -929,14 +891,14 @@ const validateUpdatePharmacist = ({
       : (error.deputationDistrict = deputationDistRes.data);
   }
 
-  if (deputationUpazila) {
+  if (deputationUpazila !== undefined) {
     const deputationUpaRes = validateUpazila(deputationUpazila, 'Deputation');
     deputationUpaRes.valid
       ? (newPharmacist.deputationUpazila = deputationUpaRes.data)
       : (error.deputationUpazila = deputationUpaRes.data);
   }
 
-  if (deputationPlace) {
+  if (deputationPlace !== undefined) {
     const deputationPlaceRes = validatePlace(deputationPlace, 'Deputation');
     deputationPlaceRes.valid
       ? (newPharmacist.deputationPlace = deputationPlaceRes.data)

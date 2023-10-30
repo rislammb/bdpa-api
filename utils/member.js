@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { getAreaInfo, getBnAreaInfo } = require('./area');
+const { validateStringNumber } = require('./validation');
 
 const validatePostMembers = (members) => {
   const error = {};
@@ -18,34 +19,72 @@ const validatePostMembers = (members) => {
     members.forEach((member, index) => {
       error[index] = {};
       if (typeof member !== 'object') {
-        error[index].type = 'Committee member type must be an object!';
-        error[index].bn_type = 'কমিটির সদস্যের ধরন অবজেক্ট হতে হবে!';
+        error[index].type = {
+          text: 'Committee member type must be an object!',
+          bn_text: 'কমিটির সদস্যের ধরন অবজেক্ট হতে হবে!',
+        };
       }
 
       if (!member.pharmacistId) {
-        error[index].pharmacistId = 'Pharmacist ID must not be empty!';
-        error[index].bn_pharmacistId = 'ফার্মাসিস্ট আইডি থাকতে হবে!';
+        error[index].pharmacistId = {
+          text: 'Pharmacist ID must not be empty!',
+          bn_text: 'ফার্মাসিস্ট আইডি থাকতে হবে!',
+        };
       } else if (!mongoose.isValidObjectId(member.pharmacistId)) {
-        error[index].pharmacistId =
-          'Pharmacist ID type must be valid object ID!';
-        error[index].bn_pharmacistId =
-          'ফার্মাসিস্ট আইডির ধরন সঠিক অবজেক্ট আইডি নয়!';
+        error[index].pharmacistId = {
+          text: 'Pharmacist ID type must be valid object ID!',
+          bn_text: 'ফার্মাসিস্ট আইডির ধরন সঠিক অবজেক্ট আইডি নয়!',
+        };
       }
 
       if (!member.postName) {
-        error[index].postName = 'Committee post name must not be empty!';
-        error[index].bn_postName = 'কমিটির পদবী থাকতে হবে!';
-      } else if (typeof member.postName !== 'string') {
-        error[index].postName = 'Committee post name type must be string!';
-        error[index].bn_postName = 'কমিটির পদবীর ধরন স্ট্রিং হতে হবে!';
+        error[index].postName = {
+          text: 'Post name must not be empty!',
+          bn_text: 'কমিটির পদবী থাকতে হবে!',
+        };
+      } else if (typeof member.postName !== 'object') {
+        error[index].postName = {
+          text: 'Post name type must be object!',
+          bn_text: 'পদবীর ধরন অবজেক্ট হতে হবে!',
+        };
+      } else if (Object.keys(member.postName).length !== 2) {
+        error[index].postName = {
+          text: 'Post name object must be 2 property!',
+          bn_text: 'পদবীর ধরন অবজেক্টে ২ টি প্রপার্টি থাকতে হবে!',
+        };
+      } else {
+        error[index].postName = {};
+        if (typeof member.postName.name !== 'string') {
+          error[index].postName.name = {
+            text: 'Post name (English) must be string!',
+            bn_text: 'পদবী (English) স্ট্রিং হবে!',
+          };
+        }
+        if (typeof member.postName.bn_name !== 'string') {
+          error[index].postName.bn_name = {
+            text: 'Post name (বাংলা) must be string!',
+            bn_text: 'পদবী (বাংলা) স্ট্রিং হবে!',
+          };
+        }
+
+        Object.keys(error[index].postName).length === 0 &&
+          delete error[index].postName;
       }
 
       if (!member.serialNumber) {
-        error[index].serialNumber = 'Empty serial!';
-        error[index].bn_serialNumber = 'ক্রমিক নেই!';
-      } else if (typeof member.serialNumber !== 'string') {
-        error[index].serialNumber = 'Must string!';
-        error[index].bn_serialNumber = 'স্ট্রিং হবে!';
+        error[index].serialNumber = {
+          text: 'Empty serial!',
+          bn_text: 'ক্রমিক নেই!',
+        };
+      } else {
+        const { valid, data } = validateStringNumber(
+          member.serialNumber,
+          'Serial',
+          'ক্রমিক'
+        );
+        valid
+          ? (member.serialNumber = data)
+          : (error[index].serialNumber = data);
       }
 
       if (Object.keys(error[index]).length === 0) {
@@ -71,43 +110,80 @@ const validatePostMember = ({
   const newMember = {};
 
   if (!committeeId) {
-    error.committeeId = 'Committee ID must not be empty!';
-    error.bn_committeeId = 'কমিটির আইডি থাকতে হবে!';
+    error.committeeId = {
+      text: 'Committee ID must not be empty!',
+      bn_text: 'কমিটির আইডি থাকতে হবে!',
+    };
   } else if (!mongoose.isValidObjectId(committeeId)) {
-    error.committeeId = 'Committee ID type must be valid object ID!';
-    error.bn_committeeId = 'কমিটি আইডির ধরন সঠিক অবজেক্ট আইডি নয়!!';
+    error.committeeId = {
+      text: 'Committee ID type must be valid object ID!',
+      bn_text: 'কমিটির আইডির ধরন সঠিক অবজেক্ট আইডি নয়!',
+    };
   } else {
     newMember.committeeId = committeeId;
   }
 
   if (!pharmacistId) {
-    error.pharmacistId = 'Pharmacist ID must not be empty!';
-    error.bn_pharmacistId = 'ফার্মাসিস্ট আইডি থাকতে হবে!';
+    error.pharmacistId = {
+      text: 'Pharmacist ID must not be empty!',
+      bn_text: 'ফার্মাসিস্ট আইডি থাকতে হবে!',
+    };
   } else if (!mongoose.isValidObjectId(pharmacistId)) {
-    error.pharmacistId = 'Pharmacist ID type must be valid object ID!';
-    error.bn_pharmacistId = 'ফার্মাসিস্ট আইডির ধরন সঠিক অবজেক্ট আইডি নয়!';
+    error.pharmacistId = {
+      text: 'Pharmacist ID type must be valid object ID!',
+      bn_text: 'ফার্মাসিস্ট আইডির ধরন সঠিক অবজেক্ট আইডি নয়!',
+    };
   } else {
     newMember.pharmacistId = pharmacistId;
   }
 
   if (!postName) {
-    error.postName = 'Committee post name must not be empty!';
-    error.bn_postName = 'কমিটির পদবী থাকতে হবে!';
-  } else if (typeof postName !== 'string') {
-    error.postName = 'Committee post name type must be string!';
-    error.bn_postName = 'কমিটির পদবীর ধরন স্ট্রিং হতে হবে!';
+    error.postName = {
+      text: 'Post name must not be empty!',
+      bn_text: 'কমিটির পদবী থাকতে হবে!',
+    };
+  } else if (typeof postName !== 'object') {
+    error.postName = {
+      text: 'Post name type must be object!',
+      bn_text: 'পদবীর ধরন অবজেক্ট হতে হবে!',
+    };
+  } else if (Object.keys(postName).length !== 2) {
+    error.postName = {
+      text: 'Post name object must be 2 property!',
+      bn_text: 'পদবীর ধরন অবজেক্টে ২ টি প্রপার্টি থাকতে হবে!',
+    };
   } else {
+    error.postName = {};
+    if (typeof postName.name !== 'string') {
+      error.postName.name = {
+        text: 'Post name (English) must be string!',
+        bn_text: 'পদবী (English) স্ট্রিং হবে!',
+      };
+    }
+    if (typeof postName.bn_name !== 'string') {
+      error.postName.bn_name = {
+        text: 'Post name (বাংলা) must be string!',
+        bn_text: 'পদবী (বাংলা) স্ট্রিং হবে!',
+      };
+    }
+
+    Object.keys(error.postName).length === 0 && delete error.postName;
+
     newMember.postName = postName;
   }
 
   if (!serialNumber) {
-    error.serialNumber = 'Empty serial!';
-    error.bn_serialNumber = 'ক্রমিক নেই!';
-  } else if (typeof serialNumber !== 'string') {
-    error.serialNumber = 'Must string!';
-    error.bn_serialNumber = 'স্ট্রিং হবে!';
+    error.serialNumber = {
+      text: 'Empty serial!',
+      bn_text: 'ক্রমিক নেই!',
+    };
   } else {
-    newMember.serialNumber = serialNumber;
+    const { valid, data } = validateStringNumber(
+      serialNumber,
+      'Serial',
+      'ক্রমিক'
+    );
+    valid ? (newMember.serialNumber = data) : (error.serialNumber = data);
   }
 
   return {
@@ -116,49 +192,60 @@ const validatePostMember = ({
   };
 };
 
-const validatePatchMember = ({
-  committeeId,
-  pharmacistId,
-  postName,
-  serialNumber,
-}) => {
+const validatePatchMember = ({ pharmacistId, postName, serialNumber }) => {
   const error = {};
   const newMember = {};
 
-  if (committeeId) {
-    if (!mongoose.isValidObjectId(committeeId)) {
-      error.committeeId = 'Committee ID type must be valid object ID!';
-      error.bn_committeeId = 'কমিটি আইডির ধরন সঠিক অবজেক্ট আইডি নয়!';
-    } else {
-      newMember.committeeId = committeeId;
-    }
-  }
-
   if (pharmacistId) {
     if (!mongoose.isValidObjectId(pharmacistId)) {
-      error.pharmacistId = 'Pharmacist ID type must be valid object ID!';
-      error.bn_pharmacistId = 'ফার্মাসিস্ট আইডির ধরন সঠিক অবজেক্ট আইডি নয়!';
+      error.pharmacistId = {
+        text: 'Pharmacist ID type must be valid object ID!',
+        bn_text: 'ফার্মাসিস্ট আইডির ধরন সঠিক অবজেক্ট আইডি নয়!',
+      };
     } else {
       newMember.pharmacistId = pharmacistId;
     }
   }
 
   if (postName) {
-    if (typeof postName !== 'string') {
-      error.postName = 'Committee post name type must be string!';
-      error.bn_postName = 'কমিটির পদবীর ধরন স্ট্রিং হতে হবে!';
+    if (typeof postName !== 'object') {
+      error.postName = {
+        text: 'Post name type must be object!',
+        bn_text: 'পদবীর ধরন অবজেক্ট হতে হবে!',
+      };
+    } else if (Object.keys(postName).length !== 2) {
+      error.postName = {
+        text: 'Post name object must be 2 property!',
+        bn_text: 'পদবীর ধরন অবজেক্টে ২ টি প্রপার্টি থাকতে হবে!',
+      };
     } else {
+      error.postName = {};
+      if (typeof postName.name !== 'string') {
+        error.postName.name = {
+          text: 'Post name (English) must be string!',
+          bn_text: 'পদবী (English) স্ট্রিং হবে!',
+        };
+      }
+      if (typeof postName.bn_name !== 'string') {
+        error.postName.bn_name = {
+          text: 'Post name (বাংলা) must be string!',
+          bn_text: 'পদবী (বাংলা) স্ট্রিং হবে!',
+        };
+      }
+
+      Object.keys(error.postName).length === 0 && delete error.postName;
+
       newMember.postName = postName;
     }
   }
 
   if (serialNumber) {
-    if (typeof serialNumber !== 'string') {
-      error.serialNumber = 'Must string!';
-      error.bn_serialNumber = 'স্ট্রিং হবে!';
-    } else {
-      newMember.serialNumber = serialNumber;
-    }
+    const { valid, data } = validateStringNumber(
+      serialNumber,
+      'Serial',
+      'ক্রমিক'
+    );
+    valid ? (newMember.serialNumber = data) : (error.serialNumber = data);
   }
 
   return {

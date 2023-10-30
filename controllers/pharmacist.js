@@ -1,4 +1,4 @@
-const error = require('../utils/error');
+const { error } = require('../utils/error');
 const pharmacistService = require('../services/pharmacist');
 const {
   validateRegNum,
@@ -32,7 +32,9 @@ const getDetailsPharmacists = async (req, res, next) => {
       next(e);
     }
   } else {
-    return res.status(401).json({ message: 'Unauthorized!' });
+    return res
+      .status(401)
+      .json({ text: 'Unauthorized!', bn_text: 'অননুমোদিত!' });
   }
 };
 
@@ -46,7 +48,10 @@ const getPharmacistByRegistration = async (req, res, next) => {
     );
 
     if (!pharmacist) {
-      throw error('Pharmacist not found!', 404);
+      res.status(404).json({
+        text: 'Pharmacist not found!',
+        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     return res.status(200).json(pharmacist);
@@ -65,7 +70,10 @@ const getPharmacistById = async (req, res, next) => {
     );
 
     if (!pharmacist) {
-      throw error('Pharmacist not found!', 404);
+      res.status(404).json({
+        text: 'Pharmacist not found!',
+        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     return res.status(200).json(pharmacist);
@@ -104,7 +112,10 @@ const putPharmacistByRegistration = async (req, res, next) => {
       regNumber
     );
     if (!pharmacist) {
-      throw error('Pharmacist not found!', 404);
+      res.status(404).json({
+        text: 'Pharmacist not found!',
+        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     const { valid, data } = validateUpdatePharmacist(req.body);
@@ -136,7 +147,10 @@ const patchPharmacistByRegistration = async (req, res, next) => {
     );
 
     if (!pharmacist) {
-      throw error('Pharmacist not found!', 404);
+      res.status(404).json({
+        text: 'Pharmacist not found!',
+        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     const { valid, data } = validateUpdatePharmacist(req.body);
@@ -145,7 +159,9 @@ const patchPharmacistByRegistration = async (req, res, next) => {
     }
 
     if (Object.keys(data).length > 0) {
-      Object.keys(data).forEach((key) => (pharmacist[key] = data[key]));
+      Object.keys(data).forEach((key) => {
+        pharmacist[key] = data[key];
+      });
       await pharmacist.save();
     }
 
@@ -170,7 +186,10 @@ const deletePharmacistByRegistration = async (req, res, next) => {
     );
 
     if (!pharmacist) {
-      throw error('Pharmacist not found!', 404);
+      res.status(404).json({
+        text: 'Pharmacist not found!',
+        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     await pharmacist.remove();
@@ -190,7 +209,10 @@ const deletePharmacistById = async (req, res, next) => {
     );
 
     if (!pharmacist) {
-      throw error('Pharmacist not found!', 404);
+      res.status(404).json({
+        text: 'Pharmacist not found!',
+        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     await pharmacist.remove();

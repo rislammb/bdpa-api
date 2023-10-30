@@ -1,5 +1,5 @@
 const Pharmacist = require('../models/Pharmacist');
-const error = require('../utils/error');
+const { jsonError } = require('../utils/error');
 
 const findPharmacists = (select) => {
   return Pharmacist.find()
@@ -24,26 +24,28 @@ const createNewPharmacist = async (data) => {
   let pharmacist = await findPharmacistByProperty('regNumber', data.regNumber);
 
   if (pharmacist) {
-    throw error(
-      JSON.stringify({
+    throw jsonError(
+      {
         regNumber: {
           text: 'Pharmacist already exists!',
           bn_text: 'এই ফার্মাসিস্ট আছে!',
         },
-      }),
+      },
       400
     );
   }
 
-  pharmacist = data.memberId && await findPharmacistByProperty('memberId', data.memberId);
+  pharmacist =
+    data.memberId &&
+    (await findPharmacistByProperty('memberId', data.memberId));
   if (pharmacist) {
-    throw error(
-      JSON.stringify({
+    throw jsonError(
+      {
         memberId: {
           text: 'Pharmacist already exists!',
           bn_text: 'এই ফার্মাসিস্ট আছে!',
         },
-      }),
+      },
       400
     );
   }
@@ -56,7 +58,13 @@ const updatePharmacist = async (regNumber, data) => {
   let pharmacist = await findPharmacistByProperty('regNumber', regNumber);
 
   if (!pharmacist) {
-    throw error('Pharmacist not found!', 404);
+    throw jsonError(
+      {
+        text: 'Pharmacist not found!',
+        bn_text: 'ফার্মাসিস্ট পাওয়া যায় নি!',
+      },
+      404
+    );
   }
 
   return Pharmacist.findByIdAndUpdate(

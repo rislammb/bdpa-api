@@ -1,5 +1,5 @@
 const userService = require('../services/user');
-const error = require('../utils/error');
+const { error } = require('../utils/error');
 
 /**
  *
@@ -23,7 +23,12 @@ const getUserById = async (req, res, next) => {
     const user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      throw error('User not found!', 404);
+      res
+        .status(404)
+        .json({
+          text: 'User not found!',
+          bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+        });
     }
     return res.status(200).json(user);
   } catch (e) {
@@ -51,7 +56,12 @@ const putUserById = async (req, res, next) => {
     });
 
     if (!user) {
-      throw error('User not found!', 404);
+      res
+        .status(404)
+        .json({
+          text: 'User not found!',
+          bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+        });
     }
 
     return res.status(200).json(user);
@@ -71,7 +81,12 @@ const patchUserById = async (req, res, next) => {
     const user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      throw error('User not found!', 404);
+      res
+        .status(404)
+        .json({
+          text: 'User not found!',
+          bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+        });
     }
 
     user.adminDetails = adminDetails ?? user.adminDetails;
@@ -95,7 +110,12 @@ const deleteUserById = async (req, res, next) => {
     const user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      throw error('User not found!', 404);
+      res
+        .status(404)
+        .json({
+          text: 'User not found!',
+          bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+        });
     }
 
     await user.remove();

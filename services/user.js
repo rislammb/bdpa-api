@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const error = require('../utils/error');
+const { jsonError } = require('../utils/error');
 
 const User = require('../models/User');
 
@@ -12,7 +12,13 @@ const findUserByProperty = (key, value) => {
     if (mongoose.isValidObjectId(value)) {
       return User.findById(value);
     }
-    throw error('User Id is not valid MongoDB Object Id', 400);
+    throw jsonError(
+      {
+        text: 'User Id is not valid MongoDB Object Id!',
+        bn_text: 'ইউজার আইডি সঠিক MongoDB অবজেক্ট আইডি নয়!',
+      },
+      400
+    );
   }
 
   return User.findOne({ [key]: value });
@@ -42,7 +48,13 @@ const createNewUser = ({
 
 const updateUser = (id, data) => {
   if (!mongoose.isValidObjectId(id)) {
-    throw error('User Id is not valid MongoDB Object Id', 400);
+    throw jsonError(
+      {
+        text: 'User Id is not valid MongoDB Object Id!',
+        bn_text: 'ইউজার আইডি সঠিক MongoDB অবজেক্ট আইডি নয়!',
+      },
+      400
+    );
   }
 
   return User.findByIdAndUpdate(id, { ...data }, { new: true });

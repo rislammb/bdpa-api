@@ -1,6 +1,6 @@
 const memberService = require('../services/member');
 const committeeService = require('../services/committee');
-const error = require('../utils/error');
+const { error } = require('../utils/error');
 const {
   validatePostMember,
   getPopulatedMembers,
@@ -55,7 +55,10 @@ const postMember = async (req, res, next) => {
     );
 
     if (!committee) {
-      throw error('Committee not found!', 404);
+      res.status(404).json({
+        text: 'Committee not found!',
+        bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     const member = await memberService.createNewMember(data);
@@ -76,7 +79,10 @@ const patchMemberById = async (req, res, next) => {
     const member = await memberService.findMemberById(memberId);
 
     if (!member) {
-      throw error('Member not found!', 404);
+      res.status(404).json({
+        text: 'Committee Member not found!',
+        bn_text: 'কমিটির সদস্য খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     const { valid, data } = validatePatchMember(req.body);
@@ -115,7 +121,10 @@ const deleteMemberById = async (req, res, next) => {
     const member = await memberService.findMemberById(memberId);
 
     if (!member) {
-      throw error('Member not found!', 404);
+      res.status(404).json({
+        text: 'Committee Member not found!',
+        bn_text: 'কমিটির সদস্য খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     const committee = await committeeService.findCommitteeOnlyById(
