@@ -1,6 +1,6 @@
 const memberService = require('../services/member');
 const committeeService = require('../services/committee');
-const { error } = require('../utils/error');
+const { error, jsonError } = require('../utils/error');
 const {
   validatePostMember,
   getPopulatedMembers,
@@ -130,16 +130,24 @@ const deleteMemberById = async (req, res, next) => {
     const committee = await committeeService.findCommitteeOnlyById(
       member.committeeId
     );
+    if (committee.members.length > 2) {
+      committee.members = committee.members.filter(
+        (m) => m.toString() !== member.id
+      );
 
-    committee.members = committee.members.filter(
-      (m) => m.toString() !== member.id
-    );
+      await committee.save();
 
-    await committee.save();
-
-    await member.remove();
-
-    res.status(204).send();
+      await member.remove();
+      return res.status(204).send();
+    } else {
+      throw jsonError(
+        {
+          text: 'The committee must have at least 2 members!',
+          bn_text: 'কমিটিতে কমপক্ষে ২ জন সদস্য থাকতে হবে!',
+        },
+        400
+      );
+    }
   } catch (e) {
     next(e);
   }

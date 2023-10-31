@@ -115,7 +115,7 @@ const validatePatchCommittee = ({
   const error = {};
   const newCommittee = {};
 
-  if (committeeTitle) {
+  if (committeeTitle !== undefined) {
     const { valid, data } = validateString(
       committeeTitle,
       'Committee Title (English)',
@@ -130,7 +130,8 @@ const validatePatchCommittee = ({
       error.committeeTitle = data;
     }
   }
-  if (bn_committeeTitle) {
+
+  if (bn_committeeTitle !== undefined) {
     const { valid, data } = validateString(
       bn_committeeTitle,
       'Committee Title (বাংলা)',
@@ -142,7 +143,7 @@ const validatePatchCommittee = ({
       : (error.bn_committeeTitle = data);
   }
 
-  if (indexNumber) {
+  if (indexNumber !== undefined) {
     const { valid, data } = validateStringNumber(
       indexNumber,
       'Index number',
@@ -151,7 +152,7 @@ const validatePatchCommittee = ({
     valid ? (newCommittee.indexNumber = data) : (error.indexNumber = data);
   }
 
-  if (workHasStarted) {
+  if (workHasStarted !== undefined) {
     const { valid, data } = validateDate(
       workHasStarted,
       'Committee work has started',
@@ -162,7 +163,7 @@ const validatePatchCommittee = ({
       : (error.workHasStarted = data);
   }
 
-  if (willExpire) {
+  if (willExpire !== undefined) {
     const { valid, data } = validateDate(
       willExpire,
       'Committee will expire',

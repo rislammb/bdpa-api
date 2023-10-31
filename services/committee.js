@@ -80,7 +80,7 @@ const createNewCommittee = async (data) => {
           text: 'Sometnings went wrong!',
           bn_text: 'কিছু একটা সমস্যা হয়েছে!',
         },
-        500
+        400
       );
     }
   }

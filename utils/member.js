@@ -196,8 +196,13 @@ const validatePatchMember = ({ pharmacistId, postName, serialNumber }) => {
   const error = {};
   const newMember = {};
 
-  if (pharmacistId) {
-    if (!mongoose.isValidObjectId(pharmacistId)) {
+  if (pharmacistId !== undefined) {
+    if (!pharmacistId) {
+      error.pharmacistId = {
+        text: 'Pharmacist ID must not be empty!',
+        bn_text: 'ফার্মাসিস্ট আইডি থাকতে হবে!',
+      };
+    } else if (!mongoose.isValidObjectId(pharmacistId)) {
       error.pharmacistId = {
         text: 'Pharmacist ID type must be valid object ID!',
         bn_text: 'ফার্মাসিস্ট আইডির ধরন সঠিক অবজেক্ট আইডি নয়!',
@@ -207,7 +212,7 @@ const validatePatchMember = ({ pharmacistId, postName, serialNumber }) => {
     }
   }
 
-  if (postName) {
+  if (postName !== undefined) {
     if (typeof postName !== 'object') {
       error.postName = {
         text: 'Post name type must be object!',
@@ -239,7 +244,7 @@ const validatePatchMember = ({ pharmacistId, postName, serialNumber }) => {
     }
   }
 
-  if (serialNumber) {
+  if (serialNumber !== undefined) {
     const { valid, data } = validateStringNumber(
       serialNumber,
       'Serial',
