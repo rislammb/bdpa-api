@@ -9,7 +9,7 @@ const {
 const getPharmacists = async (_req, res, next) => {
   try {
     const pharmacists = await pharmacistService.findPharmacists(
-      'regNumber name bn_name dateOfBirth memberId jobDepertment postingDivision postingDistrict postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila voterDivision voterDistrict deputationDivision deputationDistrict deputationUpazila'
+      'regNumber name bn_name email dateOfBirth memberId jobDepertment postingDivision postingDistrict postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila voterDivision voterDistrict deputationDivision deputationDistrict deputationUpazila'
     );
 
     res.status(200).json(pharmacists);
