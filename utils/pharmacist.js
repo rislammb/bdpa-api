@@ -395,7 +395,10 @@ const validatePostPharmacist = ({
       'Image URL',
       'ইমেজ ইউআরএল'
     );
-    valid ? (newPharmacist.imageUrl = data) : (error.imageUrl = data);
+    if (valid) {
+      newPharmacist.imageUrl = data;
+      newPharmacist.mainImageUrl = data;
+    } else error.imageUrl = data;
   }
 
   if (!dateOfBirth) {

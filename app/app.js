@@ -35,7 +35,11 @@ app.use((err, _req, res, _next) => {
     }, {});
 
     res.status(err.status ?? 500).json(dbError);
-  } else if (typeof err.message === 'string' && err.status === 400) {
+  } else if (
+    typeof err.message === 'string' &&
+    err.status > 399 &&
+    err.status < 500
+  ) {
     res
       .status(err.status)
       .json(JSON.parse(err.message) ?? 'Something went wrong!');

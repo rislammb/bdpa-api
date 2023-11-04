@@ -23,12 +23,10 @@ const getUserById = async (req, res, next) => {
     const user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      res
-        .status(404)
-        .json({
-          text: 'User not found!',
-          bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
-        });
+      res.status(404).json({
+        text: 'User not found!',
+        bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+      });
     }
     return res.status(200).json(user);
   } catch (e) {
@@ -56,12 +54,10 @@ const putUserById = async (req, res, next) => {
     });
 
     if (!user) {
-      res
-        .status(404)
-        .json({
-          text: 'User not found!',
-          bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
-        });
+      res.status(404).json({
+        text: 'User not found!',
+        bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     return res.status(200).json(user);
@@ -75,20 +71,19 @@ const putUserById = async (req, res, next) => {
  */
 const patchUserById = async (req, res, next) => {
   const { userId } = req.params;
-  const { adminDetails, accountStatus, roles } = req.body;
+  const { password, adminDetails, accountStatus, roles } = req.body;
 
   try {
     const user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      res
-        .status(404)
-        .json({
-          text: 'User not found!',
-          bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
-        });
+      res.status(404).json({
+        text: 'User not found!',
+        bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+      });
     }
 
+    user.password = password ?? user.password;
     user.adminDetails = adminDetails ?? user.adminDetails;
     user.accountStatus = accountStatus ?? user.accountStatus;
     user.roles = roles ?? user.roles;
@@ -110,12 +105,10 @@ const deleteUserById = async (req, res, next) => {
     const user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      res
-        .status(404)
-        .json({
-          text: 'User not found!',
-          bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
-        });
+      res.status(404).json({
+        text: 'User not found!',
+        bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+      });
     }
 
     await user.remove();

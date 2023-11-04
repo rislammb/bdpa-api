@@ -14,7 +14,9 @@ const userSchema = new Schema(
         message: (props) => `${props.value} is invalid email!`,
       },
     },
-    password: { type: String, required: true },
+    password: { type: String },
+    isVerified: { type: Boolean, default: false },
+    emailToken: { type: String, maxLength: 175 },
     regNumber: { type: String, required: true, unique: true, maxLength: 25 },
     pharmacistId: {
       type: Schema.Types.ObjectId,
@@ -25,12 +27,10 @@ const userSchema = new Schema(
       type: String,
       enum: ['PENDING', 'ACTIVE', 'SUSPEND', 'REJECTED'],
       default: 'PENDING',
-      required: true,
     },
     roles: {
       type: [String],
       default: ['USER'], // SUPER_ADMIN, ADMIN, DISTRICT_ADMIN, USER
-      required: true,
     },
     adminDetails: {
       id: { type: String, default: '' },

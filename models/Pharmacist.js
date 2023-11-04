@@ -34,7 +34,8 @@ const pharmacistSchema = new Schema({
     name: { type: String, default: '', trim: true, maxLength: 35 },
     bn_name: { type: String, default: '', trim: true, maxLength: 35 },
   },
-  imageUrl: { type: String, default: '', trim: true, maxLength: 150 },
+  mainImageUrl: { type: String, default: '', maxLength: 150 },
+  imageUrl: { type: String, default: '', maxLength: 150 },
   dateOfBirth: { type: Date },
   gender: {
     id: { type: String, default: '', maxLength: 45 },

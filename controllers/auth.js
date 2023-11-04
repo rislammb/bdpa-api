@@ -1,66 +1,245 @@
-const { registerService, loginService } = require('../services/auth');
-const { findPharmacistByProperty } = require('../services/pharmacist');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const authService = require('../services/auth');
+const userService = require('../services/user');
+const pharmacistService = require('../services/pharmacist');
+const { sendEmail, getMessage } = require('../utils/email');
+const { validatePassword } = require('../utils/user');
 
 const registerController = async (req, res, next) => {
-  const { email, password, confirmPassword } = req.body;
+  const { email, clientUrl } = req.body;
 
-  if (!email || !password || !confirmPassword) {
+  if (!email || !clientUrl) {
     return res
       .status(400)
       .json({ text: 'Invalid data!', bn_text: 'অকার্যকর তথ্য!' });
   }
 
   try {
-    const pharmacist = await findPharmacistByProperty('email', email);
+    let user = await userService.findUserByProperty('email', email);
 
-    if (!pharmacist) {
+    if (user) {
+      if (user.isVerified) {
+        return res.status(400).json({
+          email: {
+            text: 'This user already exists!',
+            bn_text: 'এই ইউজার ইতোমধ্যেই আছে!',
+          },
+        });
+      } else {
+        return res.status(400).json({
+          email: {
+            text: 'A verification email has already been sent to this user!',
+            bn_text: 'এই ইউজারকে ইতিমধ্যেই একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে!',
+          },
+        });
+      }
+    } else {
+      const pharmacist = await pharmacistService.findPharmacistByProperty(
+        'email',
+        email
+      );
+
+      if (!pharmacist) {
+        return res.status(404).json({
+          email: {
+            text: 'This email is not found in pharmacist database!',
+            bn_text: 'ডাটাবেজে এই ফার্মাসিস্ট পাওয়া যায় নি!',
+          },
+        });
+      }
+
+      user = await authService.register({
+        email,
+        regNumber: pharmacist.regNumber,
+        pharmacistId: pharmacist._id,
+      });
+
+      const { subject, html } = getMessage(user, clientUrl);
+
+      const message = {
+        from: 'BDPA Email Verification <admin>',
+        to: user.email,
+        subject,
+        html,
+      };
+
+      await sendEmail(message);
+
+      return res.status(201).json({
+        text: 'A verification email has been sent to you.',
+        bn_text: 'আপনাকে একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে।',
+      });
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+const resendVerificationEmail = async (req, res, next) => {
+  const { email, clientUrl } = req.body;
+
+  if (!email || !clientUrl) {
+    return res
+      .status(400)
+      .json({ text: 'Invalid data!', bn_text: 'অকার্যকর তথ্য!' });
+  }
+
+  try {
+    let user = await userService.findUserByProperty('email', email);
+
+    if (!user) {
+      return res.status(404).json({
+        email: {
+          text: 'This email is not found in user database!',
+          bn_text: 'ডাটাবেজে এই ইউজার পাওয়া যায় নি!',
+        },
+      });
+    }
+
+    if (user) {
+      if (user.isVerified && !user.emailToken) {
+        return res.status(400).json({
+          email: {
+            text: 'This user already exists!',
+            bn_text: 'এই ইউজার ইতোমধ্যেই আছে!',
+          },
+        });
+      } else {
+        const { subject, html } = getMessage(user, clientUrl);
+
+        const message = {
+          from: 'BDPA Email Verification <admin>',
+          to: user.email,
+          subject,
+          html,
+        };
+
+        await sendEmail(message);
+
+        return res.status(201).json({
+          text: 'A verification email has been sent to you.',
+          bn_text: 'আপনাকে একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে।',
+        });
+      }
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+const verifyEmail = async (req, res, next) => {
+  const { emailToken } = req.body;
+
+  if (!emailToken) {
+    return res.status(404).json({
+      text: 'Email token not found!',
+      bn_text: 'ইমেইল টোকেন পাওয়া যায় নি!',
+    });
+  }
+
+  try {
+    const user = await userService.findUserByProperty('emailToken', emailToken);
+
+    if (!user) {
       return res.status(400).json({
         email: {
-          text: 'This email is not found in pharmacist database!',
-          bn_text: 'ডাটাবেজে এই ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+          text: 'The email token is not valid!',
+          bn_text: 'ইমেইল টোকেন সঠিক নয়!',
         },
       });
     }
 
-    if (typeof password !== 'string' || password.length < 6) {
-      return res.status(400).json({
-        password: {
-          text: 'Password must be string and minimum 6 characters long!',
-          bn_text: 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর লম্বা স্ট্রিং হবে',
-        },
-      });
-    }
+    user.emailToken = null;
+    user.isVerified = true;
+    await user.save();
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({
-        confirmPassword: {
-          text: 'Password and confirm password not match!',
-          bn_text: 'পাসওয়ার্ড ও নিশ্চিত করা পাসওয়ার্ড মিল হয় নি!',
-        },
-      });
-    }
-
-    const user = await registerService({
-      email,
-      password,
-      regNumber: pharmacist.regNumber,
-      pharmacistId: pharmacist._id,
-    });
-
-    res.status(201).json({
-      text: 'User created successfully.',
-      bn_text: 'ইউজার সঠিকভাবে তৈরি হয়েছে।',
+    return res.status(200).json({
+      text: 'Email verifyed successfully.',
+      bn_text: 'ইমেইল সঠিকভাবে যাচাই করা হয়েছে।',
     });
   } catch (e) {
     next(e);
   }
 };
 
+/**
+ *
+ */
+const setPassword = async (req, res, next) => {
+  const { email, password, confirmPassword } = req.body;
+
+  if (!email || !password || !confirmPassword) {
+    return res
+      .status(400)
+      .json({ text: 'Invalid data!', bn_text: 'অকার্যকর তথ্য!' });
+  } else {
+    const { valid, data } = validatePassword(password, confirmPassword);
+
+    if (!valid) {
+      return res.status(400).json(data);
+    } else {
+      try {
+        const user = await userService.findUserByProperty('email', email);
+
+        if (!user) {
+          return res.status(404).json({
+            text: 'User not found!',
+            bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+          });
+        }
+
+        if (!user.isVerified) {
+          return res.status(400).json({
+            text: 'The email has not been verified!',
+            bn_text: 'ইমেইল যাচাই করা হয়নি!',
+          });
+        } else if (user.password) {
+          return res.status(400).json({
+            text: 'The password is set!',
+            bn_text: 'পাসওয়ার্ড সেট করা আছে!',
+          });
+        } else {
+          const salt = await bcrypt.genSalt(10);
+          const hash = await bcrypt.hash(data, salt);
+
+          user.password = hash;
+
+          await user.save();
+
+          const payload = {
+            _id: user._id,
+            email: user.email,
+            regNumber: user.regNumber,
+            roles: user.roles,
+            accountStatus: user.accountStatus,
+            adminDetails: user.adminDetails,
+          };
+
+          const token = await jwt.sign(payload, process.env.SECRET_KEY, {
+            expiresIn: '7d',
+          });
+
+          return res.status(200).json({ regNumber: user.regNumber, token });
+        }
+      } catch (e) {
+        next(e);
+      }
+    }
+  }
+};
+
 const loginController = async (req, res, next) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ text: 'Invalid data!', bn_text: 'অকার্যকর তথ্য!' });
+  }
+
   try {
-    const token = await loginService({ email, password });
+    const token = await authService.login({ email, password });
 
     return res
       .status(200)
@@ -78,4 +257,11 @@ const verfiyToken = (req, res, next) => {
       .json({ text: 'User not found!', bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!' });
 };
 
-module.exports = { registerController, loginController, verfiyToken };
+module.exports = {
+  registerController,
+  resendVerificationEmail,
+  verifyEmail,
+  setPassword,
+  loginController,
+  verfiyToken,
+};

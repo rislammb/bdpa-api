@@ -9,6 +9,24 @@ const authenticate = require('../middleware/authenticate');
 router.post('/register', authControllers.registerController);
 
 /**
+ * Resend email to user for verification email
+ * @method POST
+ */
+router.post('/resend-email', authControllers.resendVerificationEmail);
+
+/**
+ * Set password for verified user
+ * @method POST
+ */
+router.post('/set-password', authControllers.setPassword);
+
+/**
+ * Verify user email
+ * @method POST
+ */
+router.post('/verify-email', authControllers.verifyEmail);
+
+/**
  * User login
  * @method POST
  */

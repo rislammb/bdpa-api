@@ -26,7 +26,7 @@ const findUserByProperty = (key, value) => {
 
 const createNewUser = ({
   email,
-  password,
+  emailToken,
   regNumber,
   pharmacistId,
   accountStatus,
@@ -35,7 +35,7 @@ const createNewUser = ({
 }) => {
   const user = new User({
     email,
-    password,
+    emailToken,
     regNumber,
     pharmacistId,
     accountStatus: accountStatus ?? 'PENDING',
