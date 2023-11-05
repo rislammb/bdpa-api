@@ -31,7 +31,8 @@ const registerController = async (req, res, next) => {
           email: {
             text: 'A verification email has already been sent to this user!',
             bn_text: 'এই ইউজারকে ইতিমধ্যেই একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে!',
-          },
+	
+          },alreadySendEmail: true
         });
       }
     } else {
@@ -68,7 +69,7 @@ const registerController = async (req, res, next) => {
 
       return res.status(201).json({
         text: 'A verification email has been sent to you.',
-        bn_text: 'আপনাকে একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে।',
+        bn_text: 'আপনাকে একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে।'
       });
     }
   } catch (e) {
@@ -143,10 +144,10 @@ const verifyEmail = async (req, res, next) => {
 
     if (!user) {
       return res.status(400).json({
-        email: {
+        
           text: 'The email token is not valid!',
           bn_text: 'ইমেইল টোকেন সঠিক নয়!',
-        },
+       
       });
     }
 
@@ -155,8 +156,9 @@ const verifyEmail = async (req, res, next) => {
     await user.save();
 
     return res.status(200).json({
-      text: 'Email verifyed successfully.',
+      text: 'Email verified successfully.',
       bn_text: 'ইমেইল সঠিকভাবে যাচাই করা হয়েছে।',
+email: user.email
     });
   } catch (e) {
     next(e);

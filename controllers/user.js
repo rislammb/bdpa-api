@@ -71,7 +71,7 @@ const putUserById = async (req, res, next) => {
  */
 const patchUserById = async (req, res, next) => {
   const { userId } = req.params;
-  const { password, adminDetails, accountStatus, roles } = req.body;
+  const { password, isVerified, adminDetails, accountStatus, roles } = req.body;
 
   try {
     const user = await userService.findUserByProperty('_id', userId);
@@ -83,10 +83,11 @@ const patchUserById = async (req, res, next) => {
       });
     }
 
-    user.password = password ?? user.password;
-    user.adminDetails = adminDetails ?? user.adminDetails;
-    user.accountStatus = accountStatus ?? user.accountStatus;
-    user.roles = roles ?? user.roles;
+    if (password) user.password = password;
+    if (isVerified) user.isVerified = isVerified;
+    if (adminDetails) user.adminDetails = adminDetails;
+    if (accountStatus) user.accountStatus = accountStatus;
+    if (roles) user.roles = roles;
 
     await user.save();
     return res.status(200).json(user);
