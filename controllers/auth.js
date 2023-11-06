@@ -20,19 +20,29 @@ const registerController = async (req, res, next) => {
 
     if (user) {
       if (user.isVerified) {
-        return res.status(400).json({
-          email: {
-            text: 'This user already exists!',
-            bn_text: 'এই ইউজার ইতোমধ্যেই আছে!',
-          },
-        });
+        if (user.password) {
+          return res.status(400).json({
+            email: {
+              text: 'This user already exists!',
+              bn_text: 'এই ইউজার ইতোমধ্যেই আছে!',
+            },
+          });
+        } else {
+          return res.status(400).json({
+            email: {
+              text: "This user's password is not set!",
+              bn_text: 'এই ব্যবহারকারীর পাসওয়ার্ড সেট করা নেই!',
+            },
+            passwordNotSet: true,
+          });
+        }
       } else {
         return res.status(400).json({
           email: {
             text: 'A verification email has already been sent to this user!',
             bn_text: 'এই ইউজারকে ইতিমধ্যেই একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে!',
-	
-          },alreadySendEmail: true
+          },
+          alreadySendEmail: true,
         });
       }
     } else {
@@ -69,7 +79,7 @@ const registerController = async (req, res, next) => {
 
       return res.status(201).json({
         text: 'A verification email has been sent to you.',
-        bn_text: 'আপনাকে একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে।'
+        bn_text: 'আপনাকে একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে।',
       });
     }
   } catch (e) {
@@ -100,12 +110,22 @@ const resendVerificationEmail = async (req, res, next) => {
 
     if (user) {
       if (user.isVerified && !user.emailToken) {
-        return res.status(400).json({
-          email: {
-            text: 'This user already exists!',
-            bn_text: 'এই ইউজার ইতোমধ্যেই আছে!',
-          },
-        });
+        if (user.password) {
+          return res.status(400).json({
+            email: {
+              text: 'This user already exists!',
+              bn_text: 'এই ইউজার ইতোমধ্যেই আছে!',
+            },
+          });
+        } else {
+          return res.status(400).json({
+            email: {
+              text: "This user's password is not set!",
+              bn_text: 'এই ব্যবহারকারীর পাসওয়ার্ড সেট করা নেই!',
+            },
+            passwordNotSet: true,
+          });
+        }
       } else {
         const { subject, html } = getMessage(user, clientUrl);
 
@@ -144,10 +164,8 @@ const verifyEmail = async (req, res, next) => {
 
     if (!user) {
       return res.status(400).json({
-        
-          text: 'The email token is not valid!',
-          bn_text: 'ইমেইল টোকেন সঠিক নয়!',
-       
+        text: 'The email token is not valid!',
+        bn_text: 'ইমেইল টোকেন সঠিক নয়!',
       });
     }
 
@@ -158,7 +176,7 @@ const verifyEmail = async (req, res, next) => {
     return res.status(200).json({
       text: 'Email verified successfully.',
       bn_text: 'ইমেইল সঠিকভাবে যাচাই করা হয়েছে।',
-email: user.email
+      email: user.email,
     });
   } catch (e) {
     next(e);
@@ -222,7 +240,7 @@ const setPassword = async (req, res, next) => {
             expiresIn: '7d',
           });
 
-          return res.status(200).json({ regNumber: user.regNumber, token });
+          return res.status(200).json({ token });
         }
       } catch (e) {
         next(e);

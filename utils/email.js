@@ -22,6 +22,7 @@ const getMessage = (user, clientUrl) => ({
         padding: 16px;
         margin: 8px 0px;
         border-radius: 8px;
+	color: #3a3a3a;
         border: 1px solid #dadada;
         font-family: Tahoma, Geneva, Verdana, sans-serif;
       "
