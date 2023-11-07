@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (message) => {
   const cofigTransport = {
-    service: 'gmail',
+    service: 'hotmail',
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -14,7 +14,7 @@ const sendEmail = async (message) => {
 };
 
 const getMessage = (user, clientUrl) => ({
-  subject: 'Verify your Email on BDPA website',
+  subject: 'BDPA | Email Verification',
   html: `
     <div
       style="
@@ -22,7 +22,7 @@ const getMessage = (user, clientUrl) => ({
         padding: 16px;
         margin: 8px 0px;
         border-radius: 8px;
-	color: #3a3a3a;
+        color: #3a3a3a;
         border: 1px solid #dadada;
         font-family: Tahoma, Geneva, Verdana, sans-serif;
       "
@@ -30,19 +30,18 @@ const getMessage = (user, clientUrl) => ({
       <h3>Verify your Email</h3>
       <hr style="border: none; border-bottom: 1px solid #dadada" />
       <p>
-        You send a request on BDPA website to create your account. For verify
-        your account please follow this link
-        <a
+      You send a request on the BDPA website to create your account. To verify your account please follow this link verify your email
+      <a
           style="text-decoration: none; color: #007595"
           href="${clientUrl}${user?.emailToken}"
-          >verify email</a
+          >verify your email</a
         >
       </p>
 
       <p
         style="margin: 24px 0px; width: 64px; border-bottom: 1px solid #dadada"
       ></p>
-
+      
       <div>
         For more details mail to
         <a

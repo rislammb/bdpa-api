@@ -69,7 +69,7 @@ const registerController = async (req, res, next) => {
       const { subject, html } = getMessage(user, clientUrl);
 
       const message = {
-        from: 'BDPA Email Verification <admin>',
+        from: `BDPA Email Verification <${process.env.EMAIL_USER}>`,
         to: user.email,
         subject,
         html,
@@ -130,7 +130,7 @@ const resendVerificationEmail = async (req, res, next) => {
         const { subject, html } = getMessage(user, clientUrl);
 
         const message = {
-          from: 'BDPA Email Verification <admin>',
+          from: `BDPA Email Verification <${process.env.EMAIL_USER}>`,
           to: user.email,
           subject,
           html,
@@ -224,6 +224,7 @@ const setPassword = async (req, res, next) => {
           const hash = await bcrypt.hash(data, salt);
 
           user.password = hash;
+          user.accountStatus = 'ACTIVE';
 
           await user.save();
 

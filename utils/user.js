@@ -2,10 +2,10 @@ const validatePassword = (password, confirmPassword) => {
   const error = {};
   let response = '';
 
-  if (typeof password !== 'string' || password.length < 8) {
+  if (typeof password !== 'string' || password.length < 7) {
     error.password = {
-      text: 'Password type must be string and minimum 8 characters long!',
-      bn_text: 'পাসওয়ার্ড টাইপ স্ট্রিং এবং ন্যূনতম ৮ অক্ষর দীর্ঘ হতে হবে!',
+      text: 'Password type must be string and minimum 7 characters long!',
+      bn_text: 'পাসওয়ার্ড টাইপ স্ট্রিং এবং ন্যূনতম ৭ অক্ষর দীর্ঘ হতে হবে!',
     };
   } else if (
     !password.match(/\d/g) ||
