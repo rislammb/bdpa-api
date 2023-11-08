@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (message) => {
   const cofigTransport = {
-    service: 'hotmail',
+    service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -10,11 +10,19 @@ const sendEmail = async (message) => {
   };
   const transporter = nodemailer.createTransport(cofigTransport);
 
-  transporter.sendMail(message);
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(message, (err, info) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(info);
+      }
+    });
+  });
 };
 
 const getMessage = (user, clientUrl) => ({
-  subject: 'BDPA | Email Verification',
+  subject: 'BDPA Email Verification',
   html: `
     <div
       style="

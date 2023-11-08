@@ -69,7 +69,7 @@ const registerController = async (req, res, next) => {
       const { subject, html } = getMessage(user, clientUrl);
 
       const message = {
-        from: 'BDPA Email Verification <rislammb@outlook.com>',
+        from: `BDPA Email Verification <${process.env.EMAIL_USER}>`,
         to: user.email,
         subject,
         html,
@@ -130,7 +130,7 @@ const resendVerificationEmail = async (req, res, next) => {
         const { subject, html } = getMessage(user, clientUrl);
 
         const message = {
-          from: 'BDPA Email Verification <rislammb@outlook.com>',
+          from: `BDPA Email Verification <${process.env.EMAIL_USER}>`,
           to: user.email,
           subject,
           html,
