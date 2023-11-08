@@ -6,7 +6,18 @@ const { error } = require('../utils/error');
  */
 const getUsers = async (_req, res, next) => {
   try {
-    const users = await userService.findUsers();
+    let users = await userService.findUsers();
+
+    users = users.map((user) => ({
+      accountStatus: user.accountStatus,
+      adminDetails: user.adminDetails,
+      email: user.email,
+      pharmacistId: user.pharmacistId,
+      regNumber: user.regNumber,
+      roles: user.roles,
+      _id: user._id,
+    }));
+
     return res.status(200).json(users);
   } catch (e) {
     next(e);
@@ -20,7 +31,7 @@ const getUserById = async (req, res, next) => {
   const { userId } = req.params;
 
   try {
-    const user = await userService.findUserByProperty('_id', userId);
+    let user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
       res.status(404).json({
@@ -28,6 +39,16 @@ const getUserById = async (req, res, next) => {
         bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
       });
     }
+    user = {
+      accountStatus: user.accountStatus,
+      adminDetails: user.adminDetails,
+      email: user.email,
+      pharmacistId: user.pharmacistId,
+      regNumber: user.regNumber,
+      roles: user.roles,
+      _id: user._id,
+    };
+
     return res.status(200).json(user);
   } catch (e) {
     next(e);
@@ -47,7 +68,7 @@ const putUserById = async (req, res, next) => {
   const { adminDetails, accountStatus, roles } = req.body;
 
   try {
-    const user = await userService.updateUser(userId, {
+    let user = await userService.updateUser(userId, {
       adminDetails,
       accountStatus,
       roles,
@@ -60,6 +81,16 @@ const putUserById = async (req, res, next) => {
       });
     }
 
+    user = {
+      accountStatus: user.accountStatus,
+      adminDetails: user.adminDetails,
+      email: user.email,
+      pharmacistId: user.pharmacistId,
+      regNumber: user.regNumber,
+      roles: user.roles,
+      _id: user._id,
+    };
+
     return res.status(200).json(user);
   } catch (e) {
     next(e);
@@ -71,10 +102,11 @@ const putUserById = async (req, res, next) => {
  */
 const patchUserById = async (req, res, next) => {
   const { userId } = req.params;
+
   const { password, isVerified, adminDetails, accountStatus, roles } = req.body;
 
   try {
-    const user = await userService.findUserByProperty('_id', userId);
+    let user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
       res.status(404).json({
@@ -90,6 +122,16 @@ const patchUserById = async (req, res, next) => {
     if (roles) user.roles = roles;
 
     await user.save();
+    user = {
+      accountStatus: user.accountStatus,
+      adminDetails: user.adminDetails,
+      email: user.email,
+      pharmacistId: user.pharmacistId,
+      regNumber: user.regNumber,
+      roles: user.roles,
+      _id: user.id,
+    };
+
     return res.status(200).json(user);
   } catch (e) {
     next(e);
