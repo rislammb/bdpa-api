@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const memberController = require('../controllers/member');
+const adminAuthorize = require('../middleware/adminAuthorize');
 const authenticate = require('../middleware/authenticate');
 
 /**
@@ -18,7 +19,12 @@ router.get('/m/:memberId', memberController.getMemberById);
  * Update member by member id
  * @method PATCH
  */
-router.patch('/m/:memberId', authenticate, memberController.patchMemberById);
+router.patch(
+  '/m/:memberId',
+  authenticate,
+  adminAuthorize,
+  memberController.patchMemberById
+);
 
 /**
  * Delete member by committee id
@@ -27,6 +33,7 @@ router.patch('/m/:memberId', authenticate, memberController.patchMemberById);
 router.delete(
   '/c/:committeeId',
   authenticate,
+  adminAuthorize,
   memberController.deleteMembersByCommitteeId
 );
 
@@ -34,7 +41,12 @@ router.delete(
  * Delete member by member id
  * @method DELETE
  */
-router.delete('/m/:memberId', authenticate, memberController.deleteMemberById);
+router.delete(
+  '/m/:memberId',
+  authenticate,
+  adminAuthorize,
+  memberController.deleteMemberById
+);
 
 /**
  * Get all members
@@ -46,6 +58,6 @@ router.get('/', memberController.getMembers);
  * Create new member
  * @method POST
  */
-router.post('/', authenticate, memberController.postMember);
+router.post('/', authenticate, adminAuthorize, memberController.postMember);
 
 module.exports = router;

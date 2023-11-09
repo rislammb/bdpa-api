@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const committeeControllers = require('../controllers/committee');
 const authenticate = require('../middleware/authenticate');
+const adminAuthorize = require('../middleware/adminAuthorize');
 
 /**
  * Get committee with member details by committee path
@@ -21,6 +22,7 @@ router.get('/id/:committeeId', committeeControllers.getCommitteeById);
 router.patch(
   '/:committeePath',
   authenticate,
+  adminAuthorize,
   committeeControllers.patchCommitteeByPath
 );
 
@@ -31,6 +33,7 @@ router.patch(
 router.put(
   '/:committeePath',
   authenticate,
+  adminAuthorize,
   committeeControllers.putCommitteeByPath
 );
 
@@ -41,6 +44,7 @@ router.put(
 router.delete(
   '/:committeePath',
   authenticate,
+  adminAuthorize,
   committeeControllers.deleteCommitteeByPath
 );
 
@@ -54,6 +58,11 @@ router.get('/', committeeControllers.getCommittees);
  * Create new committee
  * @method POST
  */
-router.post('/', authenticate, committeeControllers.postCommittee);
+router.post(
+  '/',
+  authenticate,
+  adminAuthorize,
+  committeeControllers.postCommittee
+);
 
 module.exports = router;

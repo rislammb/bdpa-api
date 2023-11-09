@@ -35,9 +35,9 @@ const createNewPharmacist = async (data) => {
     );
   }
 
-  pharmacist =
-    data.memberId &&
-    (await findPharmacistByProperty('memberId', data.memberId));
+  console.log(data);
+
+  pharmacist = await findPharmacistByProperty('memberId', data.memberId);
   if (pharmacist) {
     throw jsonError(
       {

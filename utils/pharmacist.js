@@ -603,6 +603,7 @@ const validateUpdatePharmacist = ({
   mothersName,
   email,
   mobile,
+  mainImageUrl,
   imageUrl,
   dateOfBirth,
   gender,
@@ -689,6 +690,20 @@ const validateUpdatePharmacist = ({
         11
       );
       valid ? (newPharmacist.mobile = data) : (error.mobile = data);
+    }
+  }
+
+  if (mainImageUrl !== undefined) {
+    if (mainImageUrl === '') {
+      newPharmacist.mainImageUrl = '';
+    } else {
+      const { valid, data } = validateString(
+        mainImageUrl,
+        'Main Image URL',
+        'প্রধান ইমেজ ইউআরএল',
+        11
+      );
+      valid ? (newPharmacist.mainImageUrl = data) : (error.mainImageUrl = data);
     }
   }
 

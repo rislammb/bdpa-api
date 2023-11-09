@@ -1,5 +1,4 @@
 const userService = require('../services/user');
-const { error } = require('../utils/error');
 
 /**
  *
@@ -9,13 +8,13 @@ const getUsers = async (_req, res, next) => {
     let users = await userService.findUsers();
 
     users = users.map((user) => ({
+      _id: user._id,
       accountStatus: user.accountStatus,
       adminDetails: user.adminDetails,
       email: user.email,
       pharmacistId: user.pharmacistId,
       regNumber: user.regNumber,
       roles: user.roles,
-      _id: user._id,
     }));
 
     return res.status(200).json(users);
@@ -40,13 +39,13 @@ const getUserById = async (req, res, next) => {
       });
     }
     user = {
+      _id: user._id,
       accountStatus: user.accountStatus,
       adminDetails: user.adminDetails,
       email: user.email,
       pharmacistId: user.pharmacistId,
       regNumber: user.regNumber,
       roles: user.roles,
-      _id: user._id,
     };
 
     return res.status(200).json(user);
@@ -82,13 +81,13 @@ const putUserById = async (req, res, next) => {
     }
 
     user = {
+      _id: user._id,
       accountStatus: user.accountStatus,
       adminDetails: user.adminDetails,
       email: user.email,
       pharmacistId: user.pharmacistId,
       regNumber: user.regNumber,
       roles: user.roles,
-      _id: user._id,
     };
 
     return res.status(200).json(user);
@@ -123,13 +122,13 @@ const patchUserById = async (req, res, next) => {
 
     await user.save();
     user = {
+      _id: user.id,
       accountStatus: user.accountStatus,
       adminDetails: user.adminDetails,
       email: user.email,
       pharmacistId: user.pharmacistId,
       regNumber: user.regNumber,
       roles: user.roles,
-      _id: user.id,
     };
 
     return res.status(200).json(user);

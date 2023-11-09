@@ -158,14 +158,40 @@ const patchPharmacistByRegistration = async (req, res, next) => {
       return res.status(400).json(data);
     }
 
-    if (Object.keys(data).length > 0) {
-      Object.keys(data).forEach((key) => {
-        pharmacist[key] = data[key];
-      });
-      await pharmacist.save();
-    }
+    if (
+      data.regNumber ||
+      data.email ||
+      data.mainImageUrl ||
+      data.voterDivision ||
+      data.voterDistrict
+    ) {
+      if (
+        !req.user?.roles?.includes('SUPER_ADMIN') &&
+        !req.user?.roles?.includes('ADMIN')
+      ) {
+        return res
+          .status(401)
+          .json({ text: 'Unauthorized!', bn_text: 'অননুমোদিত' });
+      } else {
+        if (Object.keys(data).length > 0) {
+          Object.keys(data).forEach((key) => {
+            pharmacist[key] = data[key];
+          });
+          await pharmacist.save();
+        }
 
-    return res.status(200).json(pharmacist);
+        return res.status(200).json(pharmacist);
+      }
+    } else {
+      if (Object.keys(data).length > 0) {
+        Object.keys(data).forEach((key) => {
+          pharmacist[key] = data[key];
+        });
+        await pharmacist.save();
+      }
+
+      return res.status(200).json(pharmacist);
+    }
   } catch (e) {
     next(e);
   }
