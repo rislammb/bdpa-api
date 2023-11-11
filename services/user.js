@@ -10,7 +10,7 @@ const findUsers = () => {
 const findUserByProperty = (key, value) => {
   if (key === '_id') {
     if (mongoose.isValidObjectId(value)) {
-      return User.findById(value);
+      return User.findById(value).populate('pharmacistId');
     }
     throw jsonError(
       {
@@ -21,7 +21,7 @@ const findUserByProperty = (key, value) => {
     );
   }
 
-  return User.findOne({ [key]: value });
+  return User.findOne({ [key]: value }).populate('pharmacistId');
 };
 
 const createNewUser = ({

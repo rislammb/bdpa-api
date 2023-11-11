@@ -232,6 +232,7 @@ const setPassword = async (req, res, next) => {
             _id: user._id,
             email: user.email,
             regNumber: user.regNumber,
+            imageUrl: user.pharmacistId?.imageUrl,
             roles: user.roles,
             accountStatus: user.accountStatus,
             adminDetails: user.adminDetails,

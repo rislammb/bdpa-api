@@ -20,10 +20,11 @@ const authenticate = async (req, res, next) => {
     }
 
     req.user = {
-      adminDetails: user.adminDetails,
       _id: user._id,
+      adminDetails: user.adminDetails,
       email: user.email,
       regNumber: user.regNumber,
+      imageUrl: user.pharmacistId?.imageUrl ?? '',
       accountStatus: user.accountStatus,
       roles: user.roles,
     };

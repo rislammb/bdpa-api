@@ -43,7 +43,7 @@ const getUserById = async (req, res, next) => {
       accountStatus: user.accountStatus,
       adminDetails: user.adminDetails,
       email: user.email,
-      pharmacistId: user.pharmacistId,
+      imageUrl: user.pharmacistId.imageUrl,
       regNumber: user.regNumber,
       roles: user.roles,
     };
@@ -114,11 +114,11 @@ const patchUserById = async (req, res, next) => {
       });
     }
 
-    if (password) user.password = password;
-    if (isVerified) user.isVerified = isVerified;
-    if (adminDetails) user.adminDetails = adminDetails;
-    if (accountStatus) user.accountStatus = accountStatus;
-    if (roles) user.roles = roles;
+    if (password !== undefined) user.password = password;
+    if (isVerified !== undefined) user.isVerified = isVerified;
+    if (adminDetails !== undefined) user.adminDetails = adminDetails;
+    if (accountStatus !== undefined) user.accountStatus = accountStatus;
+    if (roles !== undefined) user.roles = roles;
 
     await user.save();
     user = {
@@ -126,7 +126,7 @@ const patchUserById = async (req, res, next) => {
       accountStatus: user.accountStatus,
       adminDetails: user.adminDetails,
       email: user.email,
-      pharmacistId: user.pharmacistId,
+      imageUrl: user.pharmacistId?.imageUrl,
       regNumber: user.regNumber,
       roles: user.roles,
     };
