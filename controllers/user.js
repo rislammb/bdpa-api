@@ -1,4 +1,5 @@
 const userService = require('../services/user');
+const { getPopulatedUser } = require('../utils/user');
 
 /**
  *
@@ -7,15 +8,7 @@ const getUsers = async (_req, res, next) => {
   try {
     let users = await userService.findUsers();
 
-    users = users.map((user) => ({
-      _id: user._id,
-      accountStatus: user.accountStatus,
-      adminDetails: user.adminDetails,
-      email: user.email,
-      pharmacistId: user.pharmacistId,
-      regNumber: user.regNumber,
-      roles: user.roles,
-    }));
+    users = users.map((user) => getPopulatedUser(user));
 
     return res.status(200).json(users);
   } catch (e) {
@@ -38,15 +31,8 @@ const getUserById = async (req, res, next) => {
         bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
       });
     }
-    user = {
-      _id: user._id,
-      accountStatus: user.accountStatus,
-      adminDetails: user.adminDetails,
-      email: user.email,
-      imageUrl: user.pharmacistId.imageUrl,
-      regNumber: user.regNumber,
-      roles: user.roles,
-    };
+
+    user = getPopulatedUser(user);
 
     return res.status(200).json(user);
   } catch (e) {
@@ -80,15 +66,7 @@ const putUserById = async (req, res, next) => {
       });
     }
 
-    user = {
-      _id: user._id,
-      accountStatus: user.accountStatus,
-      adminDetails: user.adminDetails,
-      email: user.email,
-      pharmacistId: user.pharmacistId,
-      regNumber: user.regNumber,
-      roles: user.roles,
-    };
+    user = getPopulatedUser(user);
 
     return res.status(200).json(user);
   } catch (e) {
@@ -121,15 +99,8 @@ const patchUserById = async (req, res, next) => {
     if (roles !== undefined) user.roles = roles;
 
     await user.save();
-    user = {
-      _id: user.id,
-      accountStatus: user.accountStatus,
-      adminDetails: user.adminDetails,
-      email: user.email,
-      imageUrl: user.pharmacistId?.imageUrl,
-      regNumber: user.regNumber,
-      roles: user.roles,
-    };
+
+    user = getPopulatedUser(user);
 
     return res.status(200).json(user);
   } catch (e) {

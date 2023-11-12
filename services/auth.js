@@ -75,6 +75,7 @@ const login = async ({ email, password }) => {
       _id: user._id,
       email: user.email,
       regNumber: user.regNumber,
+      pharmacistId: user.pharmacistId,
       roles: user.roles,
       accountStatus: user.accountStatus,
       adminDetails: user.adminDetails,

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const userService = require('../services/user');
+const { getPopulatedUser } = require('../utils/user');
 
 const authenticate = async (req, res, next) => {
   try {
@@ -19,15 +20,7 @@ const authenticate = async (req, res, next) => {
         .json({ text: 'Unauthorized!', bn_text: 'অননুমোদিত' });
     }
 
-    req.user = {
-      _id: user._id,
-      adminDetails: user.adminDetails,
-      email: user.email,
-      regNumber: user.regNumber,
-      imageUrl: user.pharmacistId?.imageUrl ?? '',
-      accountStatus: user.accountStatus,
-      roles: user.roles,
-    };
+    req.user = getPopulatedUser(user);
 
     next();
   } catch (e) {

@@ -34,4 +34,20 @@ const validatePassword = (password, confirmPassword) => {
   };
 };
 
-module.exports = { validatePassword };
+const getPopulatedUser = (user) => {
+  return (
+    user && {
+      _id: user._id,
+      email: user.email,
+      regNumber: user.regNumber,
+      imageUrl: user.pharmacistId?.imageUrl,
+      name: user.pharmacistId?.name,
+      bn_name: user.pharmacistId?.bn_name,
+      roles: user.roles,
+      accountStatus: user.accountStatus,
+      adminDetails: user.adminDetails,
+    }
+  );
+};
+
+module.exports = { validatePassword, getPopulatedUser };
