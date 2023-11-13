@@ -1,4 +1,3 @@
-const { error } = require('../utils/error');
 const pharmacistService = require('../services/pharmacist');
 const {
   validateRegNum,
@@ -6,10 +5,13 @@ const {
   validateUpdatePharmacist,
 } = require('../utils/pharmacist');
 
-const getPharmacists = async (_req, res, next) => {
+const getPharmacists = async (req, res, next) => {
   try {
     const pharmacists = await pharmacistService.findPharmacists(
-      'regNumber name bn_name email dateOfBirth memberId jobDepertment postingDivision postingDistrict postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila voterDivision voterDistrict deputationDivision deputationDistrict deputationUpazila'
+      `regNumber name bn_name memberId postingDivision postingDistrict voterDivision voterDistrict ${
+        req.user &&
+        'dateOfBirth jobDepertment postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila  deputationDivision deputationDistrict deputationUpazila'
+      }`
     );
 
     res.status(200).json(pharmacists);
@@ -18,23 +20,13 @@ const getPharmacists = async (_req, res, next) => {
   }
 };
 
-const getDetailsPharmacists = async (req, res, next) => {
-  if (
-    req.user &&
-    (req.user.roles?.includes('SUPER_ADMIN') ||
-      req.user.roles?.includes('ADMIN'))
-  ) {
-    try {
-      const pharmacists = await pharmacistService.findPharmacists();
+const getDetailsPharmacists = async (_req, res, next) => {
+  try {
+    const pharmacists = await pharmacistService.findPharmacists();
 
-      res.status(200).json(pharmacists);
-    } catch (e) {
-      next(e);
-    }
-  } else {
-    return res
-      .status(401)
-      .json({ text: 'Unauthorized!', bn_text: 'অননুমোদিত!' });
+    res.status(200).json(pharmacists);
+  } catch (e) {
+    next(e);
   }
 };
 
@@ -44,11 +36,13 @@ const getPharmacistByRegistration = async (req, res, next) => {
   try {
     const pharmacist = await pharmacistService.findPharmacistByProperty(
       'regNumber',
-      regNumber
+      regNumber,
+      !req.user &&
+        'regNumber name bn_name email memberId jobDepertment postingDivision postingDistrict voterDivision voterDistrict'
     );
 
     if (!pharmacist) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Pharmacist not found!',
         bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
       });
@@ -66,11 +60,13 @@ const getPharmacistById = async (req, res, next) => {
   try {
     const pharmacist = await pharmacistService.findPharmacistByProperty(
       '_id',
-      id
+      id,
+      !req.user &&
+        'regNumber name bn_name email memberId jobDepertment postingDivision postingDistrict voterDivision voterDistrict'
     );
 
     if (!pharmacist) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Pharmacist not found!',
         bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
       });

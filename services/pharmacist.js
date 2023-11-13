@@ -12,11 +12,11 @@ const findPharmacists = (select) => {
     .select(select);
 };
 
-const findPharmacistByProperty = (key, value) => {
+const findPharmacistByProperty = (key, value, select) => {
   if (key === '_id') {
-    return Pharmacist.findById(value);
+    return Pharmacist.findById(value).select(select);
   } else {
-    return Pharmacist.findOne({ [key]: value });
+    return Pharmacist.findOne({ [key]: value }).select(select);
   }
 };
 

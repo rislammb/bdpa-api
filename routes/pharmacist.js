@@ -2,19 +2,24 @@ const router = require('express').Router();
 const authenticate = require('../middleware/authenticate');
 const pharmacistController = require('../controllers/pharmacist');
 const adminAuthorize = require('../middleware/adminAuthorize');
+const authorize = require('../middleware/authorize');
 const userAuthorize = require('../middleware/userAuthorize');
 
 /**
  * Get pharmacist by registration number
  * @method GET
  */
-router.get('/reg/:regNumber', pharmacistController.getPharmacistByRegistration);
+router.get(
+  '/reg/:regNumber',
+  authorize,
+  pharmacistController.getPharmacistByRegistration
+);
 
 /**
  * Get pharmacist by id
  * @method GET
  */
-router.get('/id/:id', pharmacistController.getPharmacistById);
+router.get('/id/:id', authorize, pharmacistController.getPharmacistById);
 
 /**
  * Update pharmacist by registration number
@@ -75,7 +80,7 @@ router.get(
  * Get all pharmacists
  * @method GET
  */
-router.get('/', pharmacistController.getPharmacists);
+router.get('/', authorize, pharmacistController.getPharmacists);
 
 /**
  * Create new pharmacist
