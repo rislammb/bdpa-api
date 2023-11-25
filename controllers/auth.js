@@ -274,7 +274,7 @@ const loginController = async (req, res, next) => {
 const verfiyToken = (req, res, next) => {
   if (req.user) return res.status(200).json(req.user);
   else
-    res
+    return res
       .status(404)
       .json({ text: 'User not found!', bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!' });
 };

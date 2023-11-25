@@ -12,7 +12,7 @@ const getMembers = async (_req, res, next) => {
   try {
     const members = await memberService.findMembers();
 
-    res.status(200).json(members);
+    return res.status(200).json(members);
   } catch (e) {
     next(e);
   }
@@ -24,7 +24,7 @@ const getMembersByCommitteeId = async (req, res, next) => {
   try {
     const members = await memberService.findMembersByCommittee(committeeId);
 
-    res.status(200).json(getPopulatedMembers(members));
+    return res.status(200).json(getPopulatedMembers(members));
   } catch (e) {
     next(e);
   }
@@ -36,7 +36,7 @@ const getMemberById = async (req, res, next) => {
   try {
     const member = await memberService.findMemberById(memberId);
 
-    res.status(200).json(getPopulatedMember(member));
+    return res.status(200).json(getPopulatedMember(member));
   } catch (e) {
     next(e);
   }
@@ -55,7 +55,7 @@ const postMember = async (req, res, next) => {
     );
 
     if (!committee) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Committee not found!',
         bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
       });
@@ -66,7 +66,7 @@ const postMember = async (req, res, next) => {
 
     await committee.save();
 
-    res.status(201).json(member);
+    return res.status(201).json(member);
   } catch (e) {
     next(e);
   }
@@ -79,7 +79,7 @@ const patchMemberById = async (req, res, next) => {
     const member = await memberService.findMemberById(memberId);
 
     if (!member) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Committee Member not found!',
         bn_text: 'কমিটির সদস্য খুঁজে পাওয়া যায় নি!',
       });
@@ -96,7 +96,7 @@ const patchMemberById = async (req, res, next) => {
       await member.save();
     }
 
-    res.status(200).json(member);
+    return res.status(200).json(member);
   } catch (e) {
     next(e);
   }
@@ -108,7 +108,7 @@ const deleteMembersByCommitteeId = async (req, res, next) => {
   try {
     await memberService.deleteMembersByCommitteeId(committeeId);
 
-    res.status(204).send();
+    return res.status(204).send();
   } catch (e) {
     next(e);
   }
@@ -121,7 +121,7 @@ const deleteMemberById = async (req, res, next) => {
     const member = await memberService.findMemberById(memberId);
 
     if (!member) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Committee Member not found!',
         bn_text: 'কমিটির সদস্য খুঁজে পাওয়া যায় নি!',
       });

@@ -21,7 +21,7 @@ const getCommitteeByPath = async (req, res, next) => {
     const committee = await committeeServices.findCommitteeByPath(path);
 
     if (!committee) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Committee not found!',
         bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
       });
@@ -40,7 +40,7 @@ const getCommitteeById = async (req, res, next) => {
     const committee = await committeeServices.findCommitteeById(committeeId);
 
     if (!committee) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Committee not found!',
         bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
       });
@@ -75,7 +75,7 @@ const patchCommitteeByPath = async (req, res, next) => {
     const committee = await committeeServices.findCommitteeOnlyByPath(path);
 
     if (!committee) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Committee not found!',
         bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
       });
@@ -84,7 +84,7 @@ const patchCommitteeByPath = async (req, res, next) => {
     const { valid, data } = validatePatchCommittee(req.body);
 
     if (!valid) {
-      res.status(400).json(data);
+      return res.status(400).json(data);
     }
 
     if (Object.keys(data).length > 0) {
@@ -95,14 +95,14 @@ const patchCommitteeByPath = async (req, res, next) => {
       await committee.save();
     }
 
-    res.status(200).json(committee);
+    return res.status(200).json(committee);
   } catch (e) {
     next(e);
   }
 };
 
 const putCommitteeByPath = async (req, res) => {
-  res.json({
+  return res.json({
     path: req.params.committeePath,
   });
 };
@@ -117,7 +117,7 @@ const deleteCommitteeByPath = async (req, res, next) => {
       await committeeServices.deleteCommitteeById(committee._id);
       return res.status(204).send();
     } else {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Committee not found!',
         bn_text: 'কমিটি খুঁজে পাওয়া যায় নি!',
       });

@@ -14,7 +14,7 @@ const getPharmacists = async (req, res, next) => {
       }`
     );
 
-    res.status(200).json(pharmacists);
+    return res.status(200).json(pharmacists);
   } catch (e) {
     next(e);
   }
@@ -24,7 +24,7 @@ const getDetailsPharmacists = async (_req, res, next) => {
   try {
     const pharmacists = await pharmacistService.findPharmacists();
 
-    res.status(200).json(pharmacists);
+    return res.status(200).json(pharmacists);
   } catch (e) {
     next(e);
   }
@@ -108,7 +108,7 @@ const putPharmacistByRegistration = async (req, res, next) => {
       regNumber
     );
     if (!pharmacist) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Pharmacist not found!',
         bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
       });
@@ -143,7 +143,7 @@ const patchPharmacistByRegistration = async (req, res, next) => {
     );
 
     if (!pharmacist) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Pharmacist not found!',
         bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
       });
@@ -208,7 +208,7 @@ const deletePharmacistByRegistration = async (req, res, next) => {
     );
 
     if (!pharmacist) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Pharmacist not found!',
         bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
       });
@@ -231,7 +231,7 @@ const deletePharmacistById = async (req, res, next) => {
     );
 
     if (!pharmacist) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'Pharmacist not found!',
         bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
       });

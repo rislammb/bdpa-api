@@ -1,9 +1,6 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (message) => {
-  console.log(process.env.EMAIL_USER);
-  console.log(process.env.EMAIL_PASS);
-
   const cofigTransport = {
     port: 465,
     host: 'smtp.gmail.com',

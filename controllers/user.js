@@ -26,7 +26,7 @@ const getUserById = async (req, res, next) => {
     let user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'User not found!',
         bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
       });
@@ -60,7 +60,7 @@ const putUserById = async (req, res, next) => {
     });
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'User not found!',
         bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
       });
@@ -86,7 +86,7 @@ const patchUserById = async (req, res, next) => {
     let user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'User not found!',
         bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
       });
@@ -118,7 +118,7 @@ const deleteUserById = async (req, res, next) => {
     const user = await userService.findUserByProperty('_id', userId);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         text: 'User not found!',
         bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
       });
