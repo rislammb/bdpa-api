@@ -7,17 +7,25 @@ const {
 
 const getPharmacists = async (req, res, next) => {
   try {
-    const pharmacists = await pharmacistService.findPharmacists(
-      `regNumber name bn_name email memberId postingDivision postingDistrict voterDivision voterDistrict jobDepertment ${
-        req.user &&
-        'dateOfBirth postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila  deputationDivision deputationDistrict deputationUpazila'
-      }`
-    );
+    const response = await pharmacistService.findPharmacists(req);
 
-    return res.status(200).json(pharmacists);
+    return res.status(200).json(response);
   } catch (e) {
     next(e);
   }
+
+  // try {
+  //   const pharmacists = await pharmacistService.findPharmacists(
+  //     `regNumber name bn_name email memberId postingDivision postingDistrict voterDivision voterDistrict jobDepertment ${
+  //       req.user &&
+  //       'dateOfBirth postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila  deputationDivision deputationDistrict deputationUpazila'
+  //     }`
+  //   );
+
+  //   return res.status(200).json(pharmacists);
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 const getDetailsPharmacists = async (_req, res, next) => {

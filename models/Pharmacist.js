@@ -155,6 +155,13 @@ const pharmacistSchema = new Schema({
   },
 });
 
+pharmacistSchema.index({
+  name: 'text',
+  bn_name: 'text',
+  regNumber: 'text',
+  memberId: 'text',
+});
+
 const Pharmacist = model('Pharmacist', pharmacistSchema);
 
 module.exports = Pharmacist;
