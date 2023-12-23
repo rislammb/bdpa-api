@@ -71,8 +71,8 @@ const pharmacistSchema = new Schema({
   dateOfJoin: { type: Date },
   jobDepertment: {
     id: { type: String, default: '', maxLength: 45 },
-    name: { type: String, default: '', trim: true, maxLength: 90 },
-    bn_name: { type: String, default: '', trim: true, maxLength: 90 },
+    name: { type: String, default: '', trim: true, maxLength: 110 },
+    bn_name: { type: String, default: '', trim: true, maxLength: 110 },
   },
   postingDivision: {
     id: { type: String, default: '', maxLength: 45 },
@@ -92,8 +92,8 @@ const pharmacistSchema = new Schema({
     bn_name: { type: String, default: '', maxLength: 45 },
   },
   postingPlace: {
-    name: { type: String, default: '', trim: true, maxLength: 90 },
-    bn_name: { type: String, default: '', trim: true, maxLength: 90 },
+    name: { type: String, default: '', trim: true, maxLength: 110 },
+    bn_name: { type: String, default: '', trim: true, maxLength: 110 },
   },
   permanentDivision: {
     id: { type: String, default: '', maxLength: 45 },
@@ -113,8 +113,8 @@ const pharmacistSchema = new Schema({
     bn_name: { type: String, default: '', maxLength: 45 },
   },
   permanentPlace: {
-    name: { type: String, default: '', trim: true, maxLength: 90 },
-    bn_name: { type: String, default: '', trim: true, maxLength: 90 },
+    name: { type: String, default: '', trim: true, maxLength: 110 },
+    bn_name: { type: String, default: '', trim: true, maxLength: 110 },
   },
   voterDivision: {
     id: { type: String, default: '', maxLength: 45 },
@@ -150,8 +150,8 @@ const pharmacistSchema = new Schema({
     bn_name: { type: String, default: '', maxLength: 45 },
   },
   deputationPlace: {
-    name: { type: String, default: '', trim: true, maxLength: 90 },
-    bn_name: { type: String, default: '', trim: true, maxLength: 90 },
+    name: { type: String, default: '', trim: true, maxLength: 110 },
+    bn_name: { type: String, default: '', trim: true, maxLength: 110 },
   },
 });
 

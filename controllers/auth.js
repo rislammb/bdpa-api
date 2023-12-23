@@ -149,6 +149,59 @@ const resendVerificationEmail = async (req, res, next) => {
   }
 };
 
+const resetPassword = async (req, res, next) => {
+  const { email, clientUrl } = req.body;
+
+  if (!email || !clientUrl) {
+    return res
+      .status(400)
+      .json({ text: 'Invalid data!', bn_text: 'অকার্যকর তথ্য!' });
+  }
+
+  try {
+    let user = await userService.findUserByProperty('email', email);
+
+    if (!user) {
+      return res.status(404).json({
+        email: {
+          text: 'This email is not found in user database!',
+          bn_text: 'ডাটাবেজে এই ইউজার পাওয়া যায় নি!',
+        },
+      });
+    } else {
+      if (user.isVerified && !user.password) {
+        return res.status(400).json({
+          email: {
+            text: "This user's password is not set!",
+            bn_text: 'এই ব্যবহারকারীর পাসওয়ার্ড সেট করা নেই!',
+          },
+          passwordNotSet: true,
+        });
+      } else {
+        user = await authService.resetPassword(email);
+
+        const { subject, html } = getMessage(user, clientUrl);
+
+        const message = {
+          from: `BDPA Email Verification <${process.env.EMAIL_USER}>`,
+          to: user.email,
+          subject,
+          html,
+        };
+
+        await sendEmail(message);
+
+        return res.status(201).json({
+          text: 'A verification email has been sent to you.',
+          bn_text: 'আপনাকে একটি যাচাইকরণ ইমেইল পাঠানো হয়েছে।',
+        });
+      }
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 const verifyEmail = async (req, res, next) => {
   const { emailToken } = req.body;
 
@@ -284,6 +337,7 @@ module.exports = {
   resendVerificationEmail,
   verifyEmail,
   setPassword,
+  resetPassword,
   loginController,
   verfiyToken,
 };

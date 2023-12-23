@@ -15,6 +15,12 @@ router.post('/register', authControllers.registerController);
 router.post('/resend-email', authControllers.resendVerificationEmail);
 
 /**
+ * Resend email to user for verification email
+ * @method POST
+ */
+router.post('/reset-password', authControllers.resetPassword);
+
+/**
  * Set password for verified user
  * @method POST
  */

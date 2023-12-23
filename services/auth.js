@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { jsonError } = require('../utils/error');
-const { findUserByProperty, createNewUser } = require('./user');
+const { findUserByProperty, createNewUser, updateUser } = require('./user');
 
 const register = async ({
   email,
@@ -31,6 +31,41 @@ const register = async ({
     roles,
     adminDetails,
   });
+};
+
+const resetPassword = async (email) => {
+  const user = await findUserByProperty('email', email);
+
+  if (!user) {
+    throw jsonError(
+      {
+        text: 'User not found!',
+        bn_text: 'ইউজার খুঁজে পাওয়া যায় নি!',
+      },
+      404
+    );
+  } else if (!user.isVerified) {
+    throw jsonError(
+      {
+        text: 'The email has not been verified!',
+        bn_text: 'ইমেইল যাচাই করা হয়নি!',
+      },
+      400
+    );
+  } else if (!user.password) {
+    throw jsonError(
+      {
+        text: 'The password has not been set!',
+        bn_text: 'পাসওয়ার্ড সেট করা হয়নি!',
+      },
+      400
+    );
+  } else {
+    return updateUser(user.id, {
+      emailToken: crypto.randomBytes(64).toString('hex'),
+      password: null,
+    });
+  }
 };
 
 const login = async ({ email, password }) => {
@@ -85,4 +120,4 @@ const login = async ({ email, password }) => {
   }
 };
 
-module.exports = { register, login };
+module.exports = { register, login, resetPassword };
