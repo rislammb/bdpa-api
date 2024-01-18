@@ -4,9 +4,9 @@ const {
   validatePatchCommittee,
 } = require('../utils/committee');
 
-const getCommittees = async (_req, res, next) => {
+const getCommittees = async (req, res, next) => {
   try {
-    const committees = await committeeServices.findCommittees();
+    const committees = await committeeServices.findCommittees(req);
 
     return res.status(200).json(committees);
   } catch (e) {

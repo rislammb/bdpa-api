@@ -3,8 +3,13 @@ const Committee = require('../models/Committee');
 const { jsonError } = require('../utils/error');
 const memberService = require('./member');
 
-const findCommittees = () => {
-  return Committee.find().sort({ indexNumber: 1, committeeTitle: 1 });
+const findCommittees = (req) => {
+  return Committee.find({
+    $or: [
+      { committeeTitle: { $regex: req.query.query, $options: 'i' } },
+      { bn_committeeTitle: { $regex: req.query.query, $options: 'i' } },
+    ],
+  }).sort({ indexNumber: 1, committeeTitle: 1 });
 };
 
 const findCommitteeByPath = (committeePath) => {
