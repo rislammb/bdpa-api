@@ -4,12 +4,24 @@ const { jsonError } = require('../utils/error');
 const memberService = require('./member');
 
 const findCommittees = (req) => {
+    const {
+    pageNumber = 1,
+    pageSize = 15,
+    query = '',
+  } = req.query;
+
+  const skipAmount = (pageNumber - 1) * pageSize;
+  
   return Committee.find({
     $or: [
       { committeeTitle: { $regex: req.query.query, $options: 'i' } },
       { bn_committeeTitle: { $regex: req.query.query, $options: 'i' } },
     ],
-  }).sort({ indexNumber: 1, committeeTitle: 1 });
+  })
+  .sort({ indexNumber: 1, committeeTitle: 1 })
+  .skip(skipAmount)
+  .limit(pageSize)
+  .exec();
 };
 
 const findCommitteeByPath = (committeePath) => {
