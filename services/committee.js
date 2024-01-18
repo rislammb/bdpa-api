@@ -14,8 +14,8 @@ const findCommittees = (req) => {
   
   return Committee.find({
     $or: [
-      { committeeTitle: { $regex: req.query.query, $options: 'i' } },
-      { bn_committeeTitle: { $regex: req.query.query, $options: 'i' } },
+      { committeeTitle: { $regex: query, $options: 'i' } },
+      { bn_committeeTitle: { $regex: query, $options: 'i' } },
     ],
   })
   .sort({ indexNumber: 1, committeeTitle: 1 })
