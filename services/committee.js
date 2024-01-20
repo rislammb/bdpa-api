@@ -3,25 +3,36 @@ const Committee = require('../models/Committee');
 const { jsonError } = require('../utils/error');
 const memberService = require('./member');
 
-const findCommittees = (req) => {
-    const {
-    pageNumber = 1,
-    pageSize = 15,
-    query = '',
-  } = req.query;
+const findCommittees = async (req) => {
+  const { page = 1, page_size = 15, query = '' } = req.query;
 
-  const skipAmount = (pageNumber - 1) * pageSize;
-  
-  return Committee.find({
+  const skipAmount = (page - 1) * page_size;
+
+  const options = {
     $or: [
       { committeeTitle: { $regex: query, $options: 'i' } },
       { bn_committeeTitle: { $regex: query, $options: 'i' } },
     ],
-  })
-  .sort({ indexNumber: 1, committeeTitle: 1 })
-  .skip(skipAmount)
-  .limit(pageSize)
-  .exec();
+  };
+
+  const committees = await Committee.find(options)
+    .sort({ indexNumber: 1, committeeTitle: 1 })
+    .skip(skipAmount)
+    .limit(page_size)
+    .exec();
+
+  const committeesCount = await Committee.countDocuments(options);
+
+  const totalCommitteesCount = await Committee.countDocuments(options);
+
+  const isNext = true;
+
+  return {
+    committees,
+    committeesCount,
+    totalCommitteesCount,
+    isNext,
+  };
 };
 
 const findCommitteeByPath = (committeePath) => {

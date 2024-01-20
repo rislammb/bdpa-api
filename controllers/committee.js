@@ -6,9 +6,9 @@ const {
 
 const getCommittees = async (req, res, next) => {
   try {
-    const committees = await committeeServices.findCommittees(req);
+    const response = await committeeServices.findCommittees(req);
 
-    return res.status(200).json(committees);
+    return res.status(200).json(response);
   } catch (e) {
     next(e);
   }
