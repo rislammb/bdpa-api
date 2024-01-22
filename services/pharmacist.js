@@ -3,36 +3,32 @@ const { jsonError } = require('../utils/error');
 
 const findPharmacists = async (req) => {
   const {
-    pageNumber = 1,
-    pageSize = 50,
-    locationFilter = {
-      locationType: 'all',
-      division: 'all',
-      district: 'all',
-      upazila: 'all',
-    },
-    depertmentFilter = 'all',
-    searchTerm = '',
+    page = 1,
+    page_size = 50,
+    query = '',
+    location_type = 'all',
+    division = 'all',
+    district = 'all',
+    upazila = 'all',
+    job_depertment_id = 'all',
   } = req.query;
 
-  const { locationType, division, district, upazila } = locationFilter;
-
-  const skipAmount = (pageNumber - 1) * pageSize;
+  const skipAmount = (page - 1) * page_size;
 
   const divisionOptions =
-    locationType === 'currentAddress'
+    location_type === 'currentAddress'
       ? division === 'all'
         ? [{}]
         : [{ 'postingDivision.id': division }]
-      : locationType === 'voterArea'
+      : location_type === 'voterArea'
       ? division === 'all'
         ? [{}]
         : [{ 'voterDivision.id': division }]
-      : locationType === 'permanentAddress'
+      : location_type === 'permanentAddress'
       ? division === 'all'
         ? [{}]
         : [{ 'permanentDivision.id': division }]
-      : locationType === 'deputationPosting'
+      : location_type === 'deputationPosting'
       ? division === 'all'
         ? [{}]
         : [{ 'deputationDivision.id': division }]
@@ -46,19 +42,19 @@ const findPharmacists = async (req) => {
         ];
 
   const districtOptions =
-    locationType === 'currentAddress'
+    location_type === 'currentAddress'
       ? district === 'all'
         ? [{}]
         : [{ 'postingDistrict.id': district }]
-      : locationType === 'voterArea'
+      : location_type === 'voterArea'
       ? district === 'all'
         ? [{}]
         : [{ 'voterDistrict.id': district }]
-      : locationType === 'permanentAddress'
+      : location_type === 'permanentAddress'
       ? district === 'all'
         ? [{}]
         : [{ 'permanentDistrict.id': district }]
-      : locationType === 'deputationPosting'
+      : location_type === 'deputationPosting'
       ? district === 'all'
         ? [{}]
         : [{ 'deputationDistrict.id': district }]
@@ -72,15 +68,15 @@ const findPharmacists = async (req) => {
         ];
 
   const upazilaOptions =
-    locationType === 'currentAddress'
+    location_type === 'currentAddress'
       ? upazila === 'all'
         ? [{}]
         : [{ 'postingUpazila.id': upazila }]
-      : locationType === 'permanentAddress'
+      : location_type === 'permanentAddress'
       ? upazila === 'all'
         ? [{}]
         : [{ 'permanentUpazila.id': upazila }]
-      : locationType === 'deputationPosting'
+      : location_type === 'deputationPosting'
       ? upazila === 'all'
         ? [{}]
         : [{ 'deputationUpazila.id': upazila }]
@@ -94,11 +90,11 @@ const findPharmacists = async (req) => {
 
   const searchOptions = {
     $or: [
-      { regNumber: { $regex: searchTerm, $options: 'i' } },
-      { name: { $regex: searchTerm, $options: 'i' } },
-      { bn_name: { $regex: searchTerm, $options: 'i' } },
-      { memberId: { $regex: searchTerm, $options: 'i' } },
-      { email: { $regex: searchTerm, $options: 'i' } },
+      { regNumber: { $regex: query, $options: 'i' } },
+      { name: { $regex: query, $options: 'i' } },
+      { bn_name: { $regex: query, $options: 'i' } },
+      { memberId: { $regex: query, $options: 'i' } },
+      { email: { $regex: query, $options: 'i' } },
     ],
   };
 
@@ -111,12 +107,12 @@ const findPharmacists = async (req) => {
           {
             $or: upazilaOptions,
             $and: [
-              depertmentFilter === 'all'
+              job_depertment_id === 'all'
                 ? {
                     $and: [searchOptions],
                   }
                 : {
-                    'jobDepertment.id': depertmentFilter,
+                    'jobDepertment.id': job_depertment_id,
                     $and: [searchOptions],
                   },
             ],
@@ -134,7 +130,7 @@ const findPharmacists = async (req) => {
       dateOfJoin: 1,
     })
     .skip(skipAmount)
-    .limit(pageSize)
+    .limit(page_size)
     .select(
       `regNumber name bn_name email memberId postingDivision postingDistrict voterDivision voterDistrict jobDepertment ${
         req.user &&
@@ -156,17 +152,6 @@ const findPharmacists = async (req) => {
     isNext,
   };
 };
-
-// const findPharmacists = (select) => {
-//   return Pharmacist.find()
-//     .sort({
-//       dateOfBirth: 1,
-//       passingYear: 1,
-//       name: 1,
-//       dateOfJoin: 1,
-//     })
-//     .select(select);
-// };
 
 const findPharmacistByProperty = (key, value, select) => {
   if (key === '_id') {

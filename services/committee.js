@@ -23,7 +23,7 @@ const findCommittees = async (req) => {
 
   const committeesCount = await Committee.countDocuments(options);
 
-  const totalCommitteesCount = await Committee.countDocuments(options);
+  const totalCommitteesCount = await Committee.countDocuments();
 
   const isNext = true;
 
