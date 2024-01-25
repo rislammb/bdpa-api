@@ -275,6 +275,7 @@ const getPopulatedMember = (member) => {
     bn_name: member.pharmacistId.bn_name,
     mobile: member.pharmacistId.mobile,
     regNumber: member.pharmacistId.regNumber,
+    pharmacistId: member.pharmacistId._id,
     posting: getAreaInfo(member.pharmacistId, 'posting'),
     bn_posting: getBnAreaInfo(member.pharmacistId, 'posting'),
   };
