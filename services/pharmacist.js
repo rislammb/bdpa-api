@@ -143,7 +143,7 @@ const findPharmacists = async (req) => {
 
   const totalPharmacistsCount = await Pharmacist.countDocuments();
 
-  const isNext = totalPharmacistsCount > skipAmount + pharmacists.length;
+  const isNext = pharmacistsCount > skipAmount + pharmacists.length;
 
   return {
     pharmacists,
