@@ -3,8 +3,28 @@ const { jsonError } = require('../utils/error');
 
 const User = require('../models/User');
 
-const findUsers = () => {
-  return User.find();
+const findUsers = async (req) => {
+  const { page = 1, page_size = 30, query = '' } = req.query;
+
+  const skipAmount = (page - 1) * page_size;
+
+  const options = {
+    $or: [
+      { regNumber: { $regex: query, $options: 'i' } },
+      { email: { $regex: query, $options: 'i' } },
+    ],
+  };
+
+  const users = await User.find(options)
+    .skip(skipAmount)
+    .limit(page_size)
+    .exec();
+
+  const usersCount = await User.countDocuments(options);
+  const totalUsersCount = await User.countDocuments();
+  const isNext = usersCount > skipAmount + users.length;
+
+  return { users, usersCount, totalUsersCount, isNext };
 };
 
 const findUserByProperty = (key, value) => {

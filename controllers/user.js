@@ -4,13 +4,13 @@ const { getPopulatedUser } = require('../utils/user');
 /**
  *
  */
-const getUsers = async (_req, res, next) => {
+const getUsers = async (req, res, next) => {
   try {
-    let users = await userService.findUsers();
+    let response = await userService.findUsers(req);
 
-    users = users.map((user) => getPopulatedUser(user));
+    const users = response?.users.map((user) => getPopulatedUser(user));
 
-    return res.status(200).json(users);
+    return res.status(200).json({ ...response, users });
   } catch (e) {
     next(e);
   }
