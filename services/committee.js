@@ -25,7 +25,7 @@ const findCommittees = async (req) => {
 
   const totalCommitteesCount = await Committee.countDocuments();
 
-  const isNext = true;
+  const isNext = committeesCount > skipAmount + committees.length;
 
   return {
     committees,
