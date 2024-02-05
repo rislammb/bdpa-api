@@ -4,23 +4,33 @@ const { jsonError } = require('../utils/error');
 const User = require('../models/User');
 
 const findUsers = async (req) => {
-  const { page = 1, page_size = 30, query = '' } = req.query;
+  const {
+    page = 1,
+    page_size = 30,
+    account_status = 'ALL',
+    query = '',
+  } = req.query;
 
   const skipAmount = (page - 1) * page_size;
 
-  const options = {
-    $or: [
-      { regNumber: { $regex: query, $options: 'i' } },
-      { email: { $regex: query, $options: 'i' } },
+  const findOptions = {
+    $or: account_status === 'ALL' ? [{}] : [{ accountStatus: account_status }],
+    $and: [
+      {
+        $or: [
+          { regNumber: { $regex: query, $options: 'i' } },
+          { email: { $regex: query, $options: 'i' } },
+        ],
+      },
     ],
   };
 
-  const users = await User.find(options)
+  const users = await User.find(findOptions)
     .skip(skipAmount)
     .limit(page_size)
     .exec();
 
-  const usersCount = await User.countDocuments(options);
+  const usersCount = await User.countDocuments(findOptions);
   const totalUsersCount = await User.countDocuments();
   const isNext = usersCount > skipAmount + users.length;
 
