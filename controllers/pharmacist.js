@@ -33,7 +33,7 @@ const getPharmacistByRegistration = async (req, res, next) => {
       "regNumber",
       regNumber,
       !req.user &&
-        "regNumber name bn_name email memberId jobDepertment postingDivision postingDistrict voterDivision voterDistrict"
+        "regNumber name bn_name email memberId jobDepartment postingDivision postingDistrict voterDivision voterDistrict"
     );
 
     if (!pharmacist) {
@@ -57,7 +57,7 @@ const getPharmacistById = async (req, res, next) => {
       "_id",
       id,
       !req.user &&
-        "regNumber name bn_name email memberId jobDepertment postingDivision postingDistrict voterDivision voterDistrict"
+        "regNumber name bn_name email memberId jobDepartment postingDivision postingDistrict voterDivision voterDistrict"
     );
 
     if (!pharmacist) {

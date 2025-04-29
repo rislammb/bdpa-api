@@ -10,7 +10,7 @@ const findPharmacists = async (req) => {
     division = "all",
     district = "all",
     upazila = "all",
-    job_depertment_id = "all",
+    job_department_id = "all",
   } = req.query;
 
   const skipAmount = (page - 1) * page_size;
@@ -107,12 +107,12 @@ const findPharmacists = async (req) => {
           {
             $or: upazilaOptions,
             $and: [
-              job_depertment_id === "all"
+              job_department_id === "all"
                 ? {
                     $and: [searchOptions],
                   }
                 : {
-                    "jobDepertment.id": job_depertment_id,
+                    "jobDepartment.id": job_department_id,
                     $and: [searchOptions],
                   },
             ],
@@ -132,7 +132,7 @@ const findPharmacists = async (req) => {
     .skip(skipAmount)
     .limit(page_size)
     .select(
-      `regNumber name bn_name email memberId postingDivision postingDistrict voterDivision voterDistrict jobDepertment ${
+      `regNumber name bn_name email memberId postingDivision postingDistrict voterDivision voterDistrict jobDepartment ${
         req.user &&
         "dateOfBirth postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila  deputationDivision deputationDistrict deputationUpazila"
       }`
@@ -162,7 +162,7 @@ const findDetailsPharmacists = async (req) => {
     division = "all",
     district = "all",
     upazila = "all",
-    job_depertment_id = "all",
+    job_department_id = "all",
   } = req.query;
 
   const skipAmount = (page - 1) * page_size;
@@ -259,12 +259,12 @@ const findDetailsPharmacists = async (req) => {
           {
             $or: upazilaOptions,
             $and: [
-              job_depertment_id === "all"
+              job_department_id === "all"
                 ? {
                     $and: [searchOptions],
                   }
                 : {
-                    "jobDepertment.id": job_depertment_id,
+                    "jobDepartment.id": job_department_id,
                     $and: [searchOptions],
                   },
             ],
