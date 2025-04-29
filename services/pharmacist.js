@@ -132,9 +132,8 @@ const findPharmacists = async (req) => {
     .skip(skipAmount)
     .limit(page_size)
     .select(
-      `regNumber name bn_name email memberId postingDivision postingDistrict voterDivision voterDistrict jobDepartment ${
-        req.user &&
-        "dateOfBirth postingUpazila postingPlace permanentDivision permanentDistrict permanentUpazila  deputationDivision deputationDistrict deputationUpazila"
+      `regNumber name bn_name memberId postingDistrict voterDistrict ${
+        req.user && "dateOfBirth postingUpazila postingPlace"
       }`
     )
     .exec();
