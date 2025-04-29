@@ -1,9 +1,9 @@
-const pharmacistService = require('../services/pharmacist');
+const pharmacistService = require("../services/pharmacist");
 const {
   validateRegNum,
   validatePostPharmacist,
   validateUpdatePharmacist,
-} = require('../utils/pharmacist');
+} = require("../utils/pharmacist");
 
 const getPharmacists = async (req, res, next) => {
   try {
@@ -15,9 +15,9 @@ const getPharmacists = async (req, res, next) => {
   }
 };
 
-const getDetailsPharmacists = async (_req, res, next) => {
+const getDetailsPharmacists = async (req, res, next) => {
   try {
-    const pharmacists = await pharmacistService.findPharmacists();
+    const pharmacists = await pharmacistService.findDetailsPharmacists(req);
 
     return res.status(200).json(pharmacists);
   } catch (e) {
@@ -30,16 +30,16 @@ const getPharmacistByRegistration = async (req, res, next) => {
 
   try {
     const pharmacist = await pharmacistService.findPharmacistByProperty(
-      'regNumber',
+      "regNumber",
       regNumber,
       !req.user &&
-        'regNumber name bn_name email memberId jobDepertment postingDivision postingDistrict voterDivision voterDistrict'
+        "regNumber name bn_name email memberId jobDepertment postingDivision postingDistrict voterDivision voterDistrict"
     );
 
     if (!pharmacist) {
       return res.status(404).json({
-        text: 'Pharmacist not found!',
-        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+        text: "Pharmacist not found!",
+        bn_text: "ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!",
       });
     }
 
@@ -54,16 +54,16 @@ const getPharmacistById = async (req, res, next) => {
 
   try {
     const pharmacist = await pharmacistService.findPharmacistByProperty(
-      '_id',
+      "_id",
       id,
       !req.user &&
-        'regNumber name bn_name email memberId jobDepertment postingDivision postingDistrict voterDivision voterDistrict'
+        "regNumber name bn_name email memberId jobDepertment postingDivision postingDistrict voterDivision voterDistrict"
     );
 
     if (!pharmacist) {
       return res.status(404).json({
-        text: 'Pharmacist not found!',
-        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+        text: "Pharmacist not found!",
+        bn_text: "ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!",
       });
     }
 
@@ -99,13 +99,13 @@ const putPharmacistByRegistration = async (req, res, next) => {
 
   try {
     let pharmacist = await pharmacistService.findPharmacistByProperty(
-      'regNumber',
+      "regNumber",
       regNumber
     );
     if (!pharmacist) {
       return res.status(404).json({
-        text: 'Pharmacist not found!',
-        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+        text: "Pharmacist not found!",
+        bn_text: "ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!",
       });
     }
 
@@ -133,14 +133,14 @@ const patchPharmacistByRegistration = async (req, res, next) => {
 
   try {
     const pharmacist = await pharmacistService.findPharmacistByProperty(
-      'regNumber',
+      "regNumber",
       regNumber
     );
 
     if (!pharmacist) {
       return res.status(404).json({
-        text: 'Pharmacist not found!',
-        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+        text: "Pharmacist not found!",
+        bn_text: "ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!",
       });
     }
 
@@ -157,12 +157,12 @@ const patchPharmacistByRegistration = async (req, res, next) => {
       data.voterDistrict
     ) {
       if (
-        !req.user?.roles?.includes('SUPER_ADMIN') &&
-        !req.user?.roles?.includes('ADMIN')
+        !req.user?.roles?.includes("SUPER_ADMIN") &&
+        !req.user?.roles?.includes("ADMIN")
       ) {
         return res
           .status(401)
-          .json({ text: 'Unauthorized!', bn_text: 'অননুমোদিত' });
+          .json({ text: "Unauthorized!", bn_text: "অননুমোদিত" });
       } else {
         if (Object.keys(data).length > 0) {
           Object.keys(data).forEach((key) => {
@@ -198,14 +198,14 @@ const deletePharmacistByRegistration = async (req, res, next) => {
 
   try {
     const pharmacist = await pharmacistService.findPharmacistByProperty(
-      'regNumber',
+      "regNumber",
       regNumber
     );
 
     if (!pharmacist) {
       return res.status(404).json({
-        text: 'Pharmacist not found!',
-        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+        text: "Pharmacist not found!",
+        bn_text: "ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!",
       });
     }
 
@@ -221,14 +221,14 @@ const deletePharmacistById = async (req, res, next) => {
 
   try {
     const pharmacist = await pharmacistService.findPharmacistByProperty(
-      '_id',
+      "_id",
       id
     );
 
     if (!pharmacist) {
       return res.status(404).json({
-        text: 'Pharmacist not found!',
-        bn_text: 'ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!',
+        text: "Pharmacist not found!",
+        bn_text: "ফার্মাসিস্ট খুঁজে পাওয়া যায় নি!",
       });
     }
 
