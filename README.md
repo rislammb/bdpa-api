@@ -45,7 +45,7 @@ Pharmacist model-
 - passingYear
 - regNumber
 - dateOfJoin
-- jobDepertment
+- jobDepartment
 - postingDivision
 - postingDistrict
 - postingUpazila
