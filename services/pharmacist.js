@@ -358,10 +358,34 @@ const updatePharmacist = async (regNumber, data) => {
   );
 };
 
+const updatePharmacistImageUrl = async (regNumber, imageUrl) => {
+  let pharmacist = await findPharmacistByProperty("regNumber", regNumber);
+
+  if (!pharmacist) {
+    throw jsonError(
+      {
+        text: "Pharmacist not found!",
+        bn_text: "ফার্মাসিস্ট পাওয়া যায় নি!",
+      },
+      404
+    );
+  }
+
+  return Pharmacist.findByIdAndUpdate(
+    pharmacist._id,
+    {
+      imageUrl: imageUrl,
+      mainImageUrl: imageUrl,
+    },
+    { new: true }
+  );
+};
+
 module.exports = {
   findPharmacists,
   findDetailsPharmacists,
   findPharmacistByProperty,
   createNewPharmacist,
   updatePharmacist,
+  updatePharmacistImageUrl,
 };
