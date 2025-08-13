@@ -262,6 +262,7 @@ const postPharmacistImage = async (req, res, next) => {
     const result = await uploadImageFromBuffer({
       buffer,
       filename: `${regNumber}_${Date.now()}`,
+      transformation: [{ width: 900, height: 900, crop: "fill" }],
     });
 
     // Update pharmacist with new image URL

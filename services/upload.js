@@ -12,12 +12,14 @@ cloudinary.config({
  * @param {Object} params
  * @param {Buffer} params.buffer - File buffer
  * @param {string} [params.filename] - Optional public_id/filename (without extension)
+ * @param {Array|Object} [params.transformation] - Optional Cloudinary transformation(s)
  * @returns {Promise<object>} Cloudinary upload result
  */
 const uploadImageFromBuffer = ({
   buffer,
   filename,
   overwrite = true,
+  transformation,
 }) => {
   if (!buffer) {
     return Promise.reject(new Error("No file buffer provided"));
@@ -33,6 +35,7 @@ const uploadImageFromBuffer = ({
       overwrite,
       use_filename: Boolean(filename),
       unique_filename: !filename,
+      transformation,
     };
 
     const stream = cloudinary.uploader.upload_stream(
