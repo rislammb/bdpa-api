@@ -1,4 +1,5 @@
 const pharmacistService = require("../services/pharmacist");
+const { uploadImageFromBuffer } = require("../services/upload");
 const {
   validateRegNum,
   validatePostPharmacist,
@@ -239,6 +240,46 @@ const deletePharmacistById = async (req, res, next) => {
   }
 };
 
+const postPharmacistImage = async (req, res, next) => {
+  const { regNumber } = req.params;
+
+  const regNumRes = validateRegNum(regNumber);
+  if (!regNumRes.valid) {
+    return res.status(400).json(regNumRes.data);
+  }
+
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        text: "No image file provided",
+        bn_text: "কোন ইমেজ ফাইল দেওয়া হয়নি",
+      });
+    }
+
+    const { buffer } = req.file;
+
+    // Upload image to Cloudinary
+    const result = await uploadImageFromBuffer({
+      buffer,
+      filename: `${regNumber}_${Date.now()}`,
+    });
+
+    // Update pharmacist with new image URL
+    const pharmacist = await pharmacistService.updatePharmacistImageUrl(
+      regNumber,
+      result.secure_url || result.url
+    );
+
+    return res.status(200).json({
+      text: "Pharmacist image updated successfully",
+      bn_text: "ফার্মাসিস্টের ছবি সফলভাবে আপডেট হয়েছে",
+      imageUrl: pharmacist.imageUrl,
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPharmacists,
   getDetailsPharmacists,
@@ -249,4 +290,5 @@ module.exports = {
   patchPharmacistByRegistration,
   deletePharmacistByRegistration,
   deletePharmacistById,
+  postPharmacistImage,
 };
