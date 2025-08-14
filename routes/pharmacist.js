@@ -104,7 +104,7 @@ router.post(
 );
 
 /**
- * Upload pharmacist image
+ * Upload pharmacist main image
  * @method POST
  */
 router.post(
@@ -113,6 +113,17 @@ router.post(
   adminAuthorize,
   upload.single("image"),
   pharmacistController.postPharmacistImage
+);
+
+/**
+ * Delete pharmacist main image
+ * @method DELETE
+ */
+router.delete(
+  "/files/:regNumber/:displayName",
+  authenticate,
+  adminAuthorize,
+  pharmacistController.deletePharmacistImage
 );
 
 module.exports = router;

@@ -50,4 +50,16 @@ const uploadImageFromBuffer = ({
   });
 };
 
-module.exports = { uploadImageFromBuffer };
+/**
+ * Delete an image from Cloudinary
+ * @param {string} publicId - The public ID of the image to delete
+ * @returns {Promise<object>} Cloudinary deletion result
+ */
+const deleteImage = (publicId) => {
+  return cloudinary.uploader.destroy(publicId);
+};
+
+module.exports = {
+  uploadImageFromBuffer,
+  deleteImage,
+};
