@@ -1,5 +1,5 @@
 const pharmacistService = require("../services/pharmacist");
-const { uploadImageFromBuffer } = require("../services/upload");
+const { uploadImageFromBuffer, deleteImage } = require("../services/upload");
 const {
   validateRegNum,
   validatePostPharmacist,
@@ -251,8 +251,8 @@ const postPharmacistImage = async (req, res, next) => {
   try {
     if (!req.file) {
       return res.status(400).json({
-        text: "No image file provided",
-        bn_text: "কোন ইমেজ ফাইল দেওয়া হয়নি",
+        text: "No image file provided!",
+        bn_text: "কোন ইমেজ ফাইল দেওয়া হয়নি!",
       });
     }
 
@@ -265,19 +265,58 @@ const postPharmacistImage = async (req, res, next) => {
       transformation: [{ width: 900, height: 900, crop: "fill" }],
     });
 
+    const imageUrl = result.secure_url || result.url;
+
     // Update pharmacist with new image URL
-    const pharmacist = await pharmacistService.updatePharmacistImageUrl(
-      regNumber,
-      result.secure_url || result.url
-    );
+    await pharmacistService.updatePharmacist(regNumber, {
+      mainImageUrl: imageUrl,
+      imageUrl,
+    });
 
     return res.status(200).json({
-      text: "Pharmacist image updated successfully",
-      bn_text: "ফার্মাসিস্টের ছবি সফলভাবে আপডেট হয়েছে",
-      imageUrl: pharmacist.imageUrl,
+      text: "Image uploaded successfully.",
+      bn_text: "ছবি সফলভাবে আপলোড হয়েছে।",
+      imageUrl,
     });
   } catch (e) {
     next(e);
+  }
+};
+
+const deletePharmacistImage = async (req, res, next) => {
+  const { regNumber, displayName } = req.params;
+  const publicId = `bdpa/${displayName}`;
+
+  const regNumRes = validateRegNum(regNumber);
+  if (!regNumRes.valid) {
+    return res.status(400).json(regNumRes.data);
+  }
+
+  if (!publicId) {
+    return res.status(400).json({
+      text: "Public ID is required to delete the image!",
+      bn_text: "ছবি মুছে ফেলার জন্য পাবলিক আইডি প্রয়োজন!",
+    });
+  }
+
+  try {
+    const response = await deleteImage(publicId);
+
+    if (response.result !== "ok") {
+      return res.status(500).json({
+        text: "Failed to delete image!",
+        bn_text: "ছবি মুছতে ব্যর্থ হয়েছে!",
+      });
+    }
+
+    await pharmacistService.updatePharmacist(regNumber, {
+      mainImageUrl: "",
+      imageUrl: "",
+    });
+
+    return res.status(204).send();
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -292,4 +331,5 @@ module.exports = {
   deletePharmacistByRegistration,
   deletePharmacistById,
   postPharmacistImage,
+  deletePharmacistImage,
 };

@@ -1,6 +1,6 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
@@ -12,16 +12,16 @@ app.use(
   })
 );
 
-app.use('/api/v1', require('../routes'));
+app.use("/api/v1", require("../routes"));
 
-app.get('/api/v1/health', (_req, res) => {
+app.get("/api/v1/health", (_req, res) => {
   res.json({
-    message: 'This server is ok.',
+    message: "This server is ok.",
   });
 });
 
 app.use((_req, _res, next) => {
-  const error = new Error('Page not found!');
+  const error = new Error("Page not found!");
   error.status = 404;
 
   next(error);
@@ -36,17 +36,15 @@ app.use((err, _req, res, _next) => {
 
     res.status(err.status ?? 500).json(dbError);
   } else if (
-    typeof err.message === 'string' &&
+    typeof err.message === "string" &&
     err.status > 399 &&
     err.status < 500
   ) {
-    res
-      .status(err.status)
-      .json(JSON.parse(err.message) ?? 'Something went wrong!');
+    res.status(err.status).json(err.message ?? "Something went wrong!");
   } else {
     res
       .status(err.status ?? 500)
-      .json({ message: err.message ?? 'Server error occurred!' });
+      .json({ message: err.message ?? "Server error occurred!" });
   }
 });
 
