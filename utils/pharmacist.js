@@ -929,8 +929,131 @@ const validateUpdatePharmacist = ({
   };
 };
 
+const getFindOptionsFromQuery = (requestQuery) => {
+  const {
+    query = "",
+    location_type = "all",
+    division = "all",
+    district = "all",
+    upazila = "all",
+    job_department_id = "all",
+  } = requestQuery;
+
+  const divisionOptions =
+    location_type === "currentAddress"
+      ? division === "all"
+        ? [{}]
+        : [{ "postingDivision.id": division }]
+      : location_type === "voterArea"
+      ? division === "all"
+        ? [{}]
+        : [{ "voterDivision.id": division }]
+      : location_type === "permanentAddress"
+      ? division === "all"
+        ? [{}]
+        : [{ "permanentDivision.id": division }]
+      : location_type === "deputationPosting"
+      ? division === "all"
+        ? [{}]
+        : [{ "deputationDivision.id": division }]
+      : division === "all"
+      ? [{}]
+      : [
+          { "postingDivision.id": division },
+          { "voterDivision.id": division },
+          { "permanentDivision.id": division },
+          { "deputationDivision.id": division },
+        ];
+
+  const districtOptions =
+    location_type === "currentAddress"
+      ? district === "all"
+        ? [{}]
+        : [{ "postingDistrict.id": district }]
+      : location_type === "voterArea"
+      ? district === "all"
+        ? [{}]
+        : [{ "voterDistrict.id": district }]
+      : location_type === "permanentAddress"
+      ? district === "all"
+        ? [{}]
+        : [{ "permanentDistrict.id": district }]
+      : location_type === "deputationPosting"
+      ? district === "all"
+        ? [{}]
+        : [{ "deputationDistrict.id": district }]
+      : district === "all"
+      ? [{}]
+      : [
+          { "postingDistrict.id": district },
+          { "voterDistrict.id": district },
+          { "permanentDistrict.id": district },
+          { "deputationDistrict.id": district },
+        ];
+
+  const upazilaOptions =
+    location_type === "currentAddress"
+      ? upazila === "all"
+        ? [{}]
+        : [{ "postingUpazila.id": upazila }]
+      : location_type === "permanentAddress"
+      ? upazila === "all"
+        ? [{}]
+        : [{ "permanentUpazila.id": upazila }]
+      : location_type === "deputationPosting"
+      ? upazila === "all"
+        ? [{}]
+        : [{ "deputationUpazila.id": upazila }]
+      : upazila === "all"
+      ? [{}]
+      : [
+          { "postingUpazila.id": upazila },
+          { "permanentUpazila.id": upazila },
+          { "deputationUpazila.id": upazila },
+        ];
+
+  const searchOptions = {
+    $or: [
+      { regNumber: { $regex: query, $options: "i" } },
+      { name: { $regex: query, $options: "i" } },
+      { bn_name: { $regex: query, $options: "i" } },
+      { memberId: { $regex: query, $options: "i" } },
+      { email: { $regex: query, $options: "i" } },
+      { "postingPlace.name": { $regex: query, $options: "i" } },
+      { "postingPlace.bn_name": { $regex: query, $options: "i" } },
+    ],
+  };
+
+  const findOptions = {
+    $or: divisionOptions,
+    $and: [
+      {
+        $or: districtOptions,
+        $and: [
+          {
+            $or: upazilaOptions,
+            $and: [
+              job_department_id === "all"
+                ? {
+                    $and: [searchOptions],
+                  }
+                : {
+                    "jobDepartment.id": job_department_id,
+                    $and: [searchOptions],
+                  },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  return findOptions;
+};
+
 module.exports = {
   validateRegNum,
   validatePostPharmacist,
   validateUpdatePharmacist,
+  getFindOptionsFromQuery,
 };
