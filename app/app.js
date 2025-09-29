@@ -40,7 +40,10 @@ app.use((err, _req, res, _next) => {
     err.status > 399 &&
     err.status < 500
   ) {
-    res.status(err.status).json(err.message ?? "Something went wrong!");
+    // res.status(err.status).json(err.message ?? "Something went wrong!");
+    res
+      .status(err.status)
+      .json(JSON.parse(err.message) ?? "Something went wrong!");
   } else {
     res
       .status(err.status ?? 500)
