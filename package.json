@@ -4,7 +4,7 @@
   "description": "Bangladesh Diploma Pharmacist Association web app",
   "main": "index.js",
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "scripts": {
     "start": "node index.js",
